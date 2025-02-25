@@ -16,4 +16,5 @@ Amazon CloudFront is a **content delivery network (CDN)** service provided by AW
 
 - **Origin Path** in CloudFront is an optional configuration that specifies a subdirectory (path) in the origin from which CloudFront should fetch content. When you define an Origin Path, CloudFront automatically appends it to the origin domain name for every request.
   - S3 Bucket as Origin (Serving Content from a Specific Folder): Suppose you have an S3 bucket: `my-static-bucket.s3.amazonaws.com`. Inside the bucket, you have a folder: `/assets`. If you set Origin Path = `/assets`, CloudFront will fetch files from: `https://my-static-bucket.s3.amazonaws.com/assets/`
+  - Web Server as Origin (Serving Content from a Specific Subdirectory): Suppose you have a website hosted at: `https://example.com`. Your images are stored in: `https://example.com/media`. If you set Origin Path = `/media`, CloudFront will automatically fetch from: `https://example.com/media/`
 
