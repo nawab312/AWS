@@ -59,6 +59,6 @@ This project sets up a static website hosted on **Amazon S3** with **AWS CloudFr
 
 ![MyWebsite](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website/Images/MyWebsite.png)
 
-* Even after Deleting S3 Bucket Policy you will be able to access Cloudfront Domain Because of the Cache Content*
+* Even after Deleting S3 Bucket Policy you will be able to access Cloudfront Domain Because of the Cache Content
 
-* **CloudFront invalidation** is a process used to remove cached content from AWS CloudFront so that it fetches the latest version from the origin (e.g., S3, EC2, or any backend server). *
+* **CloudFront invalidation** is a process used to remove cached content from AWS CloudFront so that it fetches the latest version from the origin (e.g., S3, EC2, or any backend server). 
