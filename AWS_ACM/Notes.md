@@ -7,6 +7,6 @@ AWS ACM supports two types of certificates:
 ### Request a Certificate ###
 
 Step1) Certificate Type
-[!Certificate Type](https://github.com/nawab312/AWS/blob/main/AWS_ACM/Images/Certificate_Type.png)
+![Certificate Type](https://github.com/nawab312/AWS/blob/main/AWS_ACM/Images/Certificate_Type.png)
 
 Step2) 
