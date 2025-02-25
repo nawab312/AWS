@@ -61,4 +61,9 @@ This project sets up a static website hosted on **Amazon S3** with **AWS CloudFr
 
 * Even after Deleting S3 Bucket Policy you will be able to access Cloudfront Domain Because of the Cache Content
 
-* **CloudFront invalidation** is a process used to remove cached content from AWS CloudFront so that it fetches the latest version from the origin (e.g., S3, EC2, or any backend server). 
+* **CloudFront invalidation** is a process used to remove cached content from AWS CloudFront so that it fetches the latest version from the origin (e.g., S3, EC2, or any backend server).
+
+* Create Invalidation from Cloudfront Console
+![Invalidation](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website/Images/Invalidation.png)
+
+* Now if you try to access `https://d1vupevz38k2p1.cloudfront.net/index.html` you will get `Access Invalid`
