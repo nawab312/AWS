@@ -17,4 +17,11 @@ AWS ACM supports two types of certificates:
 - **FQDN :** FQDN (Fully Qualified Domain Name) is the complete domain name of a system, uniquely identifying it within the Domain Name System (DNS) hierarchy. Example `www.example.com`
     - Hostname – Identifies a specific machine (e.g., www, mail, api).
     - Domain Name – Represents the organization or website (e.g., example.com).
-    - Top-Level Domain (TLD) – Defines the highest level of the domain structure (e.g., .com, .org, .net). 
+    - Top-Level Domain (TLD) – Defines the highest level of the domain structure (e.g., .com, .org, .net).
+ 
+- **Validation Methods in AWS ACM**: When requesting an SSL/TLS certificate in AWS Certificate Manager (ACM), AWS needs to verify that you own or control the domain. This is done through domain validation, which has two methods:
+        - DNS Validation (Recommended): How it works
+            - AWS provides a CNAME record that must be added to your domain’s DNS settings.
+            - ACM continuously checks for this record, and once found, it validates the domain.
+            - The certificate is issued and will automatically renew as long as the CNAME remains in place.
+        - Email Validation: How it works
