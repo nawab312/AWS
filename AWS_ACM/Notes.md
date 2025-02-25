@@ -20,8 +20,5 @@ AWS ACM supports two types of certificates:
     - Top-Level Domain (TLD) – Defines the highest level of the domain structure (e.g., .com, .org, .net).
  
 - **Validation Methods in AWS ACM**: When requesting an SSL/TLS certificate in AWS Certificate Manager (ACM), AWS needs to verify that you own or control the domain. This is done through domain validation, which has two methods:
-        - DNS Validation (Recommended): How it works
-            - AWS provides a CNAME record that must be added to your domain’s DNS settings.
-            - ACM continuously checks for this record, and once found, it validates the domain.
-            - The certificate is issued and will automatically renew as long as the CNAME remains in place.
-        - Email Validation: How it works
+        - DNS Validation (Recommended): AWS provides a CNAME record that must be added to your domain’s DNS settings. ACM continuously checks for this record, and once found, it validates the domain. The certificate is issued and will automatically renew as long as the CNAME remains in place.
+        - Email Validation: ACM sends a validation email to domain-related addresses: `admin@example.com` or `administrator@example.com` etc. The recipient must click a link to approve the request.
