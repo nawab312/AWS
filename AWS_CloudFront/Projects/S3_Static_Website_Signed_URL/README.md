@@ -26,3 +26,6 @@ This is where **signed URLs** help. Instead of exposing a direct URL, you genera
 
 ### If you access the CloudFront URL Now ###
 ![Missing Key](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website_Signed_URL/Images/Missing_Key.png)
+
+### Generate Signed URL using `generate_signed_url.py` ###
+
