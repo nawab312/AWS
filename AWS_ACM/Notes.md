@@ -3,3 +3,10 @@ AWS Certificate Manager (ACM) is a service that helps you easily provision, mana
 AWS ACM supports two types of certificates:
 - **Public SSL/TLS Certificates** – Issued by AWS ACM for use with AWS services only (e.g., ELB, CloudFront, API Gateway).
 - **Private SSL/TLS Certificates** – Created using AWS Private CA for internal applications, including hybrid cloud setups.
+
+### Request a Certificate ###
+
+Step1) Certificate Type
+[!Certificate Type](https://github.com/nawab312/AWS/blob/main/AWS_ACM/Images/Certificate_Type.png)
+
+Step2) 
