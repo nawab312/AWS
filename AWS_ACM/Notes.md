@@ -9,4 +9,10 @@ AWS ACM supports two types of certificates:
 Step1) Certificate Type
 ![Certificate Type](https://github.com/nawab312/AWS/blob/main/AWS_ACM/Images/Certificate_Type.png)
 
-Step2) 
+Step2) Request Public Certificate
+![Request Public Certificate](https://github.com/nawab312/AWS/blob/main/AWS_ACM/Images/Request_Public_Certificate.png)
+
+- **FQDN :** FQDN (Fully Qualified Domain Name) is the complete domain name of a system, uniquely identifying it within the Domain Name System (DNS) hierarchy. Example `www.example.com`
+    - Hostname – Identifies a specific machine (e.g., www, mail, api).
+    - Domain Name – Represents the organization or website (e.g., example.com).
+    - Top-Level Domain (TLD) – Defines the highest level of the domain structure (e.g., .com, .org, .net). 
