@@ -3,10 +3,7 @@ Amazon CloudFront is a **content delivery network (CDN)** service provided by AW
 - By caching static and dynamic content at edge locations, CloudFront reduces round-trip times and accelerates content delivery.
 - Static Content (Images, Videos, CSS, JavaScript, etc.) is cached at edge locations.
 - Dynamic Content (API responses, HTML pages) is delivered with **Lambda@Edge** or **Origin Shield**.
-
-### Steps to Create CloudFront Distribution ###
-
-**Step1) Create Distribution (Origin)**
+- Default TTL (Time-To-Live) in CloudFront is 24 hours (86,400 seconds).
 
 ![CloudFront Distribution](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Images/Cloudfront_Distribution.png)
 
@@ -17,4 +14,6 @@ Amazon CloudFront is a **content delivery network (CDN)** service provided by AW
 - **Origin Path** in CloudFront is an optional configuration that specifies a subdirectory (path) in the origin from which CloudFront should fetch content. When you define an Origin Path, CloudFront automatically appends it to the origin domain name for every request.
   - S3 Bucket as Origin (Serving Content from a Specific Folder): Suppose you have an S3 bucket: `my-static-bucket.s3.amazonaws.com`. Inside the bucket, you have a folder: `/assets`. If you set Origin Path = `/assets`, CloudFront will fetch files from: `https://my-static-bucket.s3.amazonaws.com/assets/`
   - Web Server as Origin (Serving Content from a Specific Subdirectory): Suppose you have a website hosted at: `https://example.com`. Your images are stored in: `https://example.com/media`. If you set Origin Path = `/media`, CloudFront will automatically fetch from: `https://example.com/media/`
+ 
+- **Edge Location** in AWS CloudFront is a geographically **distributed data center** where CloudFront caches copies of content to reduce latency and improve performance for end users. These locations are closer to users than the origin server (such as an S3 bucket, EC2 instance, or an HTTP server), allowing faster content delivery.
 
