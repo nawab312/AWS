@@ -1,6 +1,8 @@
 ## S3 Static Website with CloudFront ##
 This project sets up a static website hosted on **Amazon S3** with **AWS CloudFront** as a CDN for improved performance, security, and caching.
 
+![S3 Static Website](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website/Images/Static_Website_S3.png)
+
 ### Architecture ###
 - Upload HTML File to S3 Bucket
 - Configure S3 Static Website Hosting
@@ -51,3 +53,8 @@ This project sets up a static website hosted on **Amazon S3** with **AWS CloudFr
 	]
 }
 ```
+
+#### Access the Website using Cloudfront Distribution domain name ####
+`https://d1vupevz38k2p1.cloudfront.net/index.html`
+
+![MyWebsite](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website/Images/MyWebsite.png)
