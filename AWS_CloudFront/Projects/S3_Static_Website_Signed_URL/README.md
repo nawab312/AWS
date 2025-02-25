@@ -22,4 +22,4 @@ This is where **signed URLs** help. Instead of exposing a direct URL, you genera
 ### Refer this Project: https://github.com/nawab312/AWS/tree/main/AWS_CloudFront/Projects/S3_Static_Website ###
 
 ### Only when creating CloudFront Distribution under `Restrict viewer access` check `Yes` ###
-![Restrict Access]()
+![Restrict Access](https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Images/Cloudfront_Distribution.png)
