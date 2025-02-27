@@ -36,3 +36,23 @@ aws iam attach-role-policy --role-name eksClusterRole --policy-arn arn:aws:iam::
 ```bash
 eksctl create cluster --name my-eks-cluster --region us-east-1 --version 1.28 --nodegroup-name worker-nodes --node-type t3.medium --nodes 2 --nodes-min 1 --nodes-max 3 --managed
 ```
+- After the Cluster is Created check AWS Console
+
+![image](https://github.com/user-attachments/assets/a714a375-af61-4228-b5ba-8d04ad380643)
+
+- This Security Group will Automatically get Created. `EKS created security group applied to ENI that is attached to EKS Control Plane master nodes, as well as any managed workloads.`
+![image](https://github.com/user-attachments/assets/f67bb857-2775-48c3-9d58-858df287168b)
+
+- Inbound and Outbound Rules of Security Group that is Created
+![image](https://github.com/user-attachments/assets/4c60de31-9392-4bd9-9c98-76b636df66a6)
+
+### Configure `kubectl` for EKS ###
+
+```bash
+aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
+```
+
+
+
+
+
