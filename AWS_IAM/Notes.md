@@ -1,0 +1,5 @@
+- **Principal** in an IAM policy refers to the entity that is allowed or denied access to AWS resources
+  - **IAM Users:** Individual users defined within AWS IAM. `"Principal": {"AWS": "arn:aws:iam::123456789012:user/JohnDoe"}`
+  - **IAM Roles:** Entities that can assume a set of permissions, which can be assumed by users, services, or other AWS resources. `"Principal": {"AWS": "arn:aws:iam::123456789012:role/EC2Role"}`
+  - **AWS Services:** Some AWS services can be principals, such as when you give an S3 bucket permission to be accessed by Lambda or EC2. `"Principal": {"Service": "lambda.amazonaws.com"}`
+  - **AWS Account:** A specific AWS account can also be a principal, allowing resources to be accessed by any user within that account. `"Principal": {"AWS": "arn:aws:iam::123456789012:root"}`
