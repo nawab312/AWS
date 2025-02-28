@@ -1,0 +1,5 @@
+- Amazon S3 (Simple Storage Service) is an **object storage** service offered by AWS that provides scalability, security, durability, and high availability for storing and retrieving any amount of data from anywhere on the web. Stores objects (files, metadata, and permissions).
+- An **S3 bucket** is a logical container in Amazon S3 that stores objects (files, metadata, and permissions).
+  - Each bucket has a globally unique name.
+  - Objects inside the bucket are stored as **key-value** pairs.
+  - You can configure access policies, versioning, logging, and lifecycle rules for a bucket.
