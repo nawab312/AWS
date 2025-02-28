@@ -12,4 +12,8 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
 - **Sticky Sessions (Session Affinity):** This feature allows ELB to bind a user’s session to a specific target, ensuring consistent experience during multi-step transactions.
 - **SSL Termination:** ELB can offload the SSL/TLS decryption from your instances, simplifying certificate management and reducing processing load on your back-end servers.
 - **Integration with Auto Scaling:** ELB works seamlessly with Auto Scaling, automatically adding or removing targets as your application scales.
+- **Load Balancing Algorithms**
+  - *Round Robin:* Distributes requests evenly across all available targets.
+  - *Least Outstanding Requests:* (For ALB) Directs traffic to the target with the fewest outstanding requests.
+  - *Flow Hash:* (For NLB) Uses network flow information to ensure the same client is consistently routed to the same target.
 
