@@ -16,4 +16,7 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
   - *Round Robin:* Distributes requests evenly across all available targets.
   - *Least Outstanding Requests:* (For ALB) Directs traffic to the target with the fewest outstanding requests.
   - *Flow Hash:* (For NLB) Uses network flow information to ensure the same client is consistently routed to the same target.
+ 
+### Listener & Listener Rules ###
+A **listener** in AWS Application Load Balancer (ALB) is a process that listens for incoming client requests on a **specified port and protocol** and forwards them to the target groups based on rules.
 
