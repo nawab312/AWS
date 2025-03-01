@@ -37,6 +37,7 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 ![image](https://github.com/user-attachments/assets/2c3f261a-0747-4607-afb0-130eae5ebc96)
 
 - Access ALB using its DNS Name
+
 ![image](https://github.com/user-attachments/assets/30b3c8c9-5145-449f-99f9-1ae91839c27a)
 
 
