@@ -12,6 +12,7 @@ Ans) To restrict access to an S3 bucket so that it can only be accessed from a s
 
 Q) How would you secure a multi-tier architecture in AWS?
 Ans) To secure a multi-tier architecture in AWS, I would follow security best practices across each layer of the architecture 
+
 **Network Security (VPC Configuration)**
 
 - Private Subnets: I would place the application and database layers in private subnets
