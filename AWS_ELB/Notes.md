@@ -16,6 +16,24 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
   - *Round Robin:* Distributes requests evenly across all available targets.
   - *Least Outstanding Requests:* (For ALB) Directs traffic to the target with the fewest outstanding requests.
   - *Flow Hash:* (For NLB) Uses network flow information to ensure the same client is consistently routed to the same target.
+
+### Headers in AWS ALB ###
+Headers in ALB refer to **HTTP request and response headers** that the ALB processes while routing traffic. These headers play a crucial role in **routing decisions, security, and load balancing**.
+
+**Types of Headers in ALB**
+- **Request Headers** These are headers sent by the client (browser, API, or service) to ALB. ALB can use these headers for routing and security rules.  How ALB Uses Request Headers:
+  - Host-Based Routing → Routes based on `Host` header.
+  - User-Agent-Based Routing → Routes traffic to a mobile backend if the `User-Agent` contains "Mobile".
+  - Security Checks → Uses `Authorization` and `Cookie` headers for authentication
+![image](https://github.com/user-attachments/assets/339a1f21-b2a1-4e0e-8bcc-4fcbff0cf377)
+
+- **Response Headers** These are headers that ALB sends back to the client after processing the request. How ALB Uses Response Headers:
+  - **Redirects & Security** → Uses `Location` and `Strict-Transport-Security`.
+  - **CORS Handling** → Uses `Access-Control-Allow-Origin` for cross-origin requests.
+  - **Debugging** → `X-Amzn-Trace-Id` helps track requests in AWS logs.
+![image](https://github.com/user-attachments/assets/6a0e1785-6c54-467a-831e-6a0ace792369)
+
+
  
 ### Listener & Listener Rules ###
 A **listener** in AWS Application Load Balancer (ALB) is a process that listens for incoming client requests on a **specified port and protocol** and forwards them to the target groups based on rules.
