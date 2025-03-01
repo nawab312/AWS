@@ -26,3 +26,17 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 - Select **Health check path** as `/` (root path) to verify if Apache is serving content correctly.
 - Click on **Targets** and then **Register Targets**
 ![image](https://github.com/user-attachments/assets/eddd72a6-cd5a-4d24-b772-d1ce591639bc)
+
+### Create ALB ###
+- Give Load Balancer a Name
+- Select **Scheme**(Scheme refers to whether the load balancer is internal or internet-facing)
+  - **Internet-facing:** The load balancer is accessible from the internet. This means it has a publicly resolvable DNS name and can handle requests from external clients (e.g., users accessing your web application through a browser).
+  - **Internal:** The load balancer is only accessible within the private network (VPC) and is not exposed to the internet.
+- In **Security Group** Allow inbound traffic on **HTTP (Port 80)** from `0.0.0.0/0`.
+- Configure **Listeners and Routing**
+![image](https://github.com/user-attachments/assets/2c3f261a-0747-4607-afb0-130eae5ebc96)
+
+- Access ALB using its DNS Name
+![image](https://github.com/user-attachments/assets/30b3c8c9-5145-449f-99f9-1ae91839c27a)
+
+
