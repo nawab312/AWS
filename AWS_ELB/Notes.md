@@ -91,6 +91,19 @@ The request is coming to api.example.com/admin/1. Let's analyze the ALB routing 
   - Condition: `Path = /admin/*`
   - The request path is `/admin/1`, which matches this condition.
   - Since rule Priority 2 matches, the request will be forwarded to the Admin Target Group.
+ 
+### ALB Monitoring ###
+- Critical ALB Metrics to Monitor:
+  - **RequestCount:** The number of requests processed by the ALB.
+  - **ActiveConnectionCount:** The number of active connections to the load balancer.
+  - **HealthyHostCount:** The number of healthy targets in the target group.
+  - **UnHealthyHostCount:** The number of unhealthy targets in the target group.
+  - **TargetResponseTime:** The response time of the targets (back-end servers).
+  - **HTTPCode_ELB_5XX:** The number of 5xx errors from the load balancer.
+  - **HTTPCode_Target_5XX:** The number of 5xx errors from the targets (back-end instances).
+  - **RequestProcessingTime:** The time it takes the ALB to process a request.
+  - **TargetProcessingTime:** The time it takes for the target to process the request.
+  - **ResponseProcessingTime:** The time it takes the ALB to send the response back to the client.
 
 
 
