@@ -19,4 +19,13 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
  
 ### Listener & Listener Rules ###
 A **listener** in AWS Application Load Balancer (ALB) is a process that listens for incoming client requests on a **specified port and protocol** and forwards them to the target groups based on rules.
+-  A listener must be configured with a port (e.g., 80, 443) and protocol (HTTP, HTTPS).
+-  **Rules-Based Routing:** Determines how traffic is distributed to different targets using listener rules.
+-  For HTTPS listeners, SSL certificates are required for secure communication.
+-  ALB can have multiple listeners (e.g., one for HTTP on port 80 and another for HTTPS on port 443).
+
+**Listener rules** define how the ALB processes incoming requests and which target groups they should be forwarded to based on conditions. Key Components of Listener Rules
+  - **Priority** Rules are evaluated in order, starting from the lowest number (1 is the highest priority).
+  - **Conditions** Defines how to match requests (Host-header, Path, Headers, Query parameters, etc.).
+  - **Actions** Specifies what to do when the condition matches (Forward, Redirect, Fixed response).
 
