@@ -16,8 +16,8 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 ![image](https://github.com/user-attachments/assets/ebe5e9cd-de5d-4875-b9bf-6fa6590d2f06)
 
 - Access the Public IPv4 of Each Instance
-![image](https://github.com/user-attachments/assets/47bcfd19-0abf-47ea-9bde-92dee45c9efc)
 
+![image](https://github.com/user-attachments/assets/47bcfd19-0abf-47ea-9bde-92dee45c9efc)
 ![image](https://github.com/user-attachments/assets/41a518be-33e5-4811-a0bd-d68d39bece66)
 
 ### Create Target Group ###
