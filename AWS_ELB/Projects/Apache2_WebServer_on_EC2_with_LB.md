@@ -43,4 +43,40 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 **Resource Map Tab**
 ![image](https://github.com/user-attachments/assets/f5b1cc28-9ad7-4865-9c80-8129bf687e0a)
 
+### Enable Access Log ###
+- In ALB go to the **Attributes** section and click on the Edit button.
+- **Enable access logging**: Set it to Enabled.
+- **S3 Bucket:** Choose an existing S3 bucket where the logs will be stored, or create a new S3 bucket if necessary. The ALB will write the access logs to this bucket.
+  - The S3 bucket must be in the same AWS region as the ALB.
+  - Ensure the S3 bucket has proper permissions for the ALB to write logs. Typically, you will create an **S3 bucket policy** to allow access logging.
+  - elb-account-id for US East (N. Virginia) – `127311923021`
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::elb-account-id:root"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "s3-bucket-arn/*"
+    }
+  ]
+}
+```
+- To Access Logs
+``bash
+aws s3 cp s3://example-bucket-siddy-312/AWSLogs/961341511681/elasticloadbalancing/us-east-1/2025/03/01 ./access_logs/ --recursive
+```
+```bash
+cd access_logs/
+gunzip *
+```
+```bash
+cat 961341511681_elasticloadbalancing_us-east-1_app.MyALB1.240dbdc5244653c9_20250301T1005Z_44.218.101.212_16w3taku.log
+http 2025-03-01T10:03:17.218099Z app/MyALB1/240dbdc5244653c9 205.210.31.158:61084 - -1 -1 -1 400 - 0 272 "- http://myalb1-878688131.us-east-1.elb.amazonaws.com:80- -" "-" - - - "-" "-" "-" - 2025-03-01T10:03:16.682000Z "-" "-" "-" "-" "-" "-" "-" TID_6cfb27fd2ef25c42932bd6e0ff56d631
+http 2025-03-01T10:03:17.228026Z app/MyALB1/240dbdc5244653c9 205.210.31.158:61090 - -1 -1 -1 400 - 0 272 "- http://myalb1-878688131.us-east-1.elb.amazonaws.com:80- -" "-" - - - "-" "-" "-" - 2025-03-01T10:03:16.931000Z "-" "-" "-" "-" "-" "-" "-" TID_a063715249462c46b184cd84944a3271
+http 2025-03-01T10:03:48.928268Z app/MyALB1/240dbdc5244653c9 103.211.55.184:33674 172.31.27.170:80 0.000 0.001 0.000 304 304 457 216 "GET http://myalb1-878688131.us-east-1.elb.amazonaws.com:80/ HTTP/1.1" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0" - - arn:aws:elasticloadbalancing:us-east-1:961341511681:targetgroup/MyTargetGroup/98a5d72211ca033a "Root=1-67c2db84-1d00721018e57bc73ebdfb2a" "-" "-" 0 2025-03-01T10:03:48.926000Z "forward" "-" "-" "172.31.27.170:80" "304" "-" "-" TID_5b824cc752b55e45b6a213aa8f44cc8a
+```
 
