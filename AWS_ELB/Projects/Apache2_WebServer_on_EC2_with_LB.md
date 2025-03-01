@@ -40,4 +40,7 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 
 ![image](https://github.com/user-attachments/assets/30b3c8c9-5145-449f-99f9-1ae91839c27a)
 
+**Resource Map Tab**
+![image](https://github.com/user-attachments/assets/f5b1cc28-9ad7-4865-9c80-8129bf687e0a)
+
 
