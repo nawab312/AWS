@@ -29,3 +29,39 @@ A **listener** in AWS Application Load Balancer (ALB) is a process that listens 
   - **Conditions** Defines how to match requests (Host-header, Path, Headers, Query parameters, etc.).
   - **Actions** Specifies what to do when the condition matches (Forward, Redirect, Fixed response).
 
+**Types of Conditions in Listener Rules**
+
+- **Host-based Routing (Host Header Condition)** 
+  - Routes traffic based on the *domain name* in the request.
+  - `Rule: If Host = "bank.example.com" → Forward to Banking Service Target Group`
+  - Useful for multi-domain applications running behind the same ALB. Example: `app.example.com`, `api.example.com`, `admin.example.com`.
+- **Path-based Routing (Path Condition)**
+  - Routes traffic based on the *URL path*.
+  - `Rule: If Path = "/api/*" → Forward to API Target Group`
+  - Splitting traffic based on application components like: `/app/*` → Frontend UI, `/api/*` → Backend API, `/admin/*` → Admin Dashboard
+- **Header-based Routing**
+  - Routes traffic based on specific **HTTP headers**.
+  - `Rule: If Header "User-Agent" contains "Mobile" → Forward to Mobile Service Target Group`
+  - Use Case: Direct mobile users to a mobile-optimized backend.
+- **Query Parameter-based Routing**
+  - Routes traffic based on *query parameters* in the URL.
+  - `Rule: If Query parameter "version=v2" → Forward to Beta API Target Group`
+  - Use Case: A/B testing, version-based routing.
+ 
+**Types of Actions in Listener Rules**
+- **Forward Action (Default Behavior)**
+  - Sends traffic to a specific *Target Group*.
+  - `Rule: If Path = "/api/*" → Forward to API Target Group`
+  - Use Case: Forward requests to a set of EC2 instances, Lambda functions, or containers.
+- **Redirect Action**
+  - Redirects traffic to a different URL (internal or external).
+  - `Rule: If HTTP request → Redirect to HTTPS (301 Permanent Redirect)`
+  - Use Case: Enforce HTTPS (`http://example.com` → `https://example.com`).
+- **Fixed Response Action**
+  - ALB sends a custom response instead of forwarding requests.
+  - `Rule: If Path = "/maintenance" → Return 503 with "Service Unavailable"`
+  - Use Case: Show a maintenance page without hitting the backend.
+
+
+
+
