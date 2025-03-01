@@ -62,6 +62,18 @@ A **listener** in AWS Application Load Balancer (ALB) is a process that listens 
   - `Rule: If Path = "/maintenance" → Return 503 with "Service Unavailable"`
   - Use Case: Show a maintenance page without hitting the backend.
 
+![image](https://github.com/user-attachments/assets/93723889-a2c3-444e-9a50-108d70a04167)
+
+The request is coming to api.example.com/admin/1. Let's analyze the ALB routing rules based on priority:
+- Priority 1:
+  - Condition: `Host = api.example.com`
+  - This condition matches because the request is for `api.example.com`
+  - However, we need to check if a more specific rule applies before routing.
+- Priority 2:
+  - Condition: `Path = /admin/*`
+  - The request path is `/admin/1`, which matches this condition.
+  - Since rule Priority 2 matches, the request will be forwarded to the Admin Target Group.
+
 
 
 
