@@ -66,7 +66,7 @@ echo "Hello from $hostname" | sudo tee /var/www/html/index.html > /dev/null
 }
 ```
 - To Access Logs
-``bash
+```bash
 aws s3 cp s3://example-bucket-siddy-312/AWSLogs/961341511681/elasticloadbalancing/us-east-1/2025/03/01 ./access_logs/ --recursive
 ```
 ```bash
