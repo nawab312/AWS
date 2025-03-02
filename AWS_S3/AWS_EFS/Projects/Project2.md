@@ -17,3 +17,5 @@ Your team decides to implement **Amazon EFS** as the **shared storage** solution
 - How would you **troubleshoot intermittent read/write failures** in EKS pods using EFS?
 - What strategies would you implement to **optimize AWS EFS costs** while maintaining reliability?
 - How would you implement **fine-grained access control** to ensure only authorized microservices can access specific files in EFS?
+
+- Your banking client now requires that the **reporting microservice should have read-only access**, while the **transaction processing microservice should have read/write access** to the same EFS file system. How would you enforce this using AWS EFS access points and IAM policies?
