@@ -206,10 +206,11 @@ kubectl exec -it session-service-75bbfcf478-f9bdw -- /bin/bash
 df -h | grep /mnt/session-data
 127.0.0.1:/     8.0E     0  8.0E   0% /mnt/session-data
 ```
-
+- Try writing a single large file (e.g., 600MB) and check if it reflects
 ```bash
-touch /mnt/session-data/testfile.txt
-echo "Hello from session-service" > /mnt/session-data/testfile.txt
+dd if=/dev/zero of=/mnt/efs/testfile bs=1M count=600
 ```
+
+![image](https://github.com/user-attachments/assets/418a8903-e287-47b6-86c3-56eb952bda64)
 
 
