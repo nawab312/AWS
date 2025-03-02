@@ -19,3 +19,30 @@ Your team decides to implement **Amazon EFS** as the **shared storage** solution
 - How would you implement **fine-grained access control** to ensure only authorized microservices can access specific files in EFS?
 
 - Your banking client now requires that the **reporting microservice should have read-only access**, while the **transaction processing microservice should have read/write access** to the same EFS file system. How would you enforce this using AWS EFS access points and IAM policies?
+
+---
+
+**EFS Configuration for High Availability & Performance:**
+- Use **Regional EFS** across multiple AZs.
+- Mount EFS using the **EFS CSI Driver for Kubernetes**.
+
+**Performance Mode Selection:**
+- **General Purpose mode** for session data (low latency).
+- **Max I/O mode** for transaction logs and large-scale reports.
+
+**Throughput Mode Selection:**
+- **Bursting Throughput** for unpredictable workloads.
+- **Provisioned Throughput** if consistent performance is needed.
+
+**Troubleshooting Read/Write Failures:**
+- Ensure **Security Groups allow NFS (port 2049)** between EKS worker nodes and EFS.
+- Check **IAM roles and Kubernetes RBAC** for correct permissions.
+
+**Cost Optimization Strategies:**
+- **Enable EFS Intelligent-Tiering** for cost-efficient storage management. Use **Lifecycle policies** to move infrequent files to Infrequent Access storage.
+- Deploy **EFS in the same AZ as worker nodes** to reduce cross-AZ transfer costs.
+
+**Security & Access Control:**
+- Use **AWS IAM + EFS Access Points** to define role-based access for microservices.
+- Encrypt data at rest with **AWS KMS** and enforce **TLS encryption** for in-transit security.
+
