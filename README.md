@@ -18,7 +18,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **Elastic Beanstalk**
 
 ### Security ###
-- **IAM**
+- **IAM** https://github.com/nawab312/AWS/blob/main/AWS_IAM/Notes.md
 - **KMS**
 - **CloudTrail**
 - **GuardDuty**
