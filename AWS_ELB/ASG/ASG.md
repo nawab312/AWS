@@ -20,3 +20,15 @@ AWS Auto Scaling Group (ASG) is a service that automatically adjusts the number 
 **Troubleshooting ASG**
 
 ![image](https://github.com/user-attachments/assets/05f18b4c-1a5e-4ca9-8217-5b0fab278cdb)
+
+### LifeCycle Hooks ###
+Lifecycle Hooks allow you to execute custom actions at specific points during an instance’s lifecycle (before launching or terminating).
+
+**AWS ASG has two key lifecycle hook phases:**
+- Instance Launching (`autoscaling:EC2_INSTANCE_LAUNCHING`) – Runs before the instance becomes active.
+  - When a new instance is launched, install necessary software, update packages, or configure logging.
+  - Automatically register new instances with CloudWatch, Prometheus, or Datadog for monitoring.
+  - When launching an instance, mount an AWS Elastic File System (EFS) to ensure shared storage.
+- Instance Terminating (`autoscaling:EC2_INSTANCE_TERMINATING`) – Runs before the instance is terminated.
+  - Before terminating an instance, ensure it stops serving traffic and cleanly deregisters from the Application Load Balancer (ALB).
+  - Before shutting down an instance, take a backup of logs, database dumps, or persistent data.
