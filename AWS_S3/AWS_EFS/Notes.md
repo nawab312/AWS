@@ -1,5 +1,8 @@
 **Amazon EFS** is a *cloud-native file storage service* that is accessible via the standard file system interface (like NFS - Network File System). It is ideal for applications that require shared access to files or persistent storage, particularly when multiple instances or resources need to access the same data concurrently. This makes EFS suitable for applications, websites, or services that need to share files among various compute resources.
 - **Scalability:** EFS automatically scales your storage up or down as you add or remove files, meaning you only pay for the storage you use without needing to worry about provisioning.
+![image](https://github.com/user-attachments/assets/7ca01162-36be-40df-82a9-0dd13b21ba3a)
+
+- **Regional Scope (Multi-AZ)** is the default behavior for EFS when you create it within a VPC. The file system will automatically be designed to span multiple AZs for high availability, unless otherwise specified.
 - **Concurrent Access:** Multiple Amazon EC2 instances or other resources can access the EFS file system at the same time. It is designed for high-throughput workloads and is ideal for applications that require shared file storage.
 - **Performance Modes:** EFS offers different performance modes to optimize for your specific use case:
   - **General Purpose Mode:** This is the default mode, providing low latency and high throughput for workloads that need consistent performance.
