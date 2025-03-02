@@ -28,6 +28,7 @@
 - **EFS Storage Classes**
   - **EFS Standard** This storage class is designed for frequently accessed files. It is ideal for use cases where data needs to be accessed continuously or on-demand, such as web applications, content management systems, or user home directories.Provides low-latency and high-throughput access to files
   - **EFS Infrequent Access (IA)** This storage class is designed for files that are accessed less frequently but still need to be available when required. Files in this class cost less to store compared to EFS Standard. There is a charge for data retrieval
+  - **EFS Archive Storage Class** is designed for long-term archival storage of files that are rarely accessed, but still need to be retained for compliance, backup, or other purposes. For Transition files to Archive **Throughput Mode must be Elastic**
 
 - **EFS Lifecycle Management**
   - Allows you to automatically move files between storage classes based on how frequently they are accessed,
