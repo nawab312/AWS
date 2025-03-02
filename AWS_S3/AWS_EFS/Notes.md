@@ -37,3 +37,6 @@
 
 ![image](https://github.com/user-attachments/assets/df624e64-bf11-44da-bb03-b36eb6112d4d)
 
+- **Mount targets** are network endpoints that allow your Amazon EC2 instances, on-premises servers, or other resources to access an EFS file system.
+  - Imagine you have an EFS file system for storing shared data across several EC2 instances in different availability zones. To ensure that each EC2 instance can access the file system, you create a mount target in each availability zone. Each mount target is associated with an IP address in the corresponding subnet, and your EC2 instances use those mount points to mount the file system and read/write data.
+
