@@ -22,3 +22,17 @@
     - **Bursting Throughput Mode (Elastic Throughput Mode):** This mode is the default setting for new file systems. It allows your file system to burst to higher throughput levels based on the size of the file system (measured in GiB). The throughput scales with the storage capacity you provision. It works well for workloads with variable throughput needs
     - **Provisioned Throughput Mode:** This mode allows you to specify a fixed throughput level independent of the file system’s size. You can choose a throughput value that suits your workload, which is useful for workloads that need consistent high throughput, regardless of the file system's size.
   - **Latency:** EFS is optimized for low-latency access, but performance may vary depending on the size of your data and the mode you use. The General Purpose mode offers low-latency, while Max I/O mode may have slightly higher latency but supports larger workloads.
+![image](https://github.com/user-attachments/assets/55e11a23-914c-41b3-b126-8ef98e3f8f39)
+
+
+- **EFS Storage Classes**
+  - **EFS Standard** This storage class is designed for frequently accessed files. It is ideal for use cases where data needs to be accessed continuously or on-demand, such as web applications, content management systems, or user home directories.Provides low-latency and high-throughput access to files
+  - **EFS Infrequent Access (IA)** This storage class is designed for files that are accessed less frequently but still need to be available when required. Files in this class cost less to store compared to EFS Standard. There is a charge for data retrieval
+
+- **EFS Lifecycle Management**
+  - Allows you to automatically move files between storage classes based on how frequently they are accessed,
+  - **Lifecycle Policies:** With lifecycle management, you can create policies that automatically move files to the EFS Infrequent Access (IA) storage class after they have not been accessed for a certain number of days.
+  - **Transitioning Data:** Once a file hasn't been accessed for a specified period (e.g., 30 days), it will be moved to the IA storage class without requiring any manual action. When a file is accessed again, it will automatically be moved back to the EFS Standard class to ensure quicker access.
+
+![image](https://github.com/user-attachments/assets/df624e64-bf11-44da-bb03-b36eb6112d4d)
+
