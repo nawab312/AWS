@@ -15,6 +15,7 @@
   - **Home Directories:** EFS can be used to provide shared home directories for EC2 instances, allowing users and applications to store and access files easily.
  
 - **Performance Considerations**
-  - **Throughput:** EFS offers scalable throughput that can grow as needed. By default, you get 50MB/s per TiB of data stored, but this can scale to higher levels depending on your workload and performance mode.
+  - **Throughput:** Throughput Mode determines the rate at which your file system can read and write data. EFS offers two primary throughput modes:
+    - **Bursting Throughput Mode (Elastic Throughput Mode):** This mode is the default setting for new file systems. It allows your file system to burst to higher throughput levels based on the size of the file system (measured in GiB). The throughput scales with the storage capacity you provision. It works well for workloads with variable throughput needs
+    - **Provisioned Throughput Mode:** This mode allows you to specify a fixed throughput level independent of the file system’s size. You can choose a throughput value that suits your workload, which is useful for workloads that need consistent high throughput, regardless of the file system's size.
   - **Latency:** EFS is optimized for low-latency access, but performance may vary depending on the size of your data and the mode you use. The General Purpose mode offers low-latency, while Max I/O mode may have slightly higher latency but supports larger workloads.
-  - **Provisioned Throughput:** In addition to standard scaling, EFS allows you to Provision Throughput(*Amount of read and write capacity that you allocate to a database or storage system to ensure consistent performance.*) independently of storage size. This is useful if your application requires higher throughput but doesn't need a proportional amount of storage.
