@@ -44,7 +44,7 @@ MFA is an added layer of security that requires users to provide two forms of id
 
 ### AWS Organizations and Service Control Policies (SCPs) ###
 In larger organizations with multiple AWS accounts, AWS Organizations helps manage multiple AWS accounts centrally. It allows you to organize accounts into organizational units (OUs) and apply policies that control the actions available across all accounts in an organization.
-- **SCPs:** Service Control Policies are a set of policies that specify what actions are allowed or denied across the organization’s accounts. SCPs act as a guardrail and limit permissions granted by individual IAM policies.
+- **SCPs:** Service Control Policies are a set of policies that specify what actions are allowed or denied **across the organization’s accounts**. `Resource` in this case is `*` SCPs act as a guardrail and limit permissions granted by individual IAM policies.
 
 ### Access Advisor ###
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
@@ -54,4 +54,7 @@ IAM Access Advisor helps to identify which permissions are being used by IAM use
 **Cross Account Scenarios**
 - https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario1.md
 - https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario2.md
+
+**Secure EC2 Access to S3 with IAM **
+- https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario3.md
 
