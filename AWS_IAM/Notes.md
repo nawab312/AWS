@@ -49,3 +49,9 @@ In larger organizations with multiple AWS accounts, AWS Organizations helps mana
 ### Access Advisor ###
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
 
+---
+
+**Cross Account Scenarios**
+- https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario1.md
+- https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario2.md
+
