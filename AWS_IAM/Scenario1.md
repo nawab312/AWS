@@ -1,4 +1,4 @@
-###Scenario###
+### Scenario ###
 Your company has a multi-account AWS environment managed via AWS Organizations. You have a centralized security account that manages IAM roles and permissions for all other accounts (Dev, Staging, and Production).
 A developer in the **Dev account** needs temporary access to an **S3 bucket in the Production account** to analyze logs. The security team has strict compliance policies and does not allow direct IAM user access across accounts.
 
