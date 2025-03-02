@@ -15,6 +15,14 @@ An IAM role is an AWS identity with specific permissions that can be assumed by 
 - **Temporary Security Credentials:** When a role is assumed, temporary credentials are issued to the requester, allowing them to perform actions according to the role's permissions.
 - **Use Cases:** IAM roles are commonly used in scenarios like granting EC2 instances permission to access S3 buckets or allowing cross-account access between AWS accounts.
 
+![image](https://github.com/user-attachments/assets/655684e2-8ee5-4a2b-b47e-22b289732bf1)
+
+![image](https://github.com/user-attachments/assets/5210df11-2c0e-456b-9b2b-ddfddeefed1a)
+
+
+![image](https://github.com/user-attachments/assets/6bee1127-9d27-46e4-a0f1-cee42cfb291b)
+
+
 ### IAM Policies ###
 IAM policies are documents that define permissions and are written in JSON format. They specify what actions are allowed or denied on specific AWS resources.
 - **Principal** in an IAM policy refers to the entity that is allowed or denied access to AWS resources
