@@ -45,7 +45,7 @@ sudo mount -t nfs4 <efs-dns-name>:/ /mnt/efs
 fs-xxxxxx:/ /mnt/efs efs defaults,_netdev 0 0
 ```
 
-### Step4: Performance Optimization ###
+### Step3: Performance Optimization ###
 - Switch to **Max I/O Performance Mode**
 ```bash
 aws efs update-file-system --file-system-id fs-xxxxxx --performance-mode maxIO
@@ -55,6 +55,10 @@ aws efs update-file-system --file-system-id fs-xxxxxx --performance-mode maxIO
 ```bash
 sudo mount -t nfserver=4.1, nconnect=4 fs-xxxxxx.efs.region.amazonaws.com:/ /mnt/efs
 ```
+
+### Step4: Cost Optimization ###
+- **Enable Lifecycle Management** (Automatically move infrequent files to **Infrequent Access (IA)** storage).
+- Monitor EFS Usage with AWS CloudWatch
 
 
 
