@@ -43,3 +43,14 @@
 - **EFS Access Point** is a managed entry point that controls how applications access an Amazon EFS file system. It simplifies permissions by enforcing user/group IDs and restricting access to specific directories
   - Imagine you have a shared storage (EFS) used by multiple applications. One app needs access to `/data/app1`, and another app needs `/data/app2`. Instead of giving full access to the entire EFS, you create separate Access Points for each app, restricting them to their specific directories.
 
+---
+
+**Why You Don't Need a Kubernetes Service Account for Pods to Access AWS EFS**
+- EFS Works Over NFS, Not AWS API
+  - Unlike S3 or DynamoDB, which require authentication via IAM roles, EFS uses NFS (Network File System). NFS doesn’t rely on IAM authentication but instead: Uses Security Groups for network-level access. Uses POSIX permissions for file-level access.
+- EFS Mounts are Handled by the EFS CSI Driver
+  - Kubernetes uses the AWS EFS CSI Driver (`efs.csi.aws.com`) to mount EFS. The driver runs as a DaemonSet on worker nodes and automatically manages mounts.
+- When Would You Need a Service Account?
+  - If You are dynamically creating EFS file systems or access points from inside the pod.
+  - If You are managing EFS lifecycle policies via AWS APIs.
+
