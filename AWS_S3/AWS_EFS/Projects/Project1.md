@@ -11,7 +11,7 @@ Question:
 ---
 
 ### AWS EFS Hands-on Project: High Availability, Performance Optimization & Security ###
-####Project Overview####
+#### Project Overview ####
 - A **highly available** and **scalable** EFS setup for 2 EC2 instances across 2 Availability Zones (AZs).
 - Optimize **performance** to reduce latency during high traffic.
 - Implement **security** controls to allow only specific instances to access the EFS.
