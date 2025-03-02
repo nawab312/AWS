@@ -15,6 +15,7 @@ Question:
 - A **highly available** and **scalable** EFS setup for 2 EC2 instances across 2 Availability Zones (AZs).
 - Optimize **performance** to reduce latency during high traffic.
 - Implement **security** controls to allow only specific instances to access the EFS.
+- Apply **cost optimization strategies** based on workload patterns.
 - **Prerequisites** 2 EC2 Instances in 2 AZs (us-east-1a, us-east-1b)
 
 ![image](https://github.com/user-attachments/assets/1c6a90cf-39e5-4b2a-96ae-3294108e8f51)
@@ -32,12 +33,28 @@ Question:
 
 - Check if EFS is accessible from EC2: `telnet <EFS-DNS-Name> 2049`
 
-**Launch EC2 Instances and Mount EFS**
+**Step2: aunch EC2 Instances and Mount EFS**
 ```bash
 sudo apt update
 sudo apt install nfs-common -y
 sudo mkdir /mnt/efs
 sudo mount -t nfs4 <efs-dns-name>:/ /mnt/efs
 ```
+- **Automate Mounting** on **Reboot** Add this entry to `/etc/fstab`:
+```bash
+fs-xxxxxx:/ /mnt/efs efs defaults,_netdev 0 0
+```
+
+**Step4: Performance Optimization**
+- Switch to **Max I/O Performance Mode**
+```bash
+aws efs update-file-system --file-system-id fs-xxxxxx --performance-mode maxIO
+```
+
+- Enable **EFS Caching (for high read performance)**
+```bash
+sudo mount -t nfserver=4.1, nconnect=4 fs-xxxxxx.efs.region.amazonaws.com:/ /mnt/efs
+```
+
 
 
