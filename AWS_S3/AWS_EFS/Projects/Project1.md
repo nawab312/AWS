@@ -24,7 +24,7 @@ Question:
 ### Step 1: Setup AWS EFS ###
 - Go to **AWS Console → EFS → Create File System**.
 - Create a security group for EFS.
-  - Open the AWS Console → Go to EC2 → Security Groups. Click Create Security Group.
+  - Open the AWS Console → Go to EC2 → Security Groups. Click Create Security Group. (*Ensuring that only specific instances can access the file system*)
   - **Add an Inbound Rule** to allow NFS access: Type: `NFS`, Protocol: `TCP`, Port Range: `2049`, Source: `EC2 instance IPs`
 - Attach the Security Group to AWS EFS
   - Go to **EFS** → Select your file system. Go to **Network** → Click on each **Mount Target**. Click **Manage Security Groups**. Attach the **EFS Security Group** (`nfs-sg`).
