@@ -1,4 +1,4 @@
-## Project: AWS EFS Implementation with Amazon EKS ##
+## Project: AWS EFS Implementation with Amazon EKS ## https://github.com/nawab312/AWS/blob/main/AWS_S3/AWS_EFS/Projects/Project2.md
 **Objectives:**
 - Deploy Amazon EKS and configure Amazon EFS as shared storage.
 - Optimize Performance, Cost, and Security.
