@@ -86,6 +86,8 @@ aws efs create-access-point --file-system-id fs-0a5d41af9211be4c2 --posix-user U
 aws efs create-access-point --file-system-id fs-0a5d41af9211be4c2 --posix-user Uid=1001,Gid=1001 --root-directory '{"Path": "/transaction-logs", "CreationInfo": {"OwnerUid": 1001, "OwnerGid": 1001, "Permissions": "755"}}'
 aws efs create-access-point --file-system-id fs-0a5d41af9211be4c2 --posix-user Uid=1002,Gid=1002 --root-directory '{"Path": "/reports", "CreationInfo": {"OwnerUid": 1002, "OwnerGid": 1002, "Permissions": "555"}}'
 ```
+![image](https://github.com/user-attachments/assets/16be8eab-a67f-4f22-a953-4dd0de40e3af)
+
 
 ### Step 5: Define Kubernetes Storage Classes & Persistent Volumes ###
 - Create a **StorageClass** for Amazon EFS.
