@@ -40,3 +40,6 @@
 - **Mount targets** are network endpoints that allow your Amazon EC2 instances, on-premises servers, or other resources to access an EFS file system.
   - Imagine you have an EFS file system for storing shared data across several EC2 instances in different availability zones. To ensure that each EC2 instance can access the file system, you create a mount target in each availability zone. Each mount target is associated with an IP address in the corresponding subnet, and your EC2 instances use those mount points to mount the file system and read/write data.
 
+- **EFS Access Point** is a managed entry point that controls how applications access an Amazon EFS file system. It simplifies permissions by enforcing user/group IDs and restricting access to specific directories
+  - Imagine you have a shared storage (EFS) used by multiple applications. One app needs access to `/data/app1`, and another app needs `/data/app2`. Instead of giving full access to the entire EFS, you create separate Access Points for each app, restricting them to their specific directories.
+
