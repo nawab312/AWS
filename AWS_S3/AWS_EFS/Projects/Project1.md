@@ -11,7 +11,7 @@ Question:
 ---
 
 ### AWS EFS Hands-on Project: High Availability, Performance Optimization & Security ###
-**Project Overview**
+####Project Overview####
 - A **highly available** and **scalable** EFS setup for 2 EC2 instances across 2 Availability Zones (AZs).
 - Optimize **performance** to reduce latency during high traffic.
 - Implement **security** controls to allow only specific instances to access the EFS.
@@ -33,7 +33,7 @@ Question:
 
 - Check if EFS is accessible from EC2: `telnet <EFS-DNS-Name> 2049`
 
-**Step2: aunch EC2 Instances and Mount EFS**
+**Step2: Launch EC2 Instances and Mount EFS**
 ```bash
 sudo apt update
 sudo apt install nfs-common -y
