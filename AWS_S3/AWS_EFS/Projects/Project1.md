@@ -26,7 +26,7 @@ Question:
   - Open the AWS Console → Go to EC2 → Security Groups. Click Create Security Group.
   - **Add an Inbound Rule** to allow NFS access: Type: `NFS`, Protocol: `TCP`, Port Range: `2049`, Source: `EC2 instance IPs`
 -  Attach the Security Group to AWS EFS
-  - Go to *EFS** → Select your file system. Go to **Network** → Click on each **Mount Target**. Click **Manage Security Groups**. Attach the **EFS Security Group** (`nfs-sg`).
+  - Go to **EFS** → Select your file system. Go to **Network** → Click on each **Mount Target**. Click **Manage Security Groups**. Attach the **EFS Security Group** (`nfs-sg`).
 
 ![image](https://github.com/user-attachments/assets/4096c5ce-b542-45c9-bc31-0cf4fb884c30)
 
