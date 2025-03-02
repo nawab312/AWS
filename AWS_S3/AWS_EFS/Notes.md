@@ -19,8 +19,8 @@
  
 - **Performance Considerations**
   - **Throughput:** Throughput Mode determines the rate at which your file system can read and write data. EFS offers two primary throughput modes:
-    - **Bursting Throughput Mode (Elastic Throughput Mode):** This mode is the default setting for new file systems. It allows your file system to burst to higher throughput levels based on the size of the file system (measured in GiB). The throughput scales with the storage capacity you provision. It works well for workloads with variable throughput needs
-    - **Provisioned Throughput Mode:** This mode allows you to specify a fixed throughput level independent of the file system’s size. You can choose a throughput value that suits your workload, which is useful for workloads that need consistent high throughput, regardless of the file system's size.
+    - **Bursting Throughput Mode:** Throughput is tied to the amount of data stored in the file system, meaning it automatically scales as your storage grows. This mode works well for most general-purpose workloads that don't require consistent, high-throughput performance.
+    - **Enhanced Throughput Mode:** Offers two options: Elastic and Provisioned. **Elastic Throughput (default under Enhanced)** Automatically adjusts to meet your performance needs, providing scalable throughput as your storage grows. It works in a way similar to Bursting Throughput, but with more flexibility for high-performance workloads. **Provisioned Throughput** You can set the throughput independently of the file system size. This is useful for workloads that require consistent and predictable performance, such as high-performance applications or databases, where you need guaranteed throughput regardless of the data stored
   - **Latency:** EFS is optimized for low-latency access, but performance may vary depending on the size of your data and the mode you use. The General Purpose mode offers low-latency, while Max I/O mode may have slightly higher latency but supports larger workloads.
 ![image](https://github.com/user-attachments/assets/55e11a23-914c-41b3-b126-8ef98e3f8f39)
 
