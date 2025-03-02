@@ -30,3 +30,14 @@ Question:
 
 ![image](https://github.com/user-attachments/assets/4096c5ce-b542-45c9-bc31-0cf4fb884c30)
 
+- Check if EFS is accessible from EC2: `telnet <EFS-DNS-Name> 2049`
+
+**Launch EC2 Instances and Mount EFS**
+```bash
+sudo apt update
+sudo apt install nfs-common -y
+sudo mkdir /mnt/efs
+sudo mount -t nfs4 <efs-dns-name>:/ /mnt/efs
+```
+
+
