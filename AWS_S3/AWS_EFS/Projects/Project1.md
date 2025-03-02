@@ -10,8 +10,8 @@ Question:
 
 ---
 
-### AWS EFS Hands-on Project: High Availability, Performance Optimization & Security ###
-#### Project Overview ####
+## AWS EFS Hands-on Project: High Availability, Performance Optimization & Security ##
+### Project Overview ###
 - A **highly available** and **scalable** EFS setup for 2 EC2 instances across 2 Availability Zones (AZs).
 - Optimize **performance** to reduce latency during high traffic.
 - Implement **security** controls to allow only specific instances to access the EFS.
@@ -21,7 +21,7 @@ Question:
 ![image](https://github.com/user-attachments/assets/1c6a90cf-39e5-4b2a-96ae-3294108e8f51)
 
 
-**Step 1: Setup AWS EFS**
+### Step 1: Setup AWS EFS ###
 - Go to **AWS Console → EFS → Create File System**.
 - Create a security group for EFS.
   - Open the AWS Console → Go to EC2 → Security Groups. Click Create Security Group.
@@ -33,7 +33,7 @@ Question:
 
 - Check if EFS is accessible from EC2: `telnet <EFS-DNS-Name> 2049`
 
-**Step2: Launch EC2 Instances and Mount EFS**
+### Step2: Launch EC2 Instances and Mount EFS ###
 ```bash
 sudo apt update
 sudo apt install nfs-common -y
@@ -45,7 +45,7 @@ sudo mount -t nfs4 <efs-dns-name>:/ /mnt/efs
 fs-xxxxxx:/ /mnt/efs efs defaults,_netdev 0 0
 ```
 
-**Step4: Performance Optimization**
+### Step4: Performance Optimization ###
 - Switch to **Max I/O Performance Mode**
 ```bash
 aws efs update-file-system --file-system-id fs-xxxxxx --performance-mode maxIO
