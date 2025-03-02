@@ -146,3 +146,68 @@ NAME      STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 efs-pvc   Bound    efs-pv   5Gi        RWX            efs-sc         8s
 ```
 
+### Step 6: Deploy Microservices with EFS Storage ###
+- Example deployment for Session Service using EFS PVC:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: session-service
+  template:
+    metadata:
+      labels:
+        app: session-service
+    spec:
+      containers:
+        - name: session-service
+          image: nginx
+          volumeMounts:
+            - name: efs-storage
+              mountPath: /mnt/session-data
+      volumes:
+        - name: efs-storage
+          persistentVolumeClaim:
+            claimName: efs-pvc
+```
+Repeat for transaction logs service and reporting service.
+
+### Step 7: Configure IAM Permissions & Security ###
+- Attach an **IAM policy** to allow EKS worker nodes to access EFS.
+```json
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"elasticfilesystem:ClientMount",
+				"elasticfilesystem:ClientWrite",
+				"elasticfilesystem:ClientRootAccess"
+			],
+			"Resource": "arn:aws:elasticfilesystem:us-east-1:961341511681:file-system/fs-0a5d41af9211be4c2"
+		}
+	]
+}
+```
+
+### Step 8: To verify if your session-service is correctly accessing AWS EFS ###
+```bash
+kubectl exec -it session-service-75bbfcf478-f9bdw -- /bin/bash
+```
+
+```bash
+df -h | grep /mnt/session-data
+127.0.0.1:/     8.0E     0  8.0E   0% /mnt/session-data
+```
+
+```bash
+touch /mnt/session-data/testfile.txt
+echo "Hello from session-service" > /mnt/session-data/testfile.txt
+```
+
+
