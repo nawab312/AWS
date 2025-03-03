@@ -52,6 +52,13 @@ eksctl create cluster --name my-eks-cluster --region us-east-1 --version 1.28 --
 aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
 ```
 
+### Delete EKS Cluster ###
+
+- Delete CloudFormation Stack
+```bash
+aws cloudformation delete-stack --region us-east-1 --stack-name eksctl-my-eks-cluster-cluster
+```
+
 
 
 
