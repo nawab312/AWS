@@ -13,7 +13,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **ASG:** https://github.com/nawab312/AWS/blob/main/AWS_ELB/ASG/ASG.md
 
 ### Compute ###
-- **EC2**
+- **EC2** https://github.com/nawab312/AWS/blob/main/Compute/EC2/Notes.md
 - **Lambda**
 - **Elastic Beanstalk**
 
