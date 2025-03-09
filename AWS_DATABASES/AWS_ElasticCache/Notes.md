@@ -1,5 +1,18 @@
 Amazon ElastiCache is a fully managed, in-memory caching service that improves application performance by reducing database load and latency. It supports Memcached and Redis, allowing fast data retrieval for real-time applications. ElastiCache automatically handles scaling, patching, and maintenance, ensuring high availability and fault tolerance. It is commonly used for caching frequently accessed data, session storage, and real-time analytics.
 
+**How Data Flows Between ElastiCache, Application, and RDS**<br>
+In a typical application architecture, the check for Redis (Amazon ElastiCache) happens within the **data access layer (DAL) or service layer**, before querying the primary database (Amazon RDS). This ensures that frequently accessed data is served quickly from the cache instead of overloading the database.
+- **User Request:**
+  - A user queries for stock prices, user profiles, or any frequently accessed data via the frontend (mobile/web).
+  - The request is sent to the backend API (Node.js, Java, Python, etc.).
+- **Service Layer (Business Logic Layer) - First Check in Redis:**
+  - The API checks Amazon ElastiCache (Redis) to see if the requested data is already available.
+  - If Redis contains the data (Cache Hit): The cached data is returned immediately, reducing latency to sub-millisecond levels.
+  - If Redis does NOT contain the data (Cache Miss): The request proceeds to step 3.
+- **Database Query (Only if Cache Miss Occurs):**
+  - The application queries Amazon RDS (or another database).
+  - Once the data is fetched, it is: Stored in Redis for future requests (Cache-Aside pattern). Returned to the user.
+
 ### Scenario 1 ###
 Your company runs a high-traffic e-commerce website, and you are using Amazon RDS for storing product details and user order history. The website has been experiencing high read latency during flash sales, especially when fetching product details. How would you use Amazon ElastiCache to improve the performance of your application, and what caching strategy would you implement?
 - Which ElastiCache engine (Redis or Memcached) would you choose and why?
