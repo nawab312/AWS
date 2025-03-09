@@ -19,5 +19,38 @@ AWS KMS supports different key usages depending on the key type:
   - Generates a cryptographic hash-based message authentication code (HMAC) to ensure message integrity and authenticity.
   - Used for API authentication, data integrity verification, and secure communications.
 
+- **KMS Key Policy** is a set of permissions that define who can use and manage an AWS KMS key. Key Elements of a KMS Key Policy:
+  - Principal: Specifies who (which IAM users, roles, or AWS services) can perform actions on the key.
+  - Actions: Defines what operations are allowed, such as `Encrypt`, `Decrypt`, `GenerateDataKey`, `CreateGrant`, and `DescribeKey`.
+  - Resources: Defines the scope of the resource to which the policy applies (the KMS key itself).
+  - Condition: Optional, specifies when the policy should be applied (for example, based on IP address or time of day).
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/YourUserName"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+### Scenario 1 ###
+Your company stores sensitive customer data in Amazon S3, and encryption is required to meet compliance requirements. The security team wants to ensure that only authorized applications can decrypt the data while also maintaining an audit trail of key usage.
+You are asked to design an encryption strategy using AWS KMS. How would you implement this, and which key type and key policies would you use?
+
+Follow-up Questions:
+- Would you choose symmetric or asymmetric keys for this use case? Why?
+- How would you enforce least privilege access using KMS key policies?
+- How can you track and audit key usage in AWS KMS?
+- How does envelope encryption enhance security in this scenario?
 
 
