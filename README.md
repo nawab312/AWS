@@ -41,5 +41,5 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **RDS** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_RDS/Notes.md
 - **Aurora**
 - **DynamoDB**
-- **Redshift**
+- **Redshift** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_Redshift/Notes.md
 - **ElastiCache** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_ElasticCache/Notes.md
