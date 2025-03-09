@@ -30,3 +30,12 @@ Since product details can change (e.g., price updates, stock availability), we m
 - Use Read Replicas to distribute read traffic.
 - Monitor Cache Performance using Amazon CloudWatch and set alerts.
 - Implement Data Sharding if dataset size is large.
+
+
+### Scenario 2 ###
+You are designing a high-performance banking application where users can:
+- Check their account balance frequently.
+- View recent transactions instantly.
+- Perform secure fund transfers with minimal delay.
+Currently, all read and write operations go directly to an Amazon RDS database, causing high latency and performance bottlenecks during peak hours.<br>
+How would you use Amazon ElastiCache to improve the system's performance while ensuring data consistency and security?
