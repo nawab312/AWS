@@ -1,0 +1,6 @@
+**ServerLess: ** is a cloud computing model that allows developers to build and run applications without having to manage server infrastructure. What Defines Serverless?
+- No servers to provision or manage
+- Automatically scales with usage
+- Never pay for idle
+
+**When to Use EC2 Over AWS Lambda**
