@@ -1,4 +1,4 @@
-AWS Key Management Service (KMS) is a fully managed encryption service that allows you to create, manage, and control cryptographic keys used to encrypt data across AWS services and applications. It integrates with AWS services like S3, RDS, and Lambda, providing centralized key management with fine-grained access control.
+AWS Key Management Service (KMS) is a fully managed encryption service that allows you to create, manage, and control cryptographic keys used to encrypt data across AWS services and applications. It integrates with AWS services like S3, RDS, and Lambda, providing centralized key management with fine-grained access control.This reduces direct API calls to KMS, improving performance and security.
 
 AWS KMS supports two types of cryptographic keys:
 - **Symmetric Keys**– A single key is used for both encryption and decryption. These are commonly used for data encryption and integrate with AWS services like S3, RDS, and Lambda. AWS KMS stores and manages these keys securely.
@@ -53,4 +53,23 @@ Follow-up Questions:
 - How can you track and audit key usage in AWS KMS?
 - How does envelope encryption enhance security in this scenario?
 
+To encrypt sensitive customer data in Amazon S3 while ensuring only authorized applications can decrypt it, we would use **AWS KMS with a symmetric Customer Managed Key** (CMK).
+
+**Choosing the Right Key Type**
+- Symmetric CMK (AES-256) is ideal because it integrates natively with S3 Server-Side Encryption (SSE-KMS).
+- Asymmetric keys are not required since we only need encryption and decryption within AWS services.
+**Implementing Encryption with AWS KMS**
+- Enable SSE-KMS on the S3 bucket, specifying the Customer Managed Key (CMK).
+- When objects are uploaded, S3 automatically encrypts them using KMS.
+- Authorized applications use `KMS Decrypt` permissions to access the data.
+**Enforcing Least Privilege Access with Key Policies**
+- Define a KMS key policy granting access only to specific IAM roles or applications.
+**Tracking and Auditing Key Usage**
+- Enable AWS CloudTrail to log every KMS API call.
+- Monitor logs to see who accessed the key, when, and from where.
+- Set up AWS CloudWatch Alarms for unusual activity, such as unauthorized decryption attempts.
+**Enhancing Security with Envelope Encryption**
+- Instead of encrypting data directly with the KMS key, generate *Data Keys* using `GenerateDataKey()`.
+- Encrypt data locally with the data key, then encrypt the data key with KMS.
+- This reduces direct API calls to KMS, improving performance and security.
 
