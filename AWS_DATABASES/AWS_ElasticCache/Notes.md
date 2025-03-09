@@ -8,18 +8,21 @@ Your company runs a high-traffic e-commerce website, and you are using Amazon RD
 - How would you ensure high availability and fault tolerance for ElastiCache?
 
 **Step 1: Choosing the Right ElastiCache Engine**
+
 Redis is the preferred choice over Memcached because:
 - **Persistence:** Redis supports snapshotting and backups, which ensures data is not lost in case of failures.
 - **Advanced Data Structures:** It allows us to store product details in efficient formats like Hashes, Sorted Sets, and Lists.
 - **Replication & High Availability:** Redis offers Multi-AZ with automatic failover, ensuring reliability during high traffic events.
 
 **Step 2: Caching Strategy**
+
 We will use the **Cache-Aside** Pattern because:
 - The application will first check the cache for product details.
 - If data is not in the cache, it will fetch from RDS, update ElastiCache, and return thImplement Data Sharding if dataset size is large.e data to the user.
 - If data is in the cache, it is returned immediately, reducing database queries.
 
 **Step 3: Handling Cache Invalidation**
+
 Since product details can change (e.g., price updates, stock availability), we must ensure cache consistency:
 - **Time-To-Live (TTL):** Set an expiration time (e.g., 10 minutes) to refresh stale data.
 - **Event-based Invalidation:** When a product is updated in RDS, use AWS Lambda to invalidate the cache entry.
@@ -38,5 +41,50 @@ You are designing a high-performance banking application where users can:
 - View recent transactions instantly.
 - Perform secure fund transfers with minimal delay.
 
-Currently, all read and write operations go directly to an Amazon RDS database, causing high latency and performance bottlenecks during peak hours.<br>
-How would you use Amazon ElastiCache to improve the system's performance while ensuring data consistency and security?
+Currently, all read and write operations go directly to an Amazon RDS database, causing high latency and performance bottlenecks during peak hours. How would you use Amazon ElastiCache to improve the system's performance while ensuring data consistency and security?
+- Would you use Redis or Memcached? Why?
+- Which caching strategy (Cache-aside, Write-through, or Write-back) would you implement for account balances and transactions?
+- How would you handle cache invalidation to prevent users from seeing stale financial data?
+- What security measures would you apply to protect sensitive banking data in ElastiCache?
+- How would you design a fault-tolerant and highly available caching layer to ensure uptime for critical banking operations?
+
+**Step 1: Choosing the Right ElastiCache Engine**
+
+Why Redis instead of Memcached?
+- **Data Persistence:** Redis supports *AOF (Append-Only File)* and *RDB (Redis Database Snapshots)* for durability.
+- **High Availability:** Supports Multi-AZ failover to ensure uptime for banking operations.
+- **Advanced Data Structures:** Can efficiently store account balances and transactions using Hashes, Sorted Sets, and Lists.
+- **Security Features:** Redis supports TLS encryption, IAM authentication, and VPC integration for securing financial data.
+
+**Step 2: Implementing the Right Caching Strategy**
+
+Since banking applications require *real-time accuracy*, we need a combination of caching patterns for different types of data:
+- **1. Account Balances → Write-Through Cache**
+  - Every time a user *checks their balance*, the system fetches the value from *Redis* instead of RDS.
+  - When a *transaction updates the balance*, the system *writes to both Redis* and *RDS* to ensure synchronization.
+- **2. Recent Transactions → Cache-Aside Pattern**
+  - When a user *requests recent transactions*, the system first checks *Redis*.
+  - If transactions *are not in Redis*, they are *fetched from RDS, stored in Redis*, and returned to the user.
+  - Set a TTL (e.g., 5 minutes) to refresh transaction history periodically.
+ 
+**Step 3: Handling Cache Invalidation**
+- **Automatic Expiry for Transactions** Set a TTL of 5-10 minutes for transaction history to avoid serving stale data.
+- **Event-Driven Cache Invalidation for Balances** Use *AWS Lambda + RDS Event Notifications* to clear the cache when a new transaction updates the account balance.
+- **Versioning for Cache Entries** Store a version number in Redis along with the balance. Before reading from Redis, compare the version with the latest in RDS to ensure consistency.
+
+**Step 4: Security Measures for Banking Data**
+- **Enable Encryption (TLS & Data-at-Rest)**
+  - Use TLS encryption for in-transit data.
+  - Enable *Redis AUTH authentication* to prevent unauthorized access.
+- **Use AWS IAM & VPC for Access Control**
+  - Restrict ElastiCache access to authorized services using IAM roles.
+  - Deploy Redis inside a VPC to prevent external access.
+- **Audit & Monitor Cache Activity**
+  - Enable *AWS CloudTrail & CloudWatch* Metrics to monitor cache hits/misses and unauthorized access attempts.
+ 
+**Step 5: Ensuring High Availability & Scalability**
+- **Use Redis Replication & Multi-AZ Auto-Failover**
+  - Deploy *Primary-Replica clusters* for read scalability.
+  - Enable Multi-AZ for automatic failover in case of failure.
+- **Scale with Redis Clustering**
+  - Partition the cache using *Redis Clusters* to handle millions of concurrent users.
