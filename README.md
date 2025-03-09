@@ -38,7 +38,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **EBS**
 
 ### Databases ###
-- **RDS**
+- **RDS** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_RDS/Notes.md
 - **Aurora**
 - **DynamoDB**
 - **Redshift**
