@@ -42,3 +42,5 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **DynamoDB**
 - **Redshift** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_Redshift/Notes.md
 - **ElastiCache** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_ElasticCache/Notes.md
+
+**Interview** https://github.com/nawab312/AWS/blob/main/Interview.md
