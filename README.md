@@ -42,4 +42,4 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **Aurora**
 - **DynamoDB**
 - **Redshift**
-- **ElastiCache**
+- **ElastiCache** https://github.com/nawab312/AWS/blob/main/AWS_DATABASES/AWS_ElasticCache/Notes.md
