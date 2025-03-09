@@ -19,7 +19,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 
 ### Security ###
 - **IAM** https://github.com/nawab312/AWS/blob/main/AWS_IAM/Notes.md
-- **KMS**
+- **KMS** https://github.com/nawab312/AWS/blob/main/Security/AWS_KMS/Notes.md
 - **CloudTrail**
 - **GuardDuty**
 - **Shield**
