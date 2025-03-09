@@ -1,0 +1,5 @@
+Amazon GuardDuty is a security service provided by AWS that helps detect suspicious activity and potential threats in your cloud environment. In simple terms, it acts like a security guard that watches over your AWS account and alerts you when it notices something unusual or potentially harmful. Here’s how it works:
+
+- **Continuous Monitoring:** GuardDuty continuously monitors your AWS resources, such as EC2 instances, S3 buckets, and IAM activities. It looks for patterns that might indicate malicious activity, like unauthorized access, unusual API calls, or data leaks.
+- **Threat Detection:** It uses machine learning, anomaly detection, and integrated threat intelligence (from trusted sources) to detect various types of threats. For example, if an attacker tries to log in to your AWS account with the wrong credentials multiple times, GuardDuty will notice and raise an alert.
+- **Automatic Alerts:** When GuardDuty detects something suspicious, it automatically generates a security finding (alert). These findings can be reviewed, and you can take action based on them, such as blocking malicious IP addresses or investigating the incident further.
