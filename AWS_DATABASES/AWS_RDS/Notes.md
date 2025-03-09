@@ -12,7 +12,7 @@ Postgres, MySQL, MariaDB, Oracle, Microsoft SQL Server, IBM DB2, Aurora (AWS Pro
     - You have a production database that is taking on normal load. You want to run a reporting application to run some analytics. You create a Read Replica to run the new workload there. The production application is unaffected. Read replicas are used for SELECT (=read) only kind of statements (not INSERT, UPDATE, DELETE)
   - **RDS Read Replicas – Network Cost**
     - In AWS there’s a network cost when data goes from one AZ to another. *For RDS Read Replicas within the same region, you don’t pay that fee*
-      ![image](https://github.com/user-attachments/assets/2dc36c4b-c1f2-4d9b-ba05-3aa1d592a396)
+    - Diagaram:  ![image](https://github.com/user-attachments/assets/2dc36c4b-c1f2-4d9b-ba05-3aa1d592a396)
 
 - **RDS Multi-AZ**
   - Amazon RDS Multi-AZ is a high-availability feature that provides *automatic failover* to a standby instance in a different *Availability Zone (AZ)* in case of a primary database failure. It ensures *data durability and minimal downtime* for critical applications.
