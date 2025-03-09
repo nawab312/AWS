@@ -1,4 +1,4 @@
-`How would you secure a multi-tier architecture in AWS?`
+### How would you secure a multi-tier architecture in AWS? ###
 
 To secure a multi-tier architecture in AWS, I would follow security best practices across each layer of the architecture 
 
@@ -43,7 +43,7 @@ To secure a multi-tier architecture in AWS, I would follow security best practic
 - To ensure compliance with security standards (e.g., GDPR, HIPAA), I would leverage AWS’s compliance programs and services
 - **AWS Config:** I would use AWS Config to track changes to the AWS resources and to ensure the environment stays in a compliant state.
 
-`Can you share some AWS cost optimization techniques you have implemented in your organization?`
+### Can you share some AWS cost optimization techniques you have implemented in your organization? ###
 
 **Right-Sizing EC2 Instances**
 - We analyzed *EC2 utilization* using *AWS Compute Optimizer* and CloudWatch metrics.
@@ -66,5 +66,5 @@ To secure a multi-tier architecture in AWS, I would follow security best practic
  
 **Using AWS Lambda for Serverless Workloads**
 - Instead of running *EC2 instances for cron jobs*  we replaced them with AWS Lambda functions.
-- Optimized Lambda memory allocation based on execution time.
-- Used *Provisioned Concurrency* only when necessary.
+- Optimized Lambda memory allocation based on execution time. AWS Lambda allows you to configure the memory allocation for each function, ranging from 128MB to 10GB. The amount of CPU power, network bandwidth, and I/O performance allocated to the function scales with memory. Optimizing memory allocation helps balance performance and cost.
+- Used *Provisioned Concurrency* only when necessary. Provisioned Concurrency in AWS Lambda ensures that a specific number of function instances are pre-warmed and ready to serve requests immediately, eliminating cold starts. However, it costs extra, so we only use it when absolutely needed.
