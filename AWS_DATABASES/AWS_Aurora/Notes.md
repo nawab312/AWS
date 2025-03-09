@@ -1,11 +1,9 @@
 - **AWS Proprietary Technology:** Aurora is a database engine built by Amazon and is not open-source. This means you can only use it within the AWS ecosystem.
 - Compatibility with MySQL and PostgreSQL
 - Key Features and Benefits
-  - *Performance:* Aurora is advertised as "AWS cloud optimized" and boasts significant performance improvements over standard RDS (Relational Database Service) offerings
+  - **Performance:** Aurora is advertised as "AWS cloud optimized" and boasts significant performance improvements over standard RDS (Relational Database Service) offerings
     - Up to 5x faster than MySQL on RDS
     - Up to 3x faster than PostgreSQL on RDS.
-  - *Scalable Storage:* Aurora's storage automatically scales in 10GB increments as your data grows, up to a massive 128TB. You don't need to manually provision storage
-  - *Fast Replication:* Aurora supports up to 15 read replicas, allowing you to distribute your database workload and improve read performance. The replication process is very fast, with a replica lag of less than 10ms.
+  - **Scalable Storage:** Aurora's storage automatically scales in 10GB increments as your data grows, up to a massive 128TB. You don't need to manually provision storage
+  - **Fast Replication:** Aurora supports up to 15 read replicas, allowing you to distribute your database workload and improve read performance. The replication process is very fast, with a replica lag of less than 10ms.
   - **High Availability and Read Scaling**
-    - *High Availability Explained:*
-      - Data Redundancy: Aurora maintains six copies of your data across three Availability Zones. This ensures that even if one or two AZs go down, your data remains safe.
