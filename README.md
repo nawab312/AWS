@@ -23,7 +23,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **CloudTrail**
 - **GuardDuty**
 - **Shield**
-- **WAF**
+- **WAF** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_WAF.md
 - **Secrets Manager**
 - **ACM**
 
