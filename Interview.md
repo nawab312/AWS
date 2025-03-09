@@ -1,15 +1,3 @@
-`How would you ensure that only certain IP addresses can access an EC2 instance?`
-
-To ensure that only certain IP addresses can access an EC2 instance, I would utilize Security Groups and Network Access Control Lists (NACLs) in AWS
-
----
-
-`A client wants to restrict access to an S3 bucket only from a specific VPC. How would you accomplish this?`
-
-To restrict access to an S3 bucket so that it can only be accessed from a specific VPC, I would use **VPC Endpoint for S3** combined with a **Bucket Policy**
-
----
-
 `How would you secure a multi-tier architecture in AWS?`
 
 To secure a multi-tier architecture in AWS, I would follow security best practices across each layer of the architecture 
@@ -54,3 +42,29 @@ To secure a multi-tier architecture in AWS, I would follow security best practic
 **Compliance and Auditing**
 - To ensure compliance with security standards (e.g., GDPR, HIPAA), I would leverage AWS’s compliance programs and services
 - **AWS Config:** I would use AWS Config to track changes to the AWS resources and to ensure the environment stays in a compliant state.
+
+`Can you share some AWS cost optimization techniques you have implemented in your organization?`
+
+**Right-Sizing EC2 Instances**
+- We analyzed *EC2 utilization* using *AWS Compute Optimizer* and CloudWatch metrics.
+- Many instances were over-provisioned, so we:
+  - Downsized underutilized instances (e.g., `m5.large → t3.medium`).
+  - Used Auto Scaling Groups to scale dynamically based on demand.
+
+**Implementing Reserved Instances & Savings Plans**
+- Instead of using On-Demand EC2, we purchased *Reserved Instances (RIs)* and *Compute Savings Plans* for predictable workloads.
+- For non-flexible workloads, we used *1-year Convertible RIs*, allowing modification based on future needs.
+- For dynamic workloads, we leveraged *Spot Instances* for batch processing jobs.
+
+**Storage Cost Optimization (S3, EBS, and EFS)**
+- S3 Lifecycle Policies:
+  - Moved infrequently accessed data from *S3 Standard* to *S3 Intelligent-Tiering* and *Glacier*.
+  - Enabled *S3 Object Expiration* to delete unused logs automatically.
+- EBS Volume Optimization:
+  - Identified *idle/unattached EBS* volumes using *AWS Trusted Advisor* and deleted them.
+  - Used gp3 instead of gp2, which provides the same performance at a lower cost.
+ 
+**Using AWS Lambda for Serverless Workloads**
+- Instead of running *EC2 instances for cron jobs*  we replaced them with AWS Lambda functions.
+- Optimized Lambda memory allocation based on execution time.
+- Used *Provisioned Concurrency* only when necessary.
