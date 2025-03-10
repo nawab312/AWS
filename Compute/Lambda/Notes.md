@@ -16,3 +16,5 @@
   - Lambda Limitation: Has a cold start issue (delay when first invoked). Has an invocation limit (concurrent execution limits).
   - EC2 Advantage: No cold starts, and you can handle unlimited concurrent requests.
   - Example: A 24/7 real-time stock market data API that serves thousands of requests per second.
+ 
+- **Start and Stop EC2 instances based on Time** https://github.com/nawab312/AWS/blob/main/Compute/Lambda/Scenarios/Scenario1.md
