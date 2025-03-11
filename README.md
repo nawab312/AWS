@@ -24,7 +24,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **Shield** https://github.com/nawab312/AWS/blob/main/Security/AWS_Shield/Notes.md
 - **WAF** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_WAF.md
 - **Secrets Manager** https://github.com/nawab312/AWS/blob/main/Security/AWS_SecretsManager/Notes.md
-- **ACM**
+- **ACM** https://github.com/nawab312/AWS/blob/main/Security/AWS_ACM/Notes.md
 
 ### Monitoring & Logging ###
 - **CloudWatch**
