@@ -63,9 +63,9 @@
 ![image](https://github.com/user-attachments/assets/25176d8c-d4c2-4a2a-9cd5-9562c9e28e52)
 
 **Difference Between CNAME and Alias Record**
-- A **CNAME** record maps a subdomain (e.g., api.abc.com) to another domain name (e.g., my-load-balancer-1234567890.us-west-2.elb.amazonaws.com). A CNAME record *can only be used for subdomains, not for root domains (e.g., abc.com)*.
+- A **CNAME** record maps a subdomain (e.g., api.abc.com) to another domain name (e.g., my-load-balancer-1234567890.us-west-2.elb.amazonaws.com). A CNAME record *can only be used for subdomains, not for root domains (e.g., abc.com)*. If you use a CNAME record, like `www.example.com -> example.com`, the DNS first returns `example.com`, and then a *second lookup* is needed to resolve example.com to an IP address.
 - The **ALIAS** record is a special AWS Route 53 feature that allows you to point a *root domain (e.g., abc.com) or subdomain (e.g., api.abc.com)* directly to AWS resources like Elastic Load Balancers (ELBs), CloudFront distributions, or
-S3 buckets, *without needing to use the resource’s DNS name*.
+S3 buckets, *without needing to use the resource’s DNS name*.If you use an ALIAS record for `www.example.com` pointing to an AWS resource (e.g., `example.elasticloadbalancing.com`), the DNS resolver *will directly return the IP address of the AWS resource in one step*, without the need for another query.
 
 
 
