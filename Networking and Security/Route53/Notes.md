@@ -18,6 +18,7 @@
   - Route 53 is also a Domain Registrar
   - Ability to check the health of your resources
   - The only AWS service which provides 100% availability SLA
+
 ![image](https://github.com/user-attachments/assets/ecda88ca-695c-4b6f-ab15-6393aa82ff79)
 
 - **Route 53–Records** Route 53 records are DNS entries used to map domain names to specific IP addresses, services, or resources.
