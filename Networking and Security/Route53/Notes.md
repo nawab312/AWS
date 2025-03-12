@@ -36,4 +36,29 @@
  
 ![image](https://github.com/user-attachments/assets/9b2aed3c-bc87-466f-83ca-eb6efc3dc98b) ![image](https://github.com/user-attachments/assets/2a57424b-7652-48e8-8c07-dce3eb48188b)
 
+- **Components of a Hosted Zone**
+  - *Domain Name:* The primary domain for which the hosted zone is created. For example, example.com would be the domain name for the hosted zone. You can also create subdomains (like api.example.com or www.example.com) within the hosted zone.
+  - *Name Servers (NS) Record:* When you create a hosted zone, Route 53 automatically generates a set of name servers (NS records) for the hosted zone. These NS records tell the internet where to find your DNS records. When you register a domain or transfer one to Route 53, you typically update the domain registrar to point to these NS records.
+  - SOA (Start of Authority) Record: Every hosted zone automatically includes a Start of Authority (SOA) record. This record specifies the authoritative DNS server for the domain, the email address of the domain administrator, and other settings related to the domain’s DNS configuration (e.g., TTL values).
+ 
+![image](https://github.com/user-attachments/assets/436d1407-3178-40d9-9429-275bf3606ddf)
+
+**You need to create a subdomain (e.g. api.abc.com) that points to a load balancer. How would you set this up in Route 53, and what record type would you use?**
+- Go to the AWS Management Console and navigate to Route 53.
+- Create or Update Hosted Zone:
+  - Ensure that you have a hosted zone for *abc.com*. If you don’t, you can create one
+  - If the hosted zone for abc.com already exists, select it.
+- Get the Load Balancer DNS Name:`my-load-balancer-1234567890.us-west-2.elb.amazonaws.com`
+- Create the Record Set for Subdomain:
+  - In your Route 53 hosted zone for abc.com, click on Create record
+  - *Record Type:* Choose *CNAME*. This is because you want to map the subdomain (api.abc.com) to the DNS name of your load balancer.
+  - Name: Enter `api` (this will create `api.abc.com`).
+  - Value: Enter the DNS name of your load balancer (e.g., `my-load-balancer-1234567890.us-west-2.elb.amazonaws.com`).
+  - Click Create records
+
+![image](https://github.com/user-attachments/assets/ef4e9c90-f176-48df-b18d-5cc1dd49e55a) ![image](https://github.com/user-attachments/assets/99cb0598-77a7-4994-bc68-3e845eee1839)
+
+
+
+
 
