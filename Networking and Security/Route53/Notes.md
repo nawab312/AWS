@@ -58,6 +58,14 @@
 
 ![image](https://github.com/user-attachments/assets/ef4e9c90-f176-48df-b18d-5cc1dd49e55a) ![image](https://github.com/user-attachments/assets/99cb0598-77a7-4994-bc68-3e845eee1839)
 
+**Route 53–Records TTL (Time To Live)**
+
+![image](https://github.com/user-attachments/assets/25176d8c-d4c2-4a2a-9cd5-9562c9e28e52)
+
+**Difference Between CNAME and Alias Record**
+- A **CNAME** record maps a subdomain (e.g., api.abc.com) to another domain name (e.g., my-load-balancer-1234567890.us-west-2.elb.amazonaws.com). A CNAME record *can only be used for subdomains, not for root domains (e.g., abc.com)*.
+- The **ALIAS** record is a special AWS Route 53 feature that allows you to point a *root domain (e.g., abc.com) or subdomain (e.g., api.abc.com)* directly to AWS resources like Elastic Load Balancers (ELBs), CloudFront distributions, or
+S3 buckets, *without needing to use the resource’s DNS name*.
 
 
 
