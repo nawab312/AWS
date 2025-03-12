@@ -66,3 +66,31 @@ Your company is running a production PostgreSQL database on AWS RDS. Suddenly, t
   - Implement Database Caching:
     - Use *Amazon ElastiCache (Redis/Memcached)* to reduce direct database queries.
 
+### Scenario 2 ###
+Your company runs a MySQL RDS instance in a Multi-AZ deployment. Suddenly, the primary database instance crashes, but the application experiences a downtime of several seconds before it reconnects.
+- **Questions**
+  - How does AWS RDS Multi-AZ work in a failover scenario?
+  - Why might the application experience downtime even with Multi-AZ enabled?
+  - What steps would you take to minimize downtime in such cases?
+ 
+**How Does AWS RDS Multi-AZ Work in a Failover Scenario?**
+
+AWS RDS Multi-AZ provides *high availability and automatic failover* by maintaining a *synchronous standby replica* in a different Availability Zone (AZ). Here's how it works during a failover:
+- When the primary RDS instance fails (due to hardware failure, OS crash, or AZ outage), AWS automatically promotes the standby instance to primary.
+- The RDS endpoint remains the same, so applications do not need to change the connection string.
+- The failover process usually takes *30-60 seconds* (sometimes longer) depending on database activity and uncommitted transactions.
+
+**Why Might the Application Experience Downtime Even with Multi-AZ?**
+- **DNS Propagation Delay:** AWS RDS updates the DNS to point to the new primary instance, but applications using cached DNS records may take longer to reconnect.
+- **Uncommitted Transactions:** Any in-flight transactions on the failed primary instance are rolled back, requiring applications to handle retries.
+- **Connection Pool Issues:** If the application does not properly handle database connection failures, it might not immediately reconnect to the new primary instance.
+- **Failover Time:** AWS RDS typically takes 30-60 seconds to complete failover, during which new connections might fail.
+
+**Steps to Minimize Downtime in Multi-AZ Failovers**
+- **Application-Level Optimizations:**
+  - Use Retry Logic: Implement *exponential backoff* in database connection logic to automatically retry failed queries.
+  - Reduce DNS Cache TTL: Set a *lower TTL (e.g., 30 seconds)* for database hostname resolution to ensure faster reconnection.
+  - Use Connection Poolers: Utilize tools like HikariCP (for Java applications) to detect failures and re-establish connections quickly.
+- **RDS & AWS Configurations:**
+  - Enable RDS Proxy: AWS RDS Proxy maintains persistent connections and automatically reroutes them to the new primary instance.
+
