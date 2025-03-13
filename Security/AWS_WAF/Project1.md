@@ -37,3 +37,12 @@
 
   ![image](https://github.com/user-attachments/assets/738ac885-4ef7-4b76-9aaf-00fd81fd3a3d)
 
+    - *Blocking SQL Injection (SQLi) Attempts in AWS WAF Using String Match Condition*
+      - SQL Injection (SQLi) is a common web security vulnerability where attackers manipulate SQL queries through user input fields. AWS WAF can prevent such attacks by analyzing incoming requests for SQL-related keywords and patterns. Below is a detailed, step-by-step guide to blocking SQLi using String Match Conditions in AWS WAF.
+
+  ![image](https://github.com/user-attachments/assets/88decd21-cc11-4c50-a9c2-f597f564f65a)
+
+  ![image](https://github.com/user-attachments/assets/7238fe4c-da7b-4457-bd41-d4ba519f7341)
+
+
+
