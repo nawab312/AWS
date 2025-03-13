@@ -18,3 +18,22 @@
 
 ![image](https://github.com/user-attachments/assets/4b793477-4454-48ce-a1a4-d55c0b49f634)
 
+- Add Conditions (Rules): You can add multiple conditions (rules) based on your security needs:
+  - **Add Managed Rules (Pre-configured by AWS)**
+    - Click Add Rules → Choose Add managed rule groups.
+    - Select AWS Managed Rule Groups, such as:
+       - `AWS-AWSManagedRulesSQLiRuleSet` → Blocks SQL Injection.
+       - `AWS-AWSManagedRulesCommonRuleSet` → Protects against common attacks.
+       - `AWS-AWSManagedRulesBotControlRuleSet` → Blocks bots.
+  
+  ![image](https://github.com/user-attachments/assets/094804a6-1f05-4544-bb6c-ac6671dfe7e4)
+
+  - **Add Custom Rules**
+    - To create your own conditions, select Add my own rules and rule groups → Click Add Rule.
+    - *Block Requests from Specific IPs*
+      - Select Rule Type → Choose IP Set.
+      - Create an IP Set (e.g., `BlockedIPs`) and enter IP addresses to block.
+      - Choose Action → Block.
+
+  ![image](https://github.com/user-attachments/assets/738ac885-4ef7-4b76-9aaf-00fd81fd3a3d)
+
