@@ -37,7 +37,10 @@
 - HTTP Headers: Allows matching specific HTTP headers, such as the `User-Agent` or `X-Forwarded-For`.
 - Body: This can match text patterns in the body of a POST request.
 
+
 **Action:** When a rule matches a request, AWS WAF can take different actions:
 - *Allow:* The request is allowed to proceed to the backend.
 - *Block:* The request is blocked and never reaches the web application
 - *Count:* The request is counted, but not blocked or allowed, which is useful for monitoring traffic before making decisions on blocking or allowing.
+
+- **ALB Integration with AWS WAF** https://github.com/nawab312/AWS/blob/main/Security/AWS_WAF/Project1.md
