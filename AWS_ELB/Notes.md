@@ -18,7 +18,7 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
   - *Flow Hash:* (For NLB) Uses network flow information to ensure the same client is consistently routed to the same target.
 
 ### Headers in AWS ALB ###
-Headers in ALB (Application Load Balancer) are **extra pieces of information** that **travel with HTTP requests and responses**. These headers help ALB make decisions about **where to send traffic, how to secure requests, and how to balance the load among servers**.
+Headers in ALB (Application Load Balancer) are **extra pieces of information** that **travel with HTTP requests and responses**. These headers help ALB make decisions about **where to send traffic, how to secure requests, and how to balance the load** among servers.
 
 **Types of Headers in ALB**
 - **Request Headers** These are headers sent by the client (browser, API, or service) to ALB. ALB can use these headers for routing and security rules.  How ALB Uses Request Headers:
