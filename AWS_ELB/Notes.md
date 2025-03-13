@@ -20,6 +20,15 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
 ### Headers in AWS ALB ###
 Headers in ALB (Application Load Balancer) are **extra pieces of information** that **travel with HTTP requests and responses**. These headers help ALB make decisions about **where to send traffic, how to secure requests, and how to balance the load** among servers.
 
+**How Headers Work in ALB?***
+When a client (like a browser or mobile app) sends a request to a website, it includes **headers**. The ALB reads these headers and decides how to handle the request. For example:
+- A user visits `www.example.com`.
+- Their browser sends an HTTP request with headers (e.g., `User-Agent: Chrome`, `X-Forwarded-For: <IP address>`).
+- The ALB checks these headers to:
+  - Route the request to the correct server.
+  - Apply security rules.
+  - Ensure proper load balancing.
+
 **Types of Headers in ALB**
 - **Request Headers** These are headers sent by the client (browser, API, or service) to ALB. ALB can use these headers for routing and security rules.  How ALB Uses Request Headers:
   - Host-Based Routing → Routes based on `Host` header.
