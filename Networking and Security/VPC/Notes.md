@@ -1,8 +1,10 @@
 - **Virtual Private Cloud (VPC)** is a logically isolated virtual network that you define in the AWS Cloud. It enables you to launch AWS resources in a virtual network that you specify, with complete control over the network configuration,
 including IP address range, subnets, route tables, and network gateways.
+  - Max VPC per Account Per Region = 5
 
 ### VPC Components ###
 - **VPC CIDR (Classless Inter-Domain Routing)** is a block of IP addresses that defines the address space of your VPC.
+- If you run out of IP Address in a Subnet we can not resize by adjusting *CIDR of Subnet*
 ![image](https://github.com/user-attachments/assets/733f53a3-0adf-4d04-965e-076e0caa9aaa) ![image](https://github.com/user-attachments/assets/890edc95-76f3-440d-8165-8785e19d1ff1)
 
 - **Subnets** are segments of your VPC's IP address range. You can create multiple subnets in different Availability Zones (AZs) for high availability and fault tolerance
