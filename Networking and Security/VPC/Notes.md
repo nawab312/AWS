@@ -16,6 +16,8 @@ internet access for instances.
 
 
 - **Internet Gateway** An Internet Gateway allows communication between instances in your VPC and the internet. It's attached to your VPC and enables instances in public subnets to access the internet (and vice versa). Only one per VPC
+  - You need to configure the route tables to enable internet traffic. For example, the route table of the subnet must contain a route to the Internet Gateway *(0.0.0.0/0 to the Internet Gateway)*.
+  - ![image](https://github.com/user-attachments/assets/5d67a2d9-e286-469e-86ce-fa0841b5734d)
 
 - **Route Tables** Controls how traffic is directed within the VPC.
   - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/RouteTable.md
