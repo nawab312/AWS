@@ -7,7 +7,10 @@ including IP address range, subnets, route tables, and network gateways.
 
 - **Subnets** are segments of your VPC's IP address range. You can create multiple subnets in different Availability Zones (AZs) for high availability and fault tolerance
   - Public Subnet: Accessible from the internet (using an Internet Gateway).
-  - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers).
+  - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers). Often uses a NAT gateway to enable
+internet access for instances.
+  ![image](https://github.com/user-attachments/assets/8af79818-2828-4380-a1d6-9a945da91939)
+
 
 - **Internet Gateway** An Internet Gateway allows communication between instances in your VPC and the internet. It's attached to your VPC and enables instances in public subnets to access the internet (and vice versa). Only one per VPC
 
