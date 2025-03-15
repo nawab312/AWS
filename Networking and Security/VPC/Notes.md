@@ -31,6 +31,7 @@ internet access for instances.
     - These are like firewalls at the subnet level.
     - They control traffic entering and leaving a subnet. 
     - They are applied before security groups, providing a more granular level of control.
+    - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/NACL.md
   
 - **NAT Gateway / NAT Instance**
   - NAT Gateway (managed AWS service) and NAT Instance (self-managed EC2 instance) allow outbound internet access from private subnets.
