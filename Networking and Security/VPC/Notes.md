@@ -56,5 +56,5 @@ Network Access Control List (NACL) is an optional security layer for controlling
   - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/TransitGateway.md
 
 **VPN and Direct Connect**
-  - VPN (Virtual Private Network): Secure connection between on-premises and AWS over the internet.
-  - AWS Direct Connect: Dedicated private network link from on-premises to AWS.
+  - VPN (Virtual Private Network): Secure connection between on-premises and AWS over the internet. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_VPN.md
+  - AWS Direct Connect: Dedicated private network link from on-premises to AWS. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/DirectConnect.md
