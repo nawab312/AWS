@@ -1,5 +1,7 @@
 **Elastic Compute Cloud (EC2)** is a web service that provides resizable compute capacity in the cloud. Allows you to launch virtual machines (VMs) with different configurations.
 
+- Commands: https://github.com/nawab312/AWS/blob/main/Compute/EC2/Commands.md
+
 **EC2 Instance Types**
 - General Purpose: Balanced CPU, memory, and networking (e.g., T3, M5).
 - Compute Optimized: High-performance CPU for intensive tasks (e.g., C5, C6i).
