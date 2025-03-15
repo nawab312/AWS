@@ -43,8 +43,8 @@
 - **EFS Access Point** is a managed entry point that controls how applications access an Amazon EFS file system. It simplifies permissions by enforcing user/group IDs and restricting access to specific directories
   - Imagine you have a shared storage (EFS) used by multiple applications. One app needs access to `/data/app1`, and another app needs `/data/app2`. Instead of giving full access to the entire EFS, you create separate Access Points for each app, restricting them to their specific directories.
 
-- **EFS EC2** https://github.com/nawab312/AWS/blob/main/AWS_S3/AWS_EFS/Projects/Project1.md
-- **EFS EKS** https://github.com/nawab312/AWS/blob/main/AWS_S3/AWS_EFS/Projects/EFS_EKS.md
+- **EFS EC2** https://github.com/nawab312/AWS/blob/main/Storage/AWS_EFS/Projects/Project1.md
+- **EFS EKS** https://github.com/nawab312/AWS/edit/main/Storage/AWS_EFS/Projects/EFS_EKS.md
 
 ---
 
