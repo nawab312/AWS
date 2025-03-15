@@ -10,3 +10,4 @@ AWS VPC Peering is a networking connection between two Virtual Private Clouds (V
 
 **Basic VPC Peering Setup**
 - You have two VPCs, VPC-A and VPC-B, in the same AWS region. You need to enable communication between resources in these two VPCs. How would you set up VPC peering?
+- https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPC_Peering/Scenario1.md
