@@ -48,13 +48,18 @@ Network Access Control List (NACL) is an optional security layer for controlling
 
 
 **VPC Peering** 
-  - Direct connection between two VPCs for private communication.
-  - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCPeering.md
+- Direct connection between two VPCs for private communication.
+- https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCPeering.md
 
 **AWS Transit Gateway** 
-  - Centralized hub for connecting multiple VPCs and on-premises networks.
-  - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/TransitGateway.md
+- Centralized hub for connecting multiple VPCs and on-premises networks.
+- https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/TransitGateway.md
 
 **VPN and Direct Connect**
-  - VPN (Virtual Private Network): Secure connection between on-premises and AWS over the internet. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_VPN.md
-  - AWS Direct Connect: Dedicated private network link from on-premises to AWS. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/DirectConnect.md
+- VPN (Virtual Private Network): Secure connection between on-premises and AWS over the internet. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_VPN.md
+- AWS Direct Connect: Dedicated private network link from on-premises to AWS. https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/DirectConnect.md
+
+**Endpoint Services**
+- *VPC Gateway Endpoints:* For S3 and DynamoDB access without internet.
+- *VPC Interface Endpoints:* For private access to AWS services like SNS, SQS, etc.
+- https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCEndpoint.md
