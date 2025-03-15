@@ -25,6 +25,6 @@ How does Amazon S3 ensure data **Durability** and **Availability**?
   - Data is stored across multiple AZs, so even if one AZ goes down, S3 can serve the data from other locations.
   - S3 uses **load balancers** to distribute requests evenly across storage infrastructure, preventing bottlenecks. Requests are **automatically rerouted** to healthy nodes if failures occur.
  
-**S3 Bucket Policy** https://github.com/nawab312/AWS/blob/main/AWS_S3/Bucket_Policy/Notes.md
+**S3 Bucket Policy** https://github.com/nawab312/AWS/tree/main/Storage/AWS_S3/Bucket_Policy
 
 **Track S3 Bucket Access with CloudTrail** https://github.com/nawab312/AWS/blob/main/AWS_S3/CloudTrail_S3.md
