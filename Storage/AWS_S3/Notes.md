@@ -27,4 +27,4 @@ How does Amazon S3 ensure data **Durability** and **Availability**?
  
 **S3 Bucket Policy** https://github.com/nawab312/AWS/tree/main/Storage/AWS_S3/Bucket_Policy
 
-**Track S3 Bucket Access with CloudTrail** https://github.com/nawab312/AWS/blob/main/AWS_S3/CloudTrail_S3.md
+**Track S3 Bucket Access with CloudTrail** https://github.com/nawab312/AWS/blob/main/Storage/AWS_S3/CloudTrail_S3.md
