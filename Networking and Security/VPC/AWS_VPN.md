@@ -57,3 +57,5 @@ AWS Client VPN is a fully managed, elastic VPN service that allows users to secu
 - A company has a global workforce, and employees need secure access to AWS resources (like EC2 instances or RDS databases) and on-premises systems. Using AWS Client VPN, each employee can install the VPN client on their device (laptop, phone, etc.) and securely connect to AWS from anywhere in the world, using their company credentials or certificates for authentication.
 
 ![image](https://github.com/user-attachments/assets/8c9dba26-4613-4c46-b4c7-a84259cee8fd)
+
+- https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_VPN/Scenario1.md
