@@ -47,3 +47,14 @@ Network Access Control List (NACL) is an optional security layer for controlling
 - **Rule Number * (Wildcard Rule):** In this case, the wildcard * (often interpreted as "any") doesn't directly translate to a specific rule number in AWS NACLs. This could refer to the default rule, which is applied if no other rules match the traffic. The wildcard rule (Deny all traffic) is essentially redundant because Rule #100 already allows all traffic.
 
 
+**VPC Peering** 
+  - Direct connection between two VPCs for private communication.
+  - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCPeering.md
+
+**AWS Transit Gateway** 
+  - Centralized hub for connecting multiple VPCs and on-premises networks.
+  - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/TransitGateway.md
+
+**VPN and Direct Connect**
+  - VPN (Virtual Private Network): Secure connection between on-premises and AWS over the internet.
+  - AWS Direct Connect: Dedicated private network link from on-premises to AWS.
