@@ -9,6 +9,7 @@ including IP address range, subnets, route tables, and network gateways.
   - Public Subnet: Accessible from the internet (using an Internet Gateway).
   - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers). Often uses a NAT gateway to enable
 internet access for instances.
+
   ![image](https://github.com/user-attachments/assets/8af79818-2828-4380-a1d6-9a945da91939)
 
 
