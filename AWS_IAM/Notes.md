@@ -30,6 +30,47 @@ IAM policies are documents that define permissions and are written in JSON forma
   - **IAM Roles:** Entities that can assume a set of permissions, which can be assumed by users, services, or other AWS resources. `"Principal": {"AWS": "arn:aws:iam::123456789012:role/EC2Role"}`
   - **AWS Services:** Some AWS services can be principals, such as when you give an S3 bucket permission to be accessed by Lambda or EC2. `"Principal": {"Service": "lambda.amazonaws.com"}`
   - **AWS Account:** A specific AWS account can also be a principal, allowing resources to be accessed by any user within that account. `"Principal": {"AWS": "arn:aws:iam::123456789012:root"}`
+ 
+### IAM Trust Policies ###
+A Trust Policy is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
+- **Principal:** Defines which AWS user, role, service, or account can assume the role.
+- **Action:** Specifies the `sts:AssumeRole` action, which allows the entity to assume the role.
+- **Condition (Optional):** Specifies additional constraints for assuming the role (e.g., restricting based on source IP or MFA).
+- Example Trust Policy for Cross-Account Access
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::111122223333:root"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+                "StringEquals": {
+                    "sts:ExternalId": "12345"
+                }
+            }
+        }
+    ]
+}
+```
+- Example Trust Policy for an AWS Service (EC2): This policy allows the Amazon EC2 service to assume the role, enabling EC2 instances to use the associated permissions.
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+```
 
 ### IAM Permissions Boundaries ###
 Permissions boundaries define the maximum permissions that an IAM user or role can have
