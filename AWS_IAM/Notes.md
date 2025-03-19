@@ -55,6 +55,6 @@ IAM Access Advisor helps to identify which permissions are being used by IAM use
 - https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario1.md
 - https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario2.md
 
-**Secure EC2 Access to S3 with IAM **
+**Secure EC2 Access to S3 with IAM**
 - https://github.com/nawab312/AWS/blob/main/AWS_IAM/Scenario3.md
 
