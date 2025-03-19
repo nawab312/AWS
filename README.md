@@ -6,11 +6,12 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 - **Virtual Private Cloud (VPC):** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/Notes.md
 - **VPC Peering:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCPeering.md
 - **Transit Gateway:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/TransitGateway.md
-- **Elastic Load Balancing (ELB):** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Notes.md
 - **AWS Direct Connect:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/DirectConnect.md
 - **AWS WAF:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_WAF.md
 - **VPC Endpoint:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCEndpoint.md
 - **ASG:** https://github.com/nawab312/AWS/blob/main/AWS_ELB/ASG/ASG.md
+- **Elastic Load Balancing (ELB):** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Notes.md
+- **Route53:** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/Route53/Notes.md
 
 ### Compute ###
 - **EC2** https://github.com/nawab312/AWS/blob/main/Compute/EC2/Notes.md
