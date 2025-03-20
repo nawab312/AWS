@@ -6,7 +6,7 @@
   - Name Server: resolves DNS queries (Authoritative or Non-Authoritative)
   - Top Level Domain (TLD): .com, .us, .in, .gov, .org,
   - Second Level Domain (SLD): amazon.com, google.com
-- `http://api.example.com`
+- `http://api.www.example.com`
   - `.com` TLD
   - `example.com` SLD
   - `www.example.com` Sub Domain
