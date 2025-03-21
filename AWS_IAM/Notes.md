@@ -87,8 +87,28 @@ MFA is an added layer of security that requires users to provide two forms of id
 In larger organizations with multiple AWS accounts, AWS Organizations helps manage multiple AWS accounts centrally. It allows you to organize accounts into organizational units (OUs) and apply policies that control the actions available across all accounts in an organization.
 - **SCPs:** Service Control Policies are a set of policies that specify what actions are allowed or denied **across the organization’s accounts**. `Resource` in this case is `*` SCPs act as a guardrail and limit permissions granted by individual IAM policies.
 
+**How does AWS IAM enforce least privilege access in a multi-account setup?**
+- *AWS Organizations and Service Control Policies (SCPs)*: SCPs allow centralized control over permissions across all accounts, ensuring that accounts can only access the services they need, enforcing the least privilege principle.
+- *IAM Roles for Cross-Account Access*: IAM roles are used for granting access between accounts, allowing users or services to assume roles with the least permissions necessary for tasks.
+- *Granular IAM Policies*: IAM policies are defined to grant only the permissions required for users and roles in each account, limiting access to only the resources they need.
+- *Resource-Based Policies*: Resource-based policies, such as those for S3 or Lambda, ensure that access to resources is controlled at the resource level, allowing cross-account access only as needed.
+- *Permission Boundaries*: Permission boundaries allow you to set maximum permissions for IAM roles, ensuring that even if a role is granted broad permissions, it can only act within the boundaries defined.
+
 ### Access Advisor ###
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
+
+### Access Keys ###
+AWS Access Keys are a pair of credentials used to authenticate and authorize API requests made to AWS. These keys consist of:
+- *Access Key ID:* A unique identifier for the AWS user or role making the request.
+- *Secret Access Key:* A secret password used to sign the request, ensuring it comes from the authorized user.
+The combination of the Access Key ID and Secret Access Key is used to authenticate requests to AWS services programmatically. These keys are essential for operations like accessing S3, EC2, or Lambda programmatically via AWS SDKs, CLI, or APIs.
+
+**What are the best practices for securing access keys in AWS environments?**
+- *Use IAM Roles Instead of Access Keys:* Prefer assigning IAM roles to EC2 instances, Lambda functions, and other AWS services instead of embedding access keys. Roles are more secure and automatically managed.
+- *Enable Multi-Factor Authentication (MFA):* Require MFA for sensitive operations and access keys to provide an extra layer of security.
+- *Rotate Access Keys Regularly*
+- *Use Least Privilege Principle*
+- *Avoid Hardcoding Access Keys:* Never hardcode access keys directly into application code. Use environment variables or AWS Secrets Manager to securely manage them.
 
 ---
 
