@@ -32,7 +32,7 @@ Postgres, MySQL, MariaDB, Oracle, Microsoft SQL Server, IBM DB2, Aurora (AWS Pro
 
 - **Connection pooling** is a technique where a set of database connections is maintained and reused, reducing the overhead of repeatedly opening and closing connections for each database request.
 
---
+---
 
 ### RDS Security ###
 **Network Security**
