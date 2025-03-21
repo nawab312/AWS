@@ -2,6 +2,38 @@
 - No servers to provision or manage
 - Automatically scales with usage
 - Never pay for idle
+
+**Lambda’s Key Components**
+- *Runtime:* The environment in which your code runs (e.g., Node.js, Python, Java, etc.).
+- *Handler:* The entry point to your function; it processes incoming events.
+- *Triggers:* Events that invoke your Lambda function (e.g., API Gateway, S3, DynamoDB, EventBridge).
+- *Execution Role:* An IAM role that grants permissions for Lambda to access AWS resources.
+
+- **Execution Context** AWS Lambda maintains an execution environment that includes: Code and libraries, Temporarystorage (500 MB in /tmp), Network connections. This context is reused across invocations to optimize performance.
+
+- **Cold Starts**
+ - A cold start in AWS Lambda refers to the initial delay experienced when a Lambda function is invoked for the first time or after being idle for a period.
+ - During this time, AWS needs to *allocate resources, deploy the function code, and initialize the runtime environment*, leading to increased invocation times. Mitigation:
+   - Use *Provisioned Concurrency to reduce cold starts*.
+
+**String Capitalization Function**
+```python
+#function
+
+def lambda_handler(event, context):
+    text = event.get("text", "")
+    capital_text = text.upper()
+    return {
+        'statusCode': 200,
+        'body': capital_text
+    }
+```
+- Event Payload
+  ```json
+  {
+      "text": "value"
+  }
+  ```
  
 **When to Use EC2 Over AWS Lambda**
 - **Long-Running Workloads**
