@@ -10,7 +10,25 @@
 
 **Lambda Execution Model**
 - *Stateless:* AWS Lambda functions are stateless by default. This means that every time a function is triggered, it starts from scratch, without any memory of previous executions unless external state management (like DynamoDB or S3) is used.
-- *Concurrency:* Lambda can handle multiple invocations at once. You can specify concurrency limits for a function (e.g., reserve concurrency).
+- *Concurrency:* Concurrency refers to how many instances of a Lambda function can run simultaneously. Lambda can handle multiple invocations at once. You can specify concurrency limits for a function (e.g., reserve concurrency).
+  - What are the concurrency limits for AWS Lambda functions?
+    - Default Account-Level Limit: 1,000 concurrent executions across all functions in a specific AWS Region.
+    - Function-Level Limit: You can set a specific concurrency limit for individual functions to reserve capacity.
+    - Increasing the Limit: You can request a quota increase for your account or specific functions through the AWS Service Quotas console.
+  -  How can you increase the concurrency limit for a specific function
+    - To increase the concurrency limit for a specific function, you can use *Provisioned Concurrency*. This allows you to reserve a specific number of concurrent executions for your function, ensuring it can handle higher traffic loads without being throttled
+ 
+**Types of Lambda Invocation**
+- *Synchronous Invocation*
+  - In a synchronous invocation, the caller waits for the Lambda function to finish executing and returns the result of the execution. The caller is blocked until the Lambda function finishes processing.
+  - The Lambda function returns a response directly to the caller after execution completes. The response includes the result of the execution, and the caller can process it accordingly.
+    - Example: API Gateway invokes a Lambda function synchronously and waits for the result to send the response back to the client.
+  - *Error Handling* If the Lambda function fails (throws an error), the caller receives the error message directly in the response.
+- *Asynchronous Invocation*
+  - In an asynchronous invocation, the caller does not wait for the Lambda function to finish. The function is triggered, and the caller is immediately returned a success message, while the function continues executing in the background.
+  - The function does not return any result to the caller. Instead, the invocation is considered successful once the event is passed to Lambda, and the actual processing happens independently. If the function fails, AWS retries the execution (with a backoff strategy).
+    - Example: S3 events trigger Lambda functions asynchronously, and S3 doesn’t wait for the result.
+  - *Error Handling* If the function fails, AWS Lambda will retry the execution of the function twice (by default), and if it continues to fail, the event is sent to a dead letter queue (DLQ) or logged in CloudWatch for troubleshooting.
 
 **Lambda Function Configuration**
 - *Memory:* You can configure the memory allocated to your Lambda function, which also affects CPU power. Memory ranges from 128 MB to 10 GB
