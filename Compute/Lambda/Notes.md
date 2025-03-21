@@ -1,13 +1,21 @@
-**ServerLess:** is a cloud computing model that allows developers to build and run applications without having to manage server infrastructure. What Defines Serverless?
-- No servers to provision or manage
-- Automatically scales with usage
-- Never pay for idle
+**AWS Lambda** 
+- Is a Serverless Compute Service that allows you to run code in response to events without provisioning or managing servers.
+- It automatically scales by running code in response to incoming traffic or events, charging only for the time your code runs.
 
 **Lambda’s Key Components**
 - *Runtime:* The environment in which your code runs (e.g., Node.js, Python, Java, etc.).
 - *Handler:* The entry point to your function; it processes incoming events.
 - *Triggers:* Events that invoke your Lambda function (e.g., API Gateway, S3, DynamoDB, EventBridge).
 - *Execution Role:* An IAM role that grants permissions for Lambda to access AWS resources.
+
+**Lambda Execution Model**
+- *Stateless:* AWS Lambda functions are stateless by default. This means that every time a function is triggered, it starts from scratch, without any memory of previous executions unless external state management (like DynamoDB or S3) is used.
+- *Concurrency:* Lambda can handle multiple invocations at once. You can specify concurrency limits for a function (e.g., reserve concurrency).
+
+**Lambda Function Configuration**
+- *Memory:* You can configure the memory allocated to your Lambda function, which also affects CPU power. Memory ranges from 128 MB to 10 GB
+- *Timeout:* Lambda functions have a max timeout of 15 minutes (900 seconds).
+- *Environment Variables:* Lambda functions can be configured with environment variables to store sensitive data or configurations that the function needs.
 
 **Execution Context** 
 
