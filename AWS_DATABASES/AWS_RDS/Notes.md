@@ -5,9 +5,9 @@ Postgres, MySQL, MariaDB, Oracle, Microsoft SQL Server, IBM DB2, Aurora (AWS Pro
 
 - **RDS Read Replicas for read scalability**
   - Up to 15 Read Replicas Within AZ, Cross AZ or Cross Region.
-  - Replication is ASYNC(method of copying data from one system to another, but with a slight delay), so reads are eventually consistent. 
+  - Replication is ASYNC(Method of Copying Data from One System to Another, but with a Slight Delay), so reads are eventually consistent. 
   - Replicas can be promoted to their own DB.
-  - Applications must update the connection string to leverage read replicas
+  - Applications must update the Connection String to leverage Read Replicas
   - Example: RDS Read Replicas – Use Case
     - You have a production database that is taking on normal load. You want to run a reporting application to run some analytics. You create a Read Replica to run the new workload there. The production application is unaffected. Read replicas are used for SELECT (=read) only kind of statements (not INSERT, UPDATE, DELETE)
   - **RDS Read Replicas – Network Cost**
