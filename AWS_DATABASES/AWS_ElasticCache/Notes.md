@@ -31,7 +31,7 @@ Redis is the preferred choice over Memcached because:
 
 We will use the **Cache-Aside** Pattern because:
 - The application will first check the cache for product details.
-- If data is not in the cache, it will fetch from RDS, update ElastiCache, and return thImplement Data Sharding if dataset size is large.e data to the user.
+- If the data is not found in the cache, it will be retrieved from RDS, stored in ElastiCache, and then returned to the user. Implement data sharding if the dataset is large.
 - If data is in the cache, it is returned immediately, reducing database queries.
 
 **Step 3: Handling Cache Invalidation**
