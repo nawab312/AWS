@@ -91,6 +91,8 @@ Postgres, MySQL, MariaDB, Oracle, Microsoft SQL Server, IBM DB2, Aurora (AWS Pro
 **Patching & Maintenance**
 - Enable *Auto Minor Version Upgrades* to keep RDS updated with security patches.
 
+---
+
 - **Amazon RDS Proxy**
   - Amazon RDS Proxy is a service provided by AWS that acts as a middle layer between your application and the Amazon RDS (Relational Database Service). In simple terms, it helps manage the connection between your app and the database more efficiently.
   - **Improved Connection Management:** When your application needs to talk to a database, it opens a connection. Normally, each request to the database needs a new connection, which can quickly become slow and difficult to manage if there are many requests. RDS Proxy helps by pooling and reusing database connections, so your app doesn't need to constantly create new ones. This speeds up performance.
