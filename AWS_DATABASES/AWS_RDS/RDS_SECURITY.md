@@ -1,6 +1,6 @@
 # Amazon RDS Security
 
-Amazon RDS security involves multiple layers, including **network security, authentication, encryption, monitoring, backups, DDoS protection, and secure application access**. Below is a complete guide covering all key aspects.
+Amazon RDS Security involves multiple layers, including **Network Security, Authentication, Encryption, Monitoring, Backups, DDoS protection, and Secure Application Access**. Below is a complete guide covering all key aspects.
 
 ---
 
