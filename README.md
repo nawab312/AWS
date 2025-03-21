@@ -15,7 +15,7 @@ This repository is dedicated to AWS, featuring a comprehensive collection of not
 
 ### Compute ###
 - **EC2** https://github.com/nawab312/AWS/blob/main/Compute/EC2/Notes.md
-- **Lambda** https://github.com/nawab312/AWS/blob/main/Compute/EC2/Lambda/Notes.md
+- **Lambda** https://github.com/nawab312/AWS/blob/main/Compute/Lambda/Notes.md
 - **Elastic Beanstalk**
 
 ### Security ###
