@@ -78,3 +78,5 @@ def lambda_handler(event, context):
   - Example: A 24/7 real-time stock market data API that serves thousands of requests per second.
  
 - **Start and Stop EC2 instances based on Time** https://github.com/nawab312/AWS/blob/main/Compute/Lambda/Scenarios/Scenario1.md
+
+- **Lambda function that logs metadata of uploaded files in an S3 bucket to CloudWatch Logs** https://github.com/nawab312/AWS/blob/main/Compute/Lambda/Scenarios/Scenario3.md
