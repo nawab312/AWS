@@ -93,6 +93,7 @@ In larger organizations with multiple AWS accounts, AWS Organizations helps mana
 - *Granular IAM Policies*: IAM policies are defined to grant only the permissions required for users and roles in each account, limiting access to only the resources they need.
 - *Resource-Based Policies*: Resource-based policies, such as those for S3 or Lambda, ensure that access to resources is controlled at the resource level, allowing cross-account access only as needed.
 - *Permission Boundaries*: Permission boundaries allow you to set maximum permissions for IAM roles, ensuring that even if a role is granted broad permissions, it can only act within the boundaries defined.
+- Use **IAM Access Analyzer** to identify and mitigate excessive or unintended access. It helps you review resource access across AWS accounts and ensures that only the right entities can access your resources.
 
 ### Access Advisor ###
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
