@@ -30,7 +30,10 @@ IAM policies are documents that define permissions and are written in JSON forma
   - **IAM Roles:** Entities that can assume a set of permissions, which can be assumed by users, services, or other AWS resources. `"Principal": {"AWS": "arn:aws:iam::123456789012:role/EC2Role"}`
   - **AWS Services:** Some AWS services can be principals, such as when you give an S3 bucket permission to be accessed by Lambda or EC2. `"Principal": {"Service": "lambda.amazonaws.com"}`
   - **AWS Account:** A specific AWS account can also be a principal, allowing resources to be accessed by any user within that account. `"Principal": {"AWS": "arn:aws:iam::123456789012:root"}`
- 
+
+**Automating IAM Policy Enforcement to Avoid Security Misconfigurations:**
+- *IAM Access Analyzer* continuously analyzes IAM policies and resource-based policies to identify policies that allow unintended access. You can automate the use of Access Analyzer to identify security risks in your IAM policies, including over-permissioned roles or users.
+- Use *AWS Config* to create custom compliance rules that can automatically check if your IAM policies and roles comply with your security best practices. For example, ensure that IAM policies are not overly permissive or that MFA is enforced for users with administrative access.
 ### IAM Trust Policies ###
 A Trust Policy is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
 - **Principal:** Defines which AWS user, role, service, or account can assume the role.
@@ -94,6 +97,14 @@ In larger organizations with multiple AWS accounts, AWS Organizations helps mana
 - *Resource-Based Policies*: Resource-based policies, such as those for S3 or Lambda, ensure that access to resources is controlled at the resource level, allowing cross-account access only as needed.
 - *Permission Boundaries*: Permission boundaries allow you to set maximum permissions for IAM roles, ensuring that even if a role is granted broad permissions, it can only act within the boundaries defined.
 - Use **IAM Access Analyzer** to identify and mitigate excessive or unintended access. It helps you review resource access across AWS accounts and ensures that only the right entities can access your resources.
+
+**AWS Services for Tracking and Auditing User Activity:**
+
+To track and audit user activity across AWS accounts, the following services can be very helpful:
+- *AWS CloudTrail* provides a comprehensive audit trail of all API calls made within your AWS environment, capturing detailed information about every request. You can enable CloudTrail across all accounts within AWS Organizations and store logs centrally in a secure S3 bucket for audit and compliance purposes.
+- *AWS Config* helps track configuration changes and provides a detailed history of configuration states. It can be used to ensure that resources are properly configured, and changes are logged for auditing purposes.
+- *Amazon GuardDuty* is a threat detection service that can help identify unusual activity in your AWS environment. It helps detect malicious or unauthorized behavior, including unexpected access to sensitive data or the use of privileged IAM roles.
+- *AWS Security Hub* aggregates security findings from various AWS services (such as GuardDuty, Inspector, and Macie), helping you centrally manage and monitor the security posture of your AWS accounts.
 
 ### Access Advisor ###
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
