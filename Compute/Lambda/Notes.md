@@ -28,7 +28,7 @@
   - Example: API Gateway invokes a Lambda function synchronously and waits for the result to send the response back to the client.
 - *Error Handling* If the Lambda function fails (throws an error), the caller receives the error message directly in the response.
 
-***Asynchronous Invocation**
+**Asynchronous Invocation**
 - In an asynchronous invocation, the caller does not wait for the Lambda function to finish. The function is triggered, and the caller is immediately returned a success message, while the function continues executing in the background.
 - The function does not return any result to the caller. Instead, the invocation is considered successful once the event is passed to Lambda, and the actual processing happens independently. If the function fails, AWS retries the execution (with a backoff strategy).
   - Example: S3 events trigger Lambda functions asynchronously, and S3 doesn’t wait for the result.
