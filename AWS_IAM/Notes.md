@@ -1,53 +1,31 @@
+### Introduction to AWS IAM ###
 AWS Identity and Access Management (IAM) is a service provided by Amazon Web Services (AWS) that helps securely manage access to AWS resources. It allows you to define who (users or groups) can access specific resources and what actions they are allowed to perform on those resources. 
 
-### IAM Users ###
+![image](https://github.com/user-attachments/assets/eea1b5d3-9d89-47d3-887f-e321740b9646)
+
+### IAM Users and Groups ###
+**IAM Users**
+
 IAM user is an entity that you create in AWS to represent a person or application that interacts with AWS services and resources. Each IAM user has a unique name and can have specific permissions attached to it, such as full access to certain services or only the ability to read certain resources.
 - **Credentials:** IAM users can have credentials like passwords for AWS Management Console access, and access keys (access key ID and secret access key) for programmatic access via AWS CLI or SDKs.
 - **Permissions:** These define what the IAM user can do (e.g., create EC2 instances, view S3 buckets, etc.). Permissions are granted via **policies**.
 
-### IAM Groups ###
+**IAM Groups**
 An IAM group is a collection of IAM users. You can assign permissions to a group rather than to individual users. This makes it easier to manage permissions for multiple users with similar roles, such as an "Admin" group, a "Developer" group, or a "Read-Only" group.
 - **Group Membership:** A user can be a member of one or more IAM groups. By attaching policies to groups, you manage the access permissions for all the users in that group.
 - **Inheritance:** Any permissions assigned to the group are inherited by the IAM users in that group.
 
-### IAM Roles ###
+### IAM Roles and Permissions ###
+
+**IAM Roles**
 An IAM role is an AWS identity with specific permissions that can be assumed by users or services. Unlike users, roles are not tied to a specific person or entity but are meant to be assumed temporarily. This is useful for granting permissions to services or users that need temporary access.
-- **Temporary Security Credentials:** When a role is assumed, temporary credentials are issued to the requester, allowing them to perform actions according to the role's permissions.
-- **Use Cases:** IAM roles are commonly used in scenarios like granting EC2 instances permission to access S3 buckets or allowing cross-account access between AWS accounts.
+- *Temporary Security Credentials:* When a role is assumed, temporary credentials are issued to the requester, allowing them to perform actions according to the role's permissions.
+- *Use Cases:* IAM roles are commonly used in scenarios like granting EC2 instances permission to access S3 buckets or allowing cross-account access between AWS accounts.
 
-![image](https://github.com/user-attachments/assets/655684e2-8ee5-4a2b-b47e-22b289732bf1)
-
-![image](https://github.com/user-attachments/assets/5210df11-2c0e-456b-9b2b-ddfddeefed1a)
-
-
-![image](https://github.com/user-attachments/assets/6bee1127-9d27-46e4-a0f1-cee42cfb291b)
-
-**What is "Revoke all active sessions" in IAM Roles?**
-- The "Revoke all active sessions" option in AWS IAM roles is used to immediately invalidate all currently active sessions associated with the selected role. This forces users, applications, or EC2 instances using that role to re-authenticate before they can continue accessing AWS resources.
-- Why Use "Revoke all active sessions"?
-  - *Security Reasons* – If you suspect that a role has been compromised or misused.
-  - *Policy Updates* – When making changes to IAM policies, you might want to force immediate enforcement instead of waiting for the default session expiration.
-- How It Works
-  - IAM roles provide temporary security credentials that are valid for a *maximum of 12 hours* (depending on the session duration configured).
-  - When you click "Revoke all active sessions", AWS invalidates all issued temporary credentials.
-
-
-### IAM Policies ###
-IAM policies are documents that define permissions and are written in JSON format. They specify what actions are allowed or denied on specific AWS resources.
-- **Principal** in an IAM policy refers to the entity that is allowed or denied access to AWS resources
-  - **IAM Users:** Individual users defined within AWS IAM. `"Principal": {"AWS": "arn:aws:iam::123456789012:user/JohnDoe"}`
-  - **IAM Roles:** Entities that can assume a set of permissions, which can be assumed by users, services, or other AWS resources. `"Principal": {"AWS": "arn:aws:iam::123456789012:role/EC2Role"}`
-  - **AWS Services:** Some AWS services can be principals, such as when you give an S3 bucket permission to be accessed by Lambda or EC2. `"Principal": {"Service": "lambda.amazonaws.com"}`
-  - **AWS Account:** A specific AWS account can also be a principal, allowing resources to be accessed by any user within that account. `"Principal": {"AWS": "arn:aws:iam::123456789012:root"}`
-
-**Automating IAM Policy Enforcement to Avoid Security Misconfigurations:**
-- *IAM Access Analyzer* continuously analyzes IAM policies and resource-based policies to identify policies that allow unintended access. You can automate the use of Access Analyzer to identify security risks in your IAM policies, including over-permissioned roles or users.
-- Use *AWS Config* to create custom compliance rules that can automatically check if your IAM policies and roles comply with your security best practices. For example, ensure that IAM policies are not overly permissive or that MFA is enforced for users with administrative access.
-### IAM Trust Policies ###
-A Trust Policy is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
-- **Principal:** Defines which AWS user, role, service, or account can assume the role.
-- **Action:** Specifies the `sts:AssumeRole` action, which allows the entity to assume the role.
-- **Condition (Optional):** Specifies additional constraints for assuming the role (e.g., restricting based on source IP or MFA).
+A **Trust Policy** is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
+- *Principal:* Defines which AWS user, role, service, or account can assume the role.
+- *Action:* Specifies the `sts:AssumeRole` action, which allows the entity to assume the role.
+- *Condition (Optional):* Specifies additional constraints for assuming the role (e.g., restricting based on source IP or MFA).
 - Example Trust Policy for Cross-Account Access
 ```json
 {
@@ -84,20 +62,147 @@ A Trust Policy is a JSON document that defines which entities (users, roles, or 
 }
 ```
 
-### IAM Permissions Boundaries ###
-Permissions boundaries define the maximum permissions that an IAM user or role can have
+![image](https://github.com/user-attachments/assets/655684e2-8ee5-4a2b-b47e-22b289732bf1)
 
-### IAM Federation ###
-IAM federation allows users from external identity providers (e.g., corporate Active Directory, or a third-party service like Google) to access AWS resources without needing an AWS-specific user account. This is particularly useful for organizations that want to manage user identities in a centralized identity provider.
-- **SAML Federation:** You can use Security Assertion Markup Language (SAML) to federate identities from enterprise identity providers.
-- **Web Identity Federation:** Allows federated access using external providers like Facebook or Amazon Cognito.
+![image](https://github.com/user-attachments/assets/5210df11-2c0e-456b-9b2b-ddfddeefed1a)
 
-### Multi-Factor Authentication (MFA) ###
+
+![image](https://github.com/user-attachments/assets/6bee1127-9d27-46e4-a0f1-cee42cfb291b)
+
+**What is "Revoke all active sessions" in IAM Roles?**
+- The "Revoke all active sessions" option in AWS IAM roles is used to immediately invalidate all currently active sessions associated with the selected role. This forces users, applications, or EC2 instances using that role to re-authenticate before they can continue accessing AWS resources.
+- Why Use "Revoke all active sessions"?
+  - *Security Reasons* – If you suspect that a role has been compromised or misused.
+  - *Policy Updates* – When making changes to IAM policies, you might want to force immediate enforcement instead of waiting for the default session expiration.
+- How It Works
+  - IAM roles provide temporary security credentials that are valid for a *maximum of 12 hours* (depending on the session duration configured).
+  - When you click "Revoke all active sessions", AWS invalidates all issued temporary credentials.
+
+
+### IAM Policies and Permissions ###
+IAM policies are documents that define permissions and are written in JSON format. They specify what actions are allowed or denied on specific AWS resources.
+- **Principal** in an IAM policy refers to the entity that is allowed or denied access to AWS resources
+  - **IAM Users:** Individual users defined within AWS IAM. `"Principal": {"AWS": "arn:aws:iam::123456789012:user/JohnDoe"}`
+  - **IAM Roles:** Entities that can assume a set of permissions, which can be assumed by users, services, or other AWS resources. `"Principal": {"AWS": "arn:aws:iam::123456789012:role/EC2Role"}`
+  - **AWS Services:** Some AWS services can be principals, such as when you give an S3 bucket permission to be accessed by Lambda or EC2. `"Principal": {"Service": "lambda.amazonaws.com"}`
+  - **AWS Account:** A specific AWS account can also be a principal, allowing resources to be accessed by any user within that account. `"Principal": {"AWS": "arn:aws:iam::123456789012:root"}`
+
+**Automating IAM Policy Enforcement to Avoid Security Misconfigurations:**
+- *IAM Access Analyzer* continuously analyzes IAM policies and resource-based policies to identify policies that allow unintended access. You can automate the use of Access Analyzer to identify security risks in your IAM policies, including over-permissioned roles or users.
+- Use *AWS Config* to create custom compliance rules that can automatically check if your IAM policies and roles comply with your security best practices. For example, ensure that IAM policies are not overly permissive or that MFA is enforced for users with administrative access.
+
+**Policy Evaluation Logic in AWS IAM**
+- AWS IAM follows a policy evaluation logic to determine whether a request should be allowed or denied.
+  - *Default Deny (Implicit Deny)*
+    - If a user has no policies attached, AWS automatically denies access.
+    - This is the default behavior for any action or resource in AWS.
+  - *Explicit Allow*
+    - If a user has a policy that explicitly allows an action, AWS grants access unless there’s an explicit deny.
+  - *Explicit Deny (Overrides Everything)*
+    - If a policy contains an Explicit Deny, AWS denies the request, even if another policy allows it.
+
+### IAM Authentication and Authorization ###
+**IAM vs. Resource-Based Policies**
+- AWS allows permissions to be defined in two primary ways:
+
+![image](https://github.com/user-attachments/assets/966dbba7-c0e5-4b5e-8618-d3bf1d5ca64f)
+
+**AWS STS (Security Token Service) and Temporary Credentials**
+- AWS STS (Security Token Service) provides temporary credentials for secure, short-term access to AWS resources.
+- Temporary credentials are used in:
+  - Cross-account access
+  - IAM Roles (for EC2, Lambda, etc.)
+  - Federated Authentication (SSO, Active Directory, etc.)
+  - Example: Requesting Temporary Credentials via AWS CLI
+    ```bash
+    aws sts assume-role --role-arn "arn:aws:iam::123456789012:role/MyRole" --role-session-name "MySession"
+    ```
+
+**IAM Permissions Boundaries**
+- IAM Permissions Boundaries *limit the maximum permissions* an IAM user or role can receive
+- Even if an IAM policy grants more permissions, the boundary restricts it.
+- The user cannot perform actions outside S3, even if other policies allow them.
+```json
+{
+  "Effect": "Allow",
+  "Action": "s3:*",
+  "Resource": "arn:aws:s3:::*"
+}
+```
+
+**SCPs** 
+- Service Control Policies are a set of policies that specify what actions are allowed or denied *across the organization’s accounts including the ROOT Account*.
+- `Resource` in this case is `*` SCPs act as a guardrail and limit permissions granted by individual IAM policies.
+
+### Multi-Factor Authentication (MFA) in IAM ###
 MFA is an added layer of security that requires users to provide two forms of identification: something they know (like a password) and something they have (such as a hardware or software token).
 
-### AWS Organizations and Service Control Policies (SCPs) ###
+**Enforcing MFA for IAM Users**
+- AWS allows you to enforce MFA for IAM users through IAM Policies or AWS Organizations Service Control Policies (SCPs).
+- SCP to Require MFA Across All AWS Accounts
+- Apply this SCP to AWS Organizational Units (OUs) to enforce MFA for all IAM users in those accounts.
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    }
+  ]
+}
+```
+
+### IAM Security Best Practices ###
+**Least Privilege Principle**
+- The Least Privilege Principle means granting users and services the minimum permissions required to perform their tasks
+- How to Implement?
+  - Use IAM Roles instead of IAM Users whenever possible.
+  - Define fine-grained IAM Policies rather than using `AdministratorAccess`.
+  - Use IAM Conditions to restrict actions (e.g., limit S3 access to specific IP ranges).
+  - Regularly review and remove unnecessary permissions.
+
+**Enabling MFA for Root and IAM Users**
+
+**Regular IAM Policy Audits**
+- Use AWS IAM Access Analyzer to detect overly permissive policies.
+- Review IAM Policies every 90 days for unnecessary permissions.
+- Enable AWS CloudTrail to track IAM actions.
+- Use AWS Config Rules to monitor IAM compliance.
+
+**Rotating IAM Access Keys**
+- AWS Access Keys are a pair of credentials used to authenticate and authorize API requests made to AWS. These keys consist of:
+  - *Access Key ID:* A unique identifier for the AWS user or role making the request.
+  - *Secret Access Key:* A secret password used to sign the request, ensuring it comes from the authorized user.
+- Use AWS Secrets Manager to automate key rotation for services that require credentials.
+
+**Using IAM Access Analyzer**
+- IAM Access Analyzer identifies resources with public or cross-account access. Detects overly permissive IAM policies. Generates findings to help restrict unnecessary access.
+- How to Use?
+  - Enable IAM Access Analyzer:
+    - AWS Console → IAM → Access Analyzer → Create Analyzer
+    - Select Organization-wide or Account-wide analysis.
+  - Review findings:
+    - Check for public access to S3, IAM, Lambda, KMS, SQS, SNS.
+    - Modify policies to remove unintended access.
+  ```bash
+  aws accessanalyzer list-findings --analyzer-name <analyzer-name>
+  ```
+
+### IAM Advanced Concepts ###
+**IAM Federation**
+IAM federation allows users from external identity providers (e.g., corporate Active Directory, or a third-party service like Google) to access AWS resources without needing an AWS-specific user account. This is particularly useful for organizations that want to manage user identities in a centralized identity provider.
+- *SAML Federation:* You can use Security Assertion Markup Language (SAML) to federate identities from enterprise identity providers.
+- *Web Identity Federation:* Allows federated access using external providers like Facebook or Amazon Cognito.
+
+**AWS Organizations**
 In larger organizations with multiple AWS accounts, AWS Organizations helps manage multiple AWS accounts centrally. It allows you to organize accounts into organizational units (OUs) and apply policies that control the actions available across all accounts in an organization.
-- **SCPs:** Service Control Policies are a set of policies that specify what actions are allowed or denied **across the organization’s accounts**. `Resource` in this case is `*` SCPs act as a guardrail and limit permissions granted by individual IAM policies.
 
 **How does AWS IAM enforce least privilege access in a multi-account setup?**
 - *AWS Organizations and Service Control Policies (SCPs)*: SCPs allow centralized control over permissions across all accounts, ensuring that accounts can only access the services they need, enforcing the least privilege principle.
@@ -115,21 +220,8 @@ To track and audit user activity across AWS accounts, the following services can
 - *Amazon GuardDuty* is a threat detection service that can help identify unusual activity in your AWS environment. It helps detect malicious or unauthorized behavior, including unexpected access to sensitive data or the use of privileged IAM roles.
 - *AWS Security Hub* aggregates security findings from various AWS services (such as GuardDuty, Inspector, and Macie), helping you centrally manage and monitor the security posture of your AWS accounts.
 
-### Access Advisor ###
+**IAM Access Advisor**
 IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
-
-### Access Keys ###
-AWS Access Keys are a pair of credentials used to authenticate and authorize API requests made to AWS. These keys consist of:
-- *Access Key ID:* A unique identifier for the AWS user or role making the request.
-- *Secret Access Key:* A secret password used to sign the request, ensuring it comes from the authorized user.
-The combination of the Access Key ID and Secret Access Key is used to authenticate requests to AWS services programmatically. These keys are essential for operations like accessing S3, EC2, or Lambda programmatically via AWS SDKs, CLI, or APIs.
-
-**What are the best practices for securing access keys in AWS environments?**
-- *Use IAM Roles Instead of Access Keys:* Prefer assigning IAM roles to EC2 instances, Lambda functions, and other AWS services instead of embedding access keys. Roles are more secure and automatically managed.
-- *Enable Multi-Factor Authentication (MFA):* Require MFA for sensitive operations and access keys to provide an extra layer of security.
-- *Rotate Access Keys Regularly*
-- *Use Least Privilege Principle*
-- *Avoid Hardcoding Access Keys:* Never hardcode access keys directly into application code. Use environment variables or AWS Secrets Manager to securely manage them.
 
 ---
 
