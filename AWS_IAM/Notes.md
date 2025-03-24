@@ -22,6 +22,15 @@ An IAM role is an AWS identity with specific permissions that can be assumed by 
 
 ![image](https://github.com/user-attachments/assets/6bee1127-9d27-46e4-a0f1-cee42cfb291b)
 
+**What is "Revoke all active sessions" in IAM Roles?**
+- The "Revoke all active sessions" option in AWS IAM roles is used to immediately invalidate all currently active sessions associated with the selected role. This forces users, applications, or EC2 instances using that role to re-authenticate before they can continue accessing AWS resources.
+- Why Use "Revoke all active sessions"?
+  - *Security Reasons* – If you suspect that a role has been compromised or misused.
+  - *Policy Updates* – When making changes to IAM policies, you might want to force immediate enforcement instead of waiting for the default session expiration.
+- How It Works
+  - IAM roles provide temporary security credentials that are valid for a *maximum of 12 hours* (depending on the session duration configured).
+  - When you click "Revoke all active sessions", AWS invalidates all issued temporary credentials.
+
 
 ### IAM Policies ###
 IAM policies are documents that define permissions and are written in JSON format. They specify what actions are allowed or denied on specific AWS resources.
