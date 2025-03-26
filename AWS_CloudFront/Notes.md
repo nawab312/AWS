@@ -45,3 +45,7 @@ Amazon CloudFront is a **content delivery network (CDN)** service provided by AW
 }
 ```
 
+**S3 Static Website with CloudFront** https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website/README.md
+
+**Secure Content Delivery with Signed URLs** https://github.com/nawab312/AWS/blob/main/AWS_CloudFront/Projects/S3_Static_Website_Signed_URL/README.md
+
