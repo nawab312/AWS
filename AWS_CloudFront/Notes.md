@@ -17,3 +17,31 @@ Amazon CloudFront is a **content delivery network (CDN)** service provided by AW
  
 - **Edge Location** in AWS CloudFront is a geographically **distributed data center** where CloudFront caches copies of content to reduce latency and improve performance for end users. These locations are closer to users than the origin server (such as an S3 bucket, EC2 instance, or an HTTP server), allowing faster content delivery.
 
+**OAC (Origin Access Control)** 
+- OAC is a feature in Amazon CloudFront that enhances security when connecting CloudFront with Amazon S3 origins. Why Use OAC?
+ - Stronger Security: Uses `AWS SigV4` authentication instead of static IAM policies.
+ - Easier Policy Management: No need to manually update S3 bucket policies.
+ - Supports AWS PrivateLink & Other AWS Origins: Works with S3, AWS Application Load Balancer (ALB), and EC2 instances.
+
+*Once OAC is enabled, CloudFront automatically updates the S3 bucket policy*
+```yaml
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::your-bucket-name/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::account-id:distribution/distribution-id"
+        }
+      }
+    }
+  ]
+}
+```
+
