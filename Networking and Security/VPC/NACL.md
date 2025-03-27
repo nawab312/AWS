@@ -10,3 +10,5 @@ Network Access Control List (NACL) is an optional security layer for controlling
 ![image](https://github.com/user-attachments/assets/c841600b-72a6-460b-a2eb-583b86bf2cde)
 
 ![image](https://github.com/user-attachments/assets/6603cb23-d69a-4120-890c-b6c8d3fc7d1e)
+
+- **Rule Number * (Wildcard Rule):** In this case, the wildcard * (often interpreted as "any") doesn't directly translate to a specific rule number in AWS NACLs. This could refer to the default rule, which is applied if no other rules match the traffic. The wildcard rule (Deny all traffic) is essentially redundant because Rule #100 already allows all traffic.
