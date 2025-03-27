@@ -37,9 +37,6 @@ internet access for instances.
   - NAT Gateway (managed AWS service) and NAT Instance (self-managed EC2 instance) allow outbound internet access from private subnets.
   - NAT Gateway https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/NATGateway.md
 
-- **Rule Number * (Wildcard Rule):** In this case, the wildcard * (often interpreted as "any") doesn't directly translate to a specific rule number in AWS NACLs. This could refer to the default rule, which is applied if no other rules match the traffic. The wildcard rule (Deny all traffic) is essentially redundant because Rule #100 already allows all traffic.
-
-
 - **VPC Peering** 
   - Direct connection between two VPCs for private communication.
   - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCPeering.md
