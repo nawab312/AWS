@@ -136,6 +136,32 @@ Correct Answer: ALB returns HTTP 503 errors when all targets in the target group
 
 ---
 
+Question:
+
+Your company is using an AWS Application Load Balancer (ALB) to route traffic to an auto-scaled group of EC2 instances. You recently added a new target group and registered instances, but the ALB is still not routing traffic to them. The application is running on port 8080 on the instances.
+
+What is the MOST LIKELY reason for this issue?
+
+- The ALB security group does not allow inbound traffic on port 8080.
+- The target group is using HTTP (port 80), but the application runs on port 8080.
+- The ALB listener is not configured to forward requests to the new target group.
+- The EC2 instances are missing IAM permissions to accept ALB traffic.
+
+Correct Answer:
+- The target group is using HTTP (port 80), but the application runs on port 8080.
+  - ALB forwards requests to the target group’s defined port.
+  - If your target group expects traffic on port 80, but your app listens on 8080, health checks will fail → ALB won't route traffic.
+- The ALB listener is not configured to forward requests to the new target group.
+  - ALB needs a listener rule to forward traffic to the correct target group.
+  - If the listener isn’t updated, it won’t send traffic to the new group.
+ 
+Why Not the Other Options?
+
+![image](https://github.com/user-attachments/assets/bca0d252-cc6e-4ae6-95e5-d4fd1a440aae)
+
+---
+
+
 
 
 **Apache Webserver on 2 EC2 with LB** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Projects/Apache2_WebServer_on_EC2_with_LB.md
