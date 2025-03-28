@@ -55,8 +55,6 @@ internet access for instances.
   - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCEndpoint.md
  
 - **DNS Settings**
-
-![image](https://github.com/user-attachments/assets/da768319-7a25-432d-bba5-ad1e5381c3eb)
  - *Enable DNS Resolution*
    - This setting is enabled, meaning EC2 instances inside this VPC can use AWS's internal DNS resolver (`169.254.169.253`).
    - With this option enabled, instances in private and public subnets can resolve domain names like:
