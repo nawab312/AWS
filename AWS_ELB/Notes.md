@@ -6,6 +6,11 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
 - **Network Load Balancer (NLB):** Operating at the transport layer (Layer 4), NLB is optimized for high-performance, low-latency, and high-throughput traffic. It is best for applications that require extreme performance and static IP addresses.
 - **Gateway Load Balancer (GWLB):** Intended for third-party virtual appliances, such as firewalls, it transparently scales and manages traffic between networks.
 
+**Target Types**
+
+![image](https://github.com/user-attachments/assets/a63bd173-8283-40ba-88fb-b11866fa4784)
+
+
 ### Key Concepts and Features ###
 - **Health Checks:** ELB continuously monitors the health of its targets. Unhealthy targets are automatically removed from the pool, ensuring that only healthy instances serve traffic.
 - **Listeners and Rules:** A listener is a process that checks for connection requests. For ALB, you can define routing rules based on host headers, path patterns, or query strings.
@@ -41,8 +46,6 @@ When a client (like a browser or mobile app) sends a request to a website, it in
   - **CORS Handling** → Uses `Access-Control-Allow-Origin` for cross-origin requests.
   - **Debugging** → `X-Amzn-Trace-Id` helps track requests in AWS logs.
 ![image](https://github.com/user-attachments/assets/6a0e1785-6c54-467a-831e-6a0ace792369)
-
-
  
 ### Listener & Listener Rules ###
 A **listener** in AWS Application Load Balancer (ALB) is a process that listens for incoming client requests on a **specified port and protocol** and forwards them to the target groups based on rules.
