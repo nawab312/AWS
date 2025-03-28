@@ -33,10 +33,9 @@
 - **Route 53–Hosted Zones** Hosted Zone is a container for DNS records for a specific domain. It is a fundamental concept for managing your domain names and routing traffic in AWS. A hosted zone acts like a directory of DNS records that define how traffic is directed for a domain (e.g.,example.com) or subdomains (e.g., www.example.com).
   - **Public Hosted Zones** These are used for domains that are publicly accessible on the internet (e.g., websites or services exposed to the public). Public hosted zones contain records that allow domain names to resolve to IP addresses over the internet.
   - **Private Hosted Zones** These are used for domains that are only accessible within an Amazon VPC ( Meaning only AWS resources can query it).However, there’s no restriction on what kind of IP addresses you store inside PHZ. Private hosted zones are ideal for managing internal services within AWS, such as private APIs or databases that shouldn’t be publicly accessible.
-    - It can store private AWS IPs (10.0.0.10)
-    - It can store private on-prem IPs (192.168.1.100)
-    - It can even store public IPs (8.8.8.8)
-    - 
+    - It can store private AWS IPs (`10.0.0.10`)
+    - It can store private on-prem IPs (`192.168.1.100`)
+    - It can even store public IPs (`8.8.8.8`)
  
 ![image](https://github.com/user-attachments/assets/9b2aed3c-bc87-466f-83ca-eb6efc3dc98b) ![image](https://github.com/user-attachments/assets/2a57424b-7652-48e8-8c07-dce3eb48188b)
 
