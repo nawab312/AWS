@@ -113,6 +113,19 @@ The request is coming to api.example.com/admin/1. Let's analyze the ALB routing 
   - **RequestProcessingTime:** The time it takes the ALB to process a request.
   - **TargetProcessingTime:** The time it takes for the target to process the request.
   - **ResponseProcessingTime:** The time it takes the ALB to send the response back to the client.
+ 
+---
+
+Question:
+
+Your company has deployed an Application Load Balancer (ALB) in AWS to handle incoming traffic for a web application. The ALB routes requests to a group of EC2 instances based on URL path-based routing. Recently, users started reporting intermittent HTTP 503 errors when accessing certain application endpoints.
+
+What is the MOST LIKELY cause of these intermittent 503 Service Unavailable errors?
+
+- The ALB security group is blocking inbound traffic from users.
+- The ALB target group has unhealthy instances due to failed health checks.
+- The EC2 instances are blocking ALB requests in their security groups.
+- The ALB has reached its maximum request limit and is throttling connections.
 
 
 **Apache Webserver on 2 EC2 with LB** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Projects/Apache2_WebServer_on_EC2_with_LB.md
