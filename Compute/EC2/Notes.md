@@ -33,7 +33,7 @@
 **EC2 Placement Groups** are a way to control the placement of instances within a specific availability zone (AZ) to meet the requirements of your application. 
 Placement groups enable you to manage how your EC2 instances are physically located on underlying hardware, which can help improve performance, fault tolerance, and scalability. 
 There are three types of placement groups in AWS:
-- **Cluster Placement Group**
+- *Cluster Placement Group*
   - Purpose: Used to launch instances close to each other within a single Availability Zone (AZ) for low-latency, high- throughput communication
   - Use Case: Ideal for applications that require high-performance computing (HPC) (that rely on fast data transfer between instances), like big data processing, scientific simulations, or gaming workloads, where network performance and low latency are critical.
   - Key Features:
@@ -41,19 +41,37 @@ There are three types of placement groups in AWS:
     - Ensures low-latency communication between instances.
     - It’s important to note that instances in a cluster placement group may share the same underlying hardware, so there's a risk of hardware failure affecting all instances in the group.
   ![image](https://github.com/user-attachments/assets/ac2361d3-1d5e-418a-ba84-2082c603ccb1)
-- **Spread Placement Group**
+- *Spread Placement Group*
   - Distributes instances across multiple distinct underlying hardware to reduce the risk of correlated failures, ensuring high availability.
   - Use Case: Suitable for applications that require high availability but are not dependent on low-latency communication between instances
   - Key Features:
     - Instances are spread across different physical hardware within the same AZ.
     - Can have up to 7 running instances per AZ in a spread placement group.
   ![image](https://github.com/user-attachments/assets/0078b87f-e09c-4a9e-bdd1-fc2510af3e53)
-- **Partition Placement Group**
+- *Partition Placement Group*
   - Purpose: Divides the instances into logical groups (partitions) within a single AZ or across multiple AZs, ensuring that the instances in each partition do not share the same underlying hardware.
   - Key Features:
     - Instances are grouped into partitions, and each partition is placed on distinct hardware
     - Instances in different partitions don’t share the same underlying hardware, providing fault isolation.
   ![image](https://github.com/user-attachments/assets/aa18713a-065b-46ff-9718-a896b3727776)
+
+**DNS Resolution**
+The `/etc/resolv.conf` file in an EC2 instance (or any Linux system) is used to configure DNS (Domain Name System) resolution. It tells the instance which DNS servers to use to convert domain names (like google.com) into IP addresses.
+
+Your EC2 instance needs to resolve domain names for various tasks, such as:
+- Connecting to external APIs (e.g., `api.example.com`)
+- Updating software (e.g., `yum update`, `apt update`)
+- Accessing AWS services via domain names (e.g., `s3.amazonaws.com`)
+
+```bash
+cat /etc/resolv.conf
+nameserver 169.254.169.253
+options edns0
+```
+
+`169.254.169.253` is a special *AWS Internal DNS Resolver* that works inside a VPC.
+
+
 
 
 
