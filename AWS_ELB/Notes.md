@@ -127,6 +127,16 @@ What is the MOST LIKELY cause of these intermittent 503 Service Unavailable erro
 - The EC2 instances are blocking ALB requests in their security groups.
 - The ALB has reached its maximum request limit and is throttling connections.
 
+Correct Answer: ALB returns HTTP 503 errors when all targets in the target group are unhealthy
+- HTTP 503 - "Service Unavailable" means that the ALB cannot forward requests because it has no healthy targets
+- ALB routes requests to registered targets (EC2, ECS, Lambda, etc.)
+- If all targets in the target group are unhealthy, ALB has no backend to forward the request to → returns HTTP 503
+
+![image](https://github.com/user-attachments/assets/00237dea-5f2e-4927-8fe4-f0a28b1e05f1)
+
+---
+
+
 
 **Apache Webserver on 2 EC2 with LB** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Projects/Apache2_WebServer_on_EC2_with_LB.md
 
