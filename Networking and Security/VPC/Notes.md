@@ -53,3 +53,18 @@ internet access for instances.
   - *VPC Gateway Endpoints:* For S3 and DynamoDB access without internet.
   - *VPC Interface Endpoints:* For private access to AWS services like SNS, SQS, etc.
   - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/VPCEndpoint.md
+ 
+- **DNS Settings**
+
+![image](https://github.com/user-attachments/assets/da768319-7a25-432d-bba5-ad1e5381c3eb)
+ - *Enable DNS Resolution*
+   - This setting is enabled, meaning EC2 instances inside this VPC can use AWS's internal DNS resolver (`169.254.169.253`).
+   - With this option enabled, instances in private and public subnets can resolve domain names like:
+     - AWS internal resources: `ip-10-0-0-12.ec2.internal`
+     - Public domains: `google.com`, `s3.amazonaws.com` (if a NAT gateway or internet access is configured).
+ - *Enable DNS Hostnames*
+   - Since this is disabled, EC2 instances launched in this VPC won’t get a public DNS name, even if they have a public IP.
+   - This means:
+     - Private instances will not have a hostname like `ip-10-0-0-12.ec2.internal`.
+     - Public instances will not get an AWS public DNS like `ec2-52-14-22-11.compute-1.amazonaws.com`.
+
