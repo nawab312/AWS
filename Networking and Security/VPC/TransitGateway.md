@@ -10,8 +10,18 @@ AWS Transit Gateway (TGW) is a highly scalable and flexible service that acts as
   - AWS Direct Connect (for high-performance, low-latency connections to your on-premises network)
 
  ### How AWS Transit Gateway Works: ###
- - **Attachments:** You create a Transit Gateway and attach VPCs, VPNs, or Direct Connect connections to it. This acts as a "hub" where all the traffic flows.
- - **Routing:** Each attachment has its own routing table. You can configure the routing tables to define how traffic flows between the connected networks. For example, you can define that VPC-A can communicate with VPC-B but not with VPC-C.
+- **Attachments:** You create a Transit Gateway and attach VPCs, VPNs, or Direct Connect connections to it. This acts as a "hub" where all the traffic flows.
+- **Routing:** Each attachment has its own routing table. You can configure the routing tables to define how traffic flows between the connected networks. For example, you can define that VPC-A can communicate with VPC-B but not with VPC-C.
 - **Use Cases**:
   - **Multi-VPC Architectures:** Connecting multiple VPCs across different regions or accounts in a large organization.
   - **Hybrid Cloud Architectures:** Connecting on-premises networks to multiple VPCs using VPN or Direct Connect.
+
+Your company is setting up a multi-account AWS environment using AWS Organizations.
+- A centralized networking account manages all VPCs across multiple accounts.
+- Application workloads are deployed in separate AWS accounts (e.g., Dev, Staging, Prod).
+- Each AWS account has its own VPC with non-overlapping CIDR ranges.
+- You are tasked with enabling secure and efficient communication between these VPCs and a shared services VPC that hosts centralized databases and authentication services.
+
+![image](https://github.com/user-attachments/assets/e6893ce9-6816-4642-9327-70a0cc07d26c)
+
+
