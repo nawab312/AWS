@@ -183,17 +183,31 @@ MFA is an added layer of security that requires users to provide two forms of id
 - Use AWS Secrets Manager to automate key rotation for services that require credentials.
 
 **Using IAM Access Analyzer**
-- IAM Access Analyzer identifies resources with public or cross-account access. Detects overly permissive IAM policies. Generates findings to help restrict unnecessary access.
-- How to Use?
-  - Enable IAM Access Analyzer:
-    - AWS Console → IAM → Access Analyzer → Create Analyzer
-    - Select Organization-wide or Account-wide analysis.
-  - Review findings:
-    - Check for public access to S3, IAM, Lambda, KMS, SQS, SNS.
-    - Modify policies to remove unintended access.
-  ```bash
-  aws accessanalyzer list-findings --analyzer-name <analyzer-name>
-  ```
+
+IAM Access Analyzer is an AWS security tool that helps identify overly permissive policies by analyzing IAM roles, S3 bucket policies, and other access controls. It detects unintended public and cross-account access to AWS resources. Key Features:
+- Detects Public & Cross-Account Access
+  - Identifies S3 buckets, IAM roles, KMS keys, Lambda functions, and SQS queues exposed to external accounts.
+  - Alerts when resources are accessible by **"Principal: "* or external AWS accounts.
+- Provides Policy Validation & Recommendations
+  - Analyzes IAM policies and suggests least privilege permissions.
+  - Detects policy misconfigurations (e.g., full `"Action": "*"`, `"Resource": "*"`, `"Effect": "Allow"`).
+ 
+How to Use IAM Access Analyzer
+- Enable IAM Access Analyzer
+  - Navigate to AWS IAM Console → Access Analyzer.
+  - Click Create Analyzer and select the AWS Region.
+  - Choose the scope:
+    - Single account: Analyzes resources within the current AWS account.
+    - Organization-wide: Analyzes resources across multiple AWS accounts.
+- Review Findings
+  - Findings are categorized as:
+    - Public access: Resources exposed to `"Principal": "*"` (anyone on the internet).
+    - Cross-account access: Resources shared with specific AWS accounts.
+    - Third-party access: Resources accessible by external AWS services.
+  - Findings include:
+    - Affected resource (e.g., `s3://my-bucket`)
+    - Access granted (who can access it)
+    - Policy statement causing the issue
 
 ### IAM Advanced Concepts ###
 **IAM Federation**
