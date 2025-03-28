@@ -187,7 +187,7 @@ MFA is an added layer of security that requires users to provide two forms of id
 IAM Access Analyzer is an AWS security tool that helps identify overly permissive policies by analyzing IAM roles, S3 bucket policies, and other access controls. It detects unintended public and cross-account access to AWS resources. Key Features:
 - Detects Public & Cross-Account Access
   - Identifies S3 buckets, IAM roles, KMS keys, Lambda functions, and SQS queues exposed to external accounts.
-  - Alerts when resources are accessible by **"Principal: "* or external AWS accounts.
+  - Alerts when resources are accessible by *Principal:** or external AWS accounts.
 - Provides Policy Validation & Recommendations
   - Analyzes IAM policies and suggests least privilege permissions.
   - Detects policy misconfigurations (e.g., full `"Action": "*"`, `"Resource": "*"`, `"Effect": "Allow"`).
