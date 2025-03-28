@@ -16,6 +16,7 @@ Your company has a hybrid AWS architecture where:
 - The ALB routes traffic to EC2 instances in private subnets within the same VPC.
 - A private ALB is deployed in VPC-B to serve internal microservices.
 - The private ALB needs to be accessed by workloads in VPC-A.
+
 Which of the following is the best solution to enable secure and scalable communication between workloads in VPC-A and the private ALB in VPC-B?
 - Create a VPC Peering connection between VPC-A and VPC-B and update route tables to allow traffic.
 - Attach both VPCs to a Transit Gateway (TGW) and configure routing to allow traffic between them.
