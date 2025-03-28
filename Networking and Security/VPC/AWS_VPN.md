@@ -33,6 +33,16 @@ Integrated with AWS Transit Gateway for multi-VPC connectivity.
 **Redundancy and High Availability**
 - AWS Site-to-Site VPN provides high availability through the use of *two VPN tunnels*. AWS automatically provisions two VPN tunnels for each VPN connection, ensuring that if one tunnel goes down, the other can continue to carry traffic. You can configure your on-premises VPN device to monitor both tunnels and automatically failover to the backup tunnel if necessary.
 
+EC2 Instance resides in a Private Subnet within a VPC that connects to the On-Premises Network via a Site-to-Site VPN
+- Ensure the Route to On-Premises Exists
+
+  ![image](https://github.com/user-attachments/assets/1cbc4b5e-f7f2-4b92-be70-35063567bf7f)
+- Network ACL (NACL) Configuration
+
+  ![image](https://github.com/user-attachments/assets/78145cb2-593e-4f15-adbd-3d92556656ee) ![image](https://github.com/user-attachments/assets/9f98352b-1eb4-4755-908c-a019f831fa60)
+- Security Group Settings
+  - Ensure your EC2 security group allows outbound traffic to the database port (3306 for MySQL).
+
 ### AWS Client VPN ###
 
 AWS Client VPN is a fully managed, elastic VPN service that allows users to securely access AWS resources and on-premises networks from any device, regardless of location. It enables secure remote access for individual users (like employees or contractors) to AWS VPCs (Virtual Private Clouds) and on-premises networks, using a secure VPN connection.
