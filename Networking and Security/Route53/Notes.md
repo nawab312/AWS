@@ -70,6 +70,43 @@
 - The **ALIAS** record is a special AWS Route 53 feature that allows you to point a *root domain (e.g., abc.com) or subdomain (e.g., api.abc.com)* directly to AWS resources like Elastic Load Balancers (ELBs), CloudFront distributions, or
 S3 buckets, *without needing to use the resource’s DNS name*.If you use an ALIAS record for `www.example.com` pointing to an AWS resource (e.g., `example.elasticloadbalancing.com`), the DNS resolver *will directly return the IP address of the AWS resource in one step*, without the need for another query.
 
+**Routing Policies** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/Route53/RoutingPolicies.md
+
+---
+
+**Route 53 Health Checks & DNS Failover**
+
+Route 53 health checks are a function that allow you to monitor the health of selected types of AWS resources or any endpoints that can respond to requests. Route 53 health checks can provide notifications of a change in the state of the health check and can help Route 53 to recognize when a record is pointing to an unhealthy resource, allowing Route 53 to failover to an alternate record.
+
+![image](https://github.com/user-attachments/assets/2ce883cf-f41c-4333-b446-122a14e780a3)
+
+Types of Route 53 health checks
+- *Endpoint health checks*: You can configure to monitor an endpoint that you specify by IP address or domain name. Within a fixed time interval that you specify. Route 53 submits automated requests over the Internet to your application, server, or other resources to verify that it is accessible, available, and functioning properly
+- *Health checks that monitor other health checks*: This type of health check monitors other Route 53 health checks. Basically, a "parent" health check will monitor one or more "child" health checks. If the provided number of child health checks report as healthy, then parent health checks will also be healthy. If the number of healthy "child" checks falls below a set threshold, the "parent" check will be unhealthy.
+![image](https://github.com/user-attachments/assets/e779585b-8cde-450c-ad96-e6ed8ad70aa0)
+- *Health checks for Amazon CloudWatch Alarms*: You can also perform health checks associated with alarms created in the CloudWatch service. These types of Route 53 health checks monitor CloudWatch data streams sent to previously configured alarms. If the status of the CloudWatch alarm is OK, the health check will report as OK.
+
+Route 53 active-passive vs active-active failover
+
+*Active-active failover*
+- Active-active failover is used when you want all of your app nodes in all regions to be available simultaneously. Use this failover configuration when you want all of your resources to be available the majority of the time.
+- In this example, both region 1 and region 2 are active all the time. When a resource becomes unavailable, Route 53 can detect that it's unhealthy and stop including it when responding to queries.
+- For example, this can be created by using Route 53 weighted, geolocation, geoproximity, latency and multivalue answer routing policy.
+
+![image](https://github.com/user-attachments/assets/c3e3550d-7737-475b-908e-976f2f5bd728)
+
+*Active-passive failover*
+- Use an active-passive failover configuration when you want a primary resource or group of resources to be available the majority of the time and you want a secondary resource or group of resources to be on standby in case all the primary resources become unavailable.
+- In this example, only region 1 is active all the time and region 2 will be only active when failover starts (after region 1 is unavailable).
+- This can be created by using Route 53 failover routing policy.
+
+![image](https://github.com/user-attachments/assets/e7d7d788-c061-493f-b782-e1e56dea0117)
+
+
+
+
+
+
 
 
 
