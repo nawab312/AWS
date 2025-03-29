@@ -12,6 +12,8 @@ Key Principles of the AWS Security Pillar:
 - Threat Detection & Incident Response: Monitor logs with AWS CloudTrail, GuardDuty, and Security Hub.
 - Compliance & Auditability: Use AWS Config, AWS Audit Manager, and AWS Artifact for compliance.
 
+---
+
 **Shared Responsibility Model for AWS Security**
 
 AWS Responsibilities (Security “OF” the Cloud)
@@ -28,6 +30,8 @@ Customer Responsibilities (Security “IN” the Cloud)
 Example: A company running an e-commerce website on AWS:
 - AWS secures the physical data centers and cloud infrastructure.
 - The company must enable IAM, encryption, and logging to secure customer transactions.
+
+---
 
 **AWS Compliance Frameworks (SOC, PCI DSS, HIPAA, GDPR)**
 
@@ -67,6 +71,8 @@ Example: PCI DSS in Action
   - Stores credit card data in an encrypted Amazon RDS database.
   - Uses AWS WAF to prevent cyberattacks.
   - Downloads AWS PCI DSS compliance reports from AWS Artifact for auditors.
+
+---
  
 **AWS Organizations & SCPs (Service Control Policies) for Multi-Account Security**
 
