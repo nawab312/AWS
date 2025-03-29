@@ -88,3 +88,19 @@ def lambda_handler(event, context):
 
 - **Scenario 2: Logging Metadata of S3 Uploaded Files to CloudWatch**
   - https://github.com/nawab312/AWS/blob/main/Compute/Lambda/Scenarios/Scenario3.md
+
+---
+
+*Quesion* Your company runs a high-throughput API using AWS API Gateway and Lambda. Recently, you noticed increased latency and throttling errors (429 status codes) during peak traffic hours.
+Which of is the BEST way to optimize performance and reduce throttling?
+
+*Answer*
+- Throttling (429 errors) occurs when API Gateway or Lambda reaches its rate limits.
+- Increased latency can be due to Lambda cold starts during high traffic.
+
+Use Provisioned Concurrency
+- AWS Lambda uses on-demand execution, which can cause cold starts when traffic surges.
+- Provisioned Concurrency keeps a pool of initialized Lambda instances ready to handle requests instantly, reducing cold starts and improving latency.
+
+
+
