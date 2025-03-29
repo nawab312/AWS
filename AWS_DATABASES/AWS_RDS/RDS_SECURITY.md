@@ -61,6 +61,7 @@ Amazon RDS Security involves multiple layers, including **Network Security, Auth
   - **Automated backups**
   - **Read replicas**
 - **Important:** Encryption **cannot** be enabled on an existing RDS instance; you must create a new encrypted instance.
+- IAM role or user accessing the database must have explicit permission to use that KMS key for decryption. If the application lacks this permission, it cannot access the encrypted RDS instance, causing connection failures.
 
 ### **Encryption in Transit**
 - Use **SSL/TLS encryption** for secure data transmission.
