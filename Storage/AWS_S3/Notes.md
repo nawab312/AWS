@@ -20,6 +20,9 @@ How does Amazon S3 ensure data **Durability** and **Availability**?
 - Amazon S3 achieves 99.999999999% (11 nines) durability, meaning data loss probability is extremely low. This is achieved through:
   - When you upload an object to S3 (except for **One Zone-IA**), Amazon S3 automatically replicates it across at **least 3 Availability Zones (AZs)** in the region.
   - **S3 Versioning** allows multiple versions of an object, preventing accidental deletions or overwrites.
+  - MFA Delete for Extra Protection:
+    - Requires multi-factor authentication (MFA) to permanently delete an object version.
+    - Prevents accidental or unauthorized deletions, adding an extra layer of security.
   - **Cross-Region Replication (CRR)** for Extra Protection
 - Amazon S3 provides high availability by ensuring objects are always accessible when needed. This is achieved through:
   - Data is stored across multiple AZs, so even if one AZ goes down, S3 can serve the data from other locations.
