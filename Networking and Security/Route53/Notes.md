@@ -26,8 +26,8 @@
   - Record Type – e.g., A or AAAA
   - Value – e.g., 12.34.56.78
   - Routing Policy – How Route 53 responds to Queries
-  - TTL – Amount of time the record cached at DNS Resolvers
-
+  - TTL – DNS caching is the process where DNS resolvers (servers that handle domain name resolution) store the results of DNS lookups for a certain period of time, known as the Time to Live (TTL).
+    
 ![image](https://github.com/user-attachments/assets/0dec6009-08f7-4088-95e3-24bf36d70bb3)
 
 - **Route 53–Hosted Zones** Hosted Zone is a container for DNS records for a specific domain. It is a fundamental concept for managing your domain names and routing traffic in AWS. A hosted zone acts like a directory of DNS records that define how traffic is directed for a domain (e.g.,example.com) or subdomains (e.g., www.example.com).
