@@ -62,6 +62,7 @@ Key RDS Monitoring Tools
 - CPUUtilization → High values indicate heavy query load.
 - FreeableMemory → It is the amount of unused memory (RAM) available in your RDS instance. Low values indicate possible memory bottlenecks.
 - ReadIOPS / WriteIOPS → High values indicate heavy disk usage.
+- DiskQueueDepth → This metric measures the number of I/O operations waiting to be processed by the storage system. High values can indicate disk I/O bottlenecks, often caused by insufficient disk throughput or heavy write operations.
 - DatabaseConnections → Tracks active connections.
 - ReplicaLag → Measures the delay between the primary database (master) and its read replicas in RDS.
 - SwapUsage → It refers to the amount of disk space being used as a temporary substitute for RAM when your system runs out of memory (RAM). If SwapUsage is HIGH, it means:
