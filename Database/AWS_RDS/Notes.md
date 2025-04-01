@@ -71,7 +71,6 @@ Key RDS Monitoring Tools
 Use CloudWatch Alarms to notify when thresholds are exceeded
 
 *RDS Performance Insights*
-
 Amazon RDS Performance Insights is a powerful tool that helps you monitor and analyze the performance of your RDS database. It provides deep insights into query execution times, wait events, and overall database load. This helps you identify performance bottlenecks, optimize queries, and troubleshoot issues more effectively. Key Features of RDS Performance Insights:
 - Top SQL Queries
   - Shows which queries are consuming the most resources.
@@ -104,7 +103,6 @@ Enhanced Monitoring provides detailed operating system (OS) level metrics for yo
   - You can also see which processes are consuming the most resources on the instance. This is helpful for identifying runaway processes or queries that are hogging CPU or memory.
  
 *RDS Logs (CloudWatch Logs & Console Logs)*
-
 AWS RDS Logs are important tools for troubleshooting and monitoring your RDS databases. Logs provide detailed information about the database's activities, including errors, slow queries, and general operations. By using CloudWatch Logs and Console Logs, you can easily access and analyze this data to identify and resolve issues. Types of RDS Logs:
 - Error Logs
   - What it shows: Logs any critical errors or issues within the database, such as crashes, startup failures, or connection issues.
@@ -136,7 +134,6 @@ How to Access RDS Logs:
   ```
 
 *Amazon RDS Proxy Monitoring*
-
 Key Metrics for Monitoring RDS Proxy:
 - Active Connections
   - What it shows: The number of active connections that RDS Proxy is maintaining to the database.
