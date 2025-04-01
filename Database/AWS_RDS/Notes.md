@@ -60,7 +60,7 @@ Key RDS Monitoring Tools
 
 *Amazon CloudWatch Metrics*
 - CPUUtilization → High values indicate heavy query load.
-- FreeableMemory → It is the amount of unused memory (RAM) available in your RDS instance.. Low values indicate possible memory bottlenecks.
+- FreeableMemory → It is the amount of unused memory (RAM) available in your RDS instance. Low values indicate possible memory bottlenecks.
 - ReadIOPS / WriteIOPS → High values indicate heavy disk usage.
 - DatabaseConnections → Tracks active connections.
 - ReplicaLag → Measures the delay between the primary database (master) and its read replicas in RDS.
