@@ -1,10 +1,17 @@
-AWS Elastic Load Balancer (ELB) is a fully managed service that automatically distributes incoming application traffic across multiple targets—such as EC2 instances, containers, and IP addresses—in one or more Availability Zones.
+AWS Elastic Load Balancer (ELB) is a fully managed service that automatically distributes incoming application traffic across multiple targets—such as EC2 instances, containers, and IP addresses—in one or more Availability Zones. 
+
+*Minimum Number of Availability Zones (AZs) Required For An AWS Application Load Balancer (ALB) is 2*
 
 ### ELB Types and Their Use Cases ###
 - **Classic Load Balancer (CLB):** The original load balancer, suitable for simple load balancing of traffic across EC2 instances. It supports both HTTP/HTTPS and TCP protocols but lacks many advanced features.
 - **Application Load Balancer (ALB):** Designed for modern application architectures, ALB works at the application layer (Layer 7) and supports advanced routing, host/path-based routing, WebSocket, and HTTP/2. It is ideal for microservices and container-based applications.
 - **Network Load Balancer (NLB):** Operating at the transport layer (Layer 4), NLB is optimized for high-performance, low-latency, and high-throughput traffic. It is best for applications that require extreme performance and static IP addresses.
 - **Gateway Load Balancer (GWLB):** Intended for third-party virtual appliances, such as firewalls, it transparently scales and manages traffic between networks.
+
+**Target Types**
+
+![image](https://github.com/user-attachments/assets/a63bd173-8283-40ba-88fb-b11866fa4784)
+
 
 ### Key Concepts and Features ###
 - **Health Checks:** ELB continuously monitors the health of its targets. Unhealthy targets are automatically removed from the pool, ensuring that only healthy instances serve traffic.
@@ -41,8 +48,6 @@ When a client (like a browser or mobile app) sends a request to a website, it in
   - **CORS Handling** → Uses `Access-Control-Allow-Origin` for cross-origin requests.
   - **Debugging** → `X-Amzn-Trace-Id` helps track requests in AWS logs.
 ![image](https://github.com/user-attachments/assets/6a0e1785-6c54-467a-831e-6a0ace792369)
-
-
  
 ### Listener & Listener Rules ###
 A **listener** in AWS Application Load Balancer (ALB) is a process that listens for incoming client requests on a **specified port and protocol** and forwards them to the target groups based on rules.
@@ -113,6 +118,53 @@ The request is coming to api.example.com/admin/1. Let's analyze the ALB routing 
   - **RequestProcessingTime:** The time it takes the ALB to process a request.
   - **TargetProcessingTime:** The time it takes for the target to process the request.
   - **ResponseProcessingTime:** The time it takes the ALB to send the response back to the client.
+ 
+---
+
+Question:
+
+Your company has deployed an Application Load Balancer (ALB) in AWS to handle incoming traffic for a web application. The ALB routes requests to a group of EC2 instances based on URL path-based routing. Recently, users started reporting intermittent HTTP 503 errors when accessing certain application endpoints.
+
+What is the MOST LIKELY cause of these intermittent 503 Service Unavailable errors?
+
+- The ALB security group is blocking inbound traffic from users.
+- The ALB target group has unhealthy instances due to failed health checks.
+- The EC2 instances are blocking ALB requests in their security groups.
+- The ALB has reached its maximum request limit and is throttling connections.
+
+Correct Answer: ALB returns HTTP 503 errors when all targets in the target group are unhealthy
+- HTTP 503 - "Service Unavailable" means that the ALB cannot forward requests because it has no healthy targets
+- ALB routes requests to registered targets (EC2, ECS, Lambda, etc.)
+- If all targets in the target group are unhealthy, ALB has no backend to forward the request to → returns HTTP 503
+
+![image](https://github.com/user-attachments/assets/00237dea-5f2e-4927-8fe4-f0a28b1e05f1)
+
+---
+
+Question:
+
+Your company is using an AWS Application Load Balancer (ALB) to route traffic to an auto-scaled group of EC2 instances. You recently added a new target group and registered instances, but the ALB is still not routing traffic to them. The application is running on port 8080 on the instances.
+
+What is the MOST LIKELY reason for this issue?
+
+- The ALB security group does not allow inbound traffic on port 8080.
+- The target group is using HTTP (port 80), but the application runs on port 8080.
+- The ALB listener is not configured to forward requests to the new target group.
+- The EC2 instances are missing IAM permissions to accept ALB traffic.
+
+Correct Answer:
+- The target group is using HTTP (port 80), but the application runs on port 8080.
+  - ALB forwards requests to the target group’s defined port.
+  - If your target group expects traffic on port 80, but your app listens on 8080, health checks will fail → ALB won't route traffic.
+- The ALB listener is not configured to forward requests to the new target group.
+  - ALB needs a listener rule to forward traffic to the correct target group.
+  - If the listener isn’t updated, it won’t send traffic to the new group.
+ 
+Why Not the Other Options?
+
+![image](https://github.com/user-attachments/assets/bca0d252-cc6e-4ae6-95e5-d4fd1a440aae)
+
+---
 
 **Troubleshoot Intermittent 504 Gateway Timeout Errors for an Application behind an AWS ALB** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/ELB/Scenarios/Scenario1.md
 
