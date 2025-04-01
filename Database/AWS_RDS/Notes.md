@@ -160,6 +160,68 @@ Key Metrics for Monitoring RDS Proxy:
 
 ---
 
+**RDS Troubleshooting Based on Metrics**
+
+*CPUUtilization (High)*
+- Analyze Query Performance: Use RDS Performance Insights or the Slow Query Log to identify resource-hungry queries.
+- Scale Vertically: Increase the instance size (CPU capacity) if necessary.
+- Optimize Queries: Optimize slow-running queries, add indexes, or re-architect the queries.
+- Offload Read Traffic: Add read replicas if read traffic is high.
+
+*FreeableMemory (Low)*
+- Scale Vertically: Increase the memory (RAM) for the instance if memory usage is consistently high.
+- Optimize Queries: Check for memory leaks or inefficient queries that might consume excessive memory.
+- Increase Swap Usage: If the instance is swapping too much, consider increasing the instance size.
+- Enable Enhanced Monitoring: Get real-time OS-level metrics to pinpoint processes using excessive memory.
+
+*ReadIOPS (High)*
+- Add Read Replicas: Distribute read traffic across multiple replicas to alleviate pressure on the primary database.
+- Optimize Read Queries: Check if any queries are inefficiently reading too much data. Use indexes where necessary.
+- Analyze Query Cache: Enable query caching if applicable to reduce repetitive reads.
+
+*WriteIOPS (High)*
+- Optimize Write Queries: Identify and optimize slow write queries. Consider batching writes if possible.
+- Use Provisioned IOPS: If using standard storage, switch to Provisioned IOPS to improve write performance.
+- Increase Write Throughput: Consider scaling vertically if write load continues to grow.
+
+*DatabaseConnections (High)*
+- Check Application Connection Pooling: Ensure that your application is using a connection pool and not opening a new connection for each request.
+- Use RDS Proxy: Implement RDS Proxy to manage connections efficiently, reducing the load on the database.
+- Monitor Connection Usage: Use Performance Insights to check which queries are holding the most connections and if any are stuck or long-running.
+
+*ReplicaLag (High)*
+- Check Network Latency: Investigate network connectivity between the primary and replica for any issues causing lag.
+- Increase IOPS: If the replication lag is due to slow disk I/O, increase the Provisioned IOPS for both the primary and replica.
+- Scale Replicas: Increase the capacity or add more replicas to distribute the load.
+- Optimize Write Load: Reduce write-heavy operations on the primary to lessen the load on replicas.
+
+*SwapUsage (High)*
+- Scale Vertically: Increase the RAM of the RDS instance to avoid using swap.
+- Optimize Queries: Check for excessive memory consumption due to inefficient queries.
+- Enable Enhanced Monitoring: Use real-time OS-level metrics to pinpoint memory-heavy processes or applications.
+- Use Memory Efficiently: Consider reducing the memory footprint of the application or database operations.
+
+*DiskQueueDepth (High)*
+- Check IOPS Performance: Ensure that your RDS instance is using Provisioned IOPS for faster disk performance.
+- Increase Disk Throughput: If using General Purpose SSD, consider switching to Provisioned IOPS SSD.
+- Optimize Disk Usage: Identify and optimize queries that generate excessive disk writes or reads.
+
+*NetworkReceiveThroughput / NetworkTransmitThroughput (Low or High)*
+- Investigate Network Bottlenecks: Check for network issues between the application and RDS instance or between the primary and read replicas.
+- Use Enhanced Monitoring: Get real-time data about network traffic to identify any anomalies.
+- Optimize Data Transfers: Minimize unnecessary network traffic by optimizing queries or application behavior.
+
+*RDS Proxy Failures (High)*
+- Investigate Proxy Failures: Look at RDS Proxy logs and error messages to diagnose the issue.
+- Check Application Configuration: Ensure that the application is properly configured to interact with the RDS Proxy.
+- Scale Proxy: Consider scaling up the RDS Proxy if necessary, especially if connection demand increases.
+
+*Query Execution Time (High in Performance Insights)*
+- Optimize Slow Queries: Identify the slowest queries using Performance Insights and optimize them by adding indexes, adjusting query structure, or reducing result sets.
+- Use Caching: Implement caching at the application or database level to avoid repeatedly executing the same slow queries.
+- Enable Query Tuning: Use the EXPLAIN plan in PostgreSQL/MySQL to analyze query execution and make necessary improvements.
+
+---
 
 
  
