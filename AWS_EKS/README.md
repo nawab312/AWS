@@ -98,6 +98,7 @@ and to facilitate the integration of IAM roles with Kubernetes Service Accounts.
 ---
 
 **RBAC in Kubernetes/EKS**
+
 In EKS (Elastic Kubernetes Service), RBAC allows you to define roles and permissions based on Kubernetes roles (which specify what actions can be done on which resources) and Kubernetes users/groups (which represent who is allowed to perform those actions). Key RBAC Components:
 - Role and ClusterRole:
   - Role: Defines a set of permissions within a specific namespace.
