@@ -77,6 +77,8 @@ service:
 - Use AWS Route 53 for global traffic routing between clusters.
 - Backup & Restore with Velero for cluster recovery in case of failure.
 
+---
+
 ### Kubernetes Security ###
 
 **Service Accounts**
@@ -92,4 +94,37 @@ OpenID Connect is an authentication protocol that allows clients to verify the i
 and to facilitate the integration of IAM roles with Kubernetes Service Accounts.
 
 ![image](https://github.com/user-attachments/assets/b548eb8c-cd18-40da-85d6-bb7fc3961d9e)
+
+**How does the `aws-auth` ConfigMap contribute to security and access control?**
+
+The aws-auth ConfigMap plays a critical role in managing security and access control in Amazon EKS (Elastic Kubernetes Service). It defines the AWS IAM (Identity and Access Management) roles and users that are granted access to the Kubernetes cluster. Here's how it contributes to security and access control:
+- Associating IAM Roles/Users with Kubernetes RBAC (Role-Based Access Control) Users:  The `aws-auth` ConfigMap maps IAM users and roles to Kubernetes RBAC groups. This mapping allows IAM users and roles to interact with the Kubernetes cluster with specific permissions, governed by Kubernetes RBAC rules.
+  - For example, an IAM role can be mapped to a Kubernetes group like `system:masters`, which grants administrative privileges within the Kubernetes cluster. Similarly, roles can be mapped to custom RBAC roles, limiting access to specific namespaces, resources, or actions.
+  - Controlled Access to the Cluster: The ConfigMap provides a clear, auditable way to control which IAM entities (users or roles) have access to the Kubernetes cluster. Only the IAM entities explicitly listed in the `aws-auth` ConfigMap can access the cluster, enforcing strict access controls. This is vital for security as it ensures that unauthorized users cannot gain access to sensitive resources.
+
+```yaml
+# aws-auth Configmap
+
+apiVersion: v1
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::123456789012:role/eks-admin
+      username: eks-admin
+      groups:
+        - system:masters
+    - rolearn: arn:aws:iam::123456789012:role/eks-readonly
+      username: eks-readonly
+      groups:
+        - system:readers
+  mapUsers: |
+    - userarn: arn:aws:iam::123456789012:user/john_doe
+      username: john_doe
+      groups:
+        - developers
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: aws-auth
+  namespace: kube-system
+```
 
