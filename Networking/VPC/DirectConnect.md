@@ -31,3 +31,23 @@ Once the Virtual Interface is set up, routing is configured to direct traffic be
 **Data Transfer and Hybrid Architecture**
 With AWS Direct Connect, you can build **hybrid cloud environments,** where some workloads stay on-premises and others are moved to AWS. It allows you to extend your on-premises network to AWS seamlessly.
 - **Data Transfer to S3:** A common use case is to transfer large amounts of data from on-premises systems to AWS services like Amazon S3 over Direct Connect.
+
+---
+
+**AWS Direct Connect Gateway (DXGW)**
+
+AWS Direct Connect Gateway (DXGW) is a global networking service that enables you to connect one or more AWS regions to your on-premises network via AWS Direct Connect (DX).
+
+Without Direct Connect Gateway (Multiple DX required)
+- Each AWS region requires a separate Direct Connect → Expensive & inefficient.
+
+With Direct Connect Gateway (Optimized Multi-Region Access)
+- One DX connection in us-east-1 → DXGW → Multiple AWS regions (us-west-1, eu-central-1, etc.)
+
+![image](https://github.com/user-attachments/assets/d413a3c3-7895-4aea-8a1a-40f6c1219907)
+
+Limitations of Direct Connect Gateway
+- No Cross-Region VPC Peering – DXGW can connect on-prem to multiple AWS regions, but it cannot route traffic between VPCs in different regions.
+- Max 10 VPC Attachments per DXGW – Cannot exceed this limit.
+
+
