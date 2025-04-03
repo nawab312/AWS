@@ -12,3 +12,37 @@
 - **Routing:** The routing table for the private subnet is configured to route internet-bound traffic to the NAT Gateway, which then forwards this traffic to the internet. The NAT Gateway will return the responses to the originating instance.
   ![image](https://github.com/user-attachments/assets/19a1f7bd-c2f3-4947-bf96-86ed6fff139d)
 
+---
+
+**Packet Flow & Address Translation (NAT)**
+
+When a private EC2 instance initiates a request to the internet:
+- The source IP in the packet is a private IP (e.g., `10.0.1.10`).
+- The destination IP is a public IP (e.g., `8.8.8.8` for Google DNS).
+- The private subnet route table forwards traffic to the NAT Gateway (e.g., `10.0.2.5`).
+
+*Inside the NAT Gateway*
+- The NAT Gateway replaces the private source IP (`10.0.1.10`) with its own public Elastic IP (`3.3.3.3`).
+- It keeps track of this mapping in a connection table (state table).
+- Example of an internal NAT mapping entry:
+  ```bash
+  10.0.1.10:45678 → 3.3.3.3:56789 → 8.8.8.8:53
+  ```
+
+*Outbound Request Processing*
+- The NAT Gateway forwards the modified packet (with its own public IP) to the internet via the Internet Gateway (IGW).
+- The external server (Google DNS in this example) sees the request coming from `3.3.3.3:56789` and responds to it.
+
+*Response Handling & Reverse NAT*
+- The return packet arrives at `3.3.3.3:56789`.
+- The NAT Gateway looks up its state table to find the original mapping (`3.3.3.3:56789` → `10.0.1.10:45678`).
+- It replaces the destination IP (`3.3.3.3`) with `10.0.1.10` and the port back to 45678.
+- The modified packet is then sent back to the EC2 instance in the private subnet.
+
+*Connection State & Timeout Handling*
+- NAT Gateway keeps track of active connections in its state table for a limited time (usually 5 minutes for TCP connections).
+- If no response is received within the timeout period, the entry is deleted, and future responses are dropped.
+- This is why long-lived connections (like SSH) may require keep-alive packets.
+
+
+
