@@ -15,12 +15,33 @@ AWS Transit Gateway (TGW) is a highly scalable and flexible service that acts as
   - **Multi-VPC Architectures:** Connecting multiple VPCs across different regions or accounts in a large organization.
   - **Hybrid Cloud Architectures:** Connecting on-premises networks to multiple VPCs using VPN or Direct Connect.
 
-Your company is setting up a multi-account AWS environment using AWS Organizations.
-- A centralized networking account manages all VPCs across multiple accounts.
-- Application workloads are deployed in separate AWS accounts (e.g., Dev, Staging, Prod).
-- Each AWS account has its own VPC with non-overlapping CIDR ranges.
-- You are tasked with enabling secure and efficient communication between these VPCs and a shared services VPC that hosts centralized databases and authentication services.
+**How Do VPCs Across Regions Connect Using AWS Transit Gateway?**
 
-![image](https://github.com/user-attachments/assets/e6893ce9-6816-4642-9327-70a0cc07d26c)
+AWS Transit Gateway (TGW) is regionally scoped, meaning that by default, it only allows communication between VPCs within the same AWS region. However, AWS provides a feature called Transit Gateway Peering, which allows Transit Gateways in different regions to connect and enable cross-region VPC communication.
+
+*Transit Gateway Peering Connection*
+
+To connect VPCs across regions, you must establish a peering connection between Transit Gateways in different regions. This allows traffic to route between VPCs that are associated with these Transit Gateways. How it Works (Step-by-Step)
+- Create Transit Gateways in Each Region
+  - `TGW-1` in `us-east-1`
+  - `TGW-2` in `eu-west-1`
+- Establish a Peering Connection Between TGWs
+  - A peering request is sent from `TGW-1` to `TGW-2`
+  - The request must be accepted manually in `TGW-2` (unless auto-acceptance is enabled). Once accepted, a peering link is established.
+- Update Route Tables in Both Transit Gateways
+  - In `TGW-1`, add a route to `TGW-2` for the remote region’s CIDR block.
+  - In `TGW-2`, add a route to `TGW-1` for the local region’s CIDR block.
+ 
+*AWS Global Backbone for Peering Traffic*
+- AWS does not use the public internet for Transit Gateway Peering.
+- Instead, AWS routes the traffic through its private global network, providing:
+  - Lower latency compared to VPN-based solutions.
+  - Higher security by avoiding exposure to the public internet.
+
+*Considerations & Limitations*
+- Peering is Non-Transitive: A VPC connected to TGW-1 cannot automatically communicate with a VPC connected to TGW-2 unless explicitly routed
+- Latency: Since traffic flows via AWS’s global backbone, it is lower than internet-based VPNs but still depends on AWS region distances.
+- Route Limits: Route Limits	Each Transit Gateway supports a limited number of routes (5,000 by default). Careful planning is needed for large-scale deployments.
+- Data Transfer Costs: Cross-region data transfer through Transit Gateway incurs AWS inter-region data transfer charges.
 
 
