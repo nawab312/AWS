@@ -1,7 +1,7 @@
 - Get the Function ARN:
-  ```python
-  context.invoked_function_arn
-  ```
+```python
+context.invoked_function_arn
+```
 
 ### BOTO3 RDS ###
 - Create a Manual snapshot of an RDS Database Instance.
