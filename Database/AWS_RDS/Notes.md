@@ -71,7 +71,11 @@ Amazon RDS (Relational Database Service) is a fully managed relational database 
 **RDS Monitoring**
 
 IOPS (Input/Output Operations Per Second) is a measure of how many read or write operations your storage can handle every second.
-- 1 IOPS = 1 read/write operation to disk
+- 1 IOPS = 1 read/write operation to disk per second. 1 IOPS = 1 read/write of a 16 KB block (PostgreSQL, MySQL, Oracle commonly use 8 KB or 16 KB block sizes)
+- Let’s assume: 1 IOPS = 16 KB transferred
+
+![image](https://github.com/user-attachments/assets/9671b748-7a34-4d7a-a1bd-69fded5c2e28)
+
 - RDS uses IOPS to define how fast your database can handle storage operations
 - IOPS per query depends on:
   - Query type, Size of data scanned/read/written, Index usage, Storage block size, Caching behavior
@@ -84,7 +88,12 @@ IOPS (Input/Output Operations Per Second) is a measure of how many read or write
     Avg Exec Time: 20ms
     Disk Reads: 3,200 blocks/query
     ```
-    
+- The 57 GB/hour from 1000 IOPS ≠ Filling up your DB. That 57 GB/hour is the amount of data read/written from disk — not new data being added to the DB.
+  - Read 1 GB table 57 times/hour → that’s 57 GB disk I/O. But the table is still only 1 GB in size
+  - Math for Writes
+    - You insert 1000 records/sec, each record is 1 KB
+    - That’s 1 MB/sec × 3600 = ~3.6 GB/hour of actual new data
+    - Even with 1000 IOPS, you're adding only 3.6 GB, not 57 GB
 
 Key RDS Monitoring Tools
 
