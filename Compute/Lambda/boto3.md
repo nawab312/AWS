@@ -1,3 +1,8 @@
+- Get the Function ARN:
+  ```python
+  context.invoked_function_arn
+  ```
+
 ### BOTO3 S3 ###
 - Connect to S3
 ```bash
