@@ -3,6 +3,15 @@
   context.invoked_function_arn
   ```
 
+### BOTO3 RDS ###
+- Create a Manual snapshot of an RDS Database Instance.
+```python
+rds.create_db_snapshot(
+    DBInstanceIdentifier='your-db-instance-id',
+    DBSnapshotIdentifier='your-snapshot-id'
+)
+```
+
 ### BOTO3 S3 ###
 - Connect to S3
 ```bash
