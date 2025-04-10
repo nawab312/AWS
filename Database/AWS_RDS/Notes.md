@@ -70,6 +70,22 @@ Amazon RDS (Relational Database Service) is a fully managed relational database 
 
 **RDS Monitoring**
 
+IOPS (Input/Output Operations Per Second) is a measure of how many read or write operations your storage can handle every second.
+- 1 IOPS = 1 read/write operation to disk
+- RDS uses IOPS to define how fast your database can handle storage operations
+- IOPS per query depends on:
+  - Query type, Size of data scanned/read/written, Index usage, Storage block size, Caching behavior
+- How to Measure IOPS per Query
+  - Enable Performance Insights in RDS
+  - Use the “Top Queries” view
+  - Example Output:  If 3200 disk reads are needed → ~3200 IOPS for that query
+    ```sql
+    Query: SELECT * FROM transactions WHERE date BETWEEN X AND Y
+    Avg Exec Time: 20ms
+    Disk Reads: 3,200 blocks/query
+    ```
+    
+
 Key RDS Monitoring Tools
 
 *Amazon CloudWatch Metrics*
