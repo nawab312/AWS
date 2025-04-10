@@ -33,8 +33,15 @@ Amazon RDS (Relational Database Service) is a fully managed relational database 
   - SQL Server: 1433
   - Amazon Aurora (MySQL-compatible): 3306
   - Amazon Aurora (PostgreSQL-compatible): 5432
+ 
+*In Provisioned IOPS (io1/io2) volumes, the Storage and IOPS are often linked by a ratio*
+*- Minimum ratio: 1 GB storage = 50 IOPS*
+*- So if you want 20,000 IOPS, you must provision at least 400 GB storage.*
 
-- **RDS – Storage Auto Scaling** Helps you increase storage on your RDS DB instance dynamically. When RDS detects you are running out of free database storage, it scales automatically. Avoid manually scaling your database storage
+**Handling RDS Running Out of Storage (Without Downtime)**
+- Enable *RDS – Storage Auto Scaling* Helps you increase storage on your RDS DB instance dynamically. When RDS detects you are running out of free database storage, it scales automatically. Avoid manually scaling your database storage. Auto-scaling has a max cap (e.g., 16 TB for PostgreSQL/MySQL)
+- Monitor `FreeStorageSpace` metric via CloudWatch
+- Clean up unused tables/logs/temp files (via DB queries). Archive old data to S3 if needed
 
 - **RDS Read Replicas for read scalability**
   - Up to 15 Read Replicas Within AZ, Cross AZ or Cross Region.
