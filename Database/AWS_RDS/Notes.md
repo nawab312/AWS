@@ -5,25 +5,25 @@ Amazon RDS (Relational Database Service) is a fully managed relational database 
 - Security via encryption, VPC, IAM
 - Monitoring with CloudWatch
 
-- **RDS Multi-AZ**
-  - Amazon RDS Multi-AZ is a high-availability feature that provides *automatic failover* to a standby instance in a different *Availability Zone (AZ)* in case of a primary database failure. It ensures *data durability and minimal downtime* for critical applications. Standby is not readable
-  - How Does Multi-AZ Work?
-    - When you enable Multi-AZ, Amazon RDS automatically creates a *standby replica* of your database in a different Availability Zone.
-    - The primary and standby instances use *synchronous replication* to ensure *real-time data consistency*.
-    - If the primary instance fails (e.g., hardware failure, AZ outage, or maintenance), AWS automatically switches to the standby instance with minimal disruption
-    - The *endpoint remains the same*, so no application changes are required during failover.
-  - Application Experience Downtime Even with Multi-AZ because:
-    - DNS Propagation Delay: AWS RDS updates the DNS to point to the new primary instance, but applications using cached DNS records may take longer to reconnect.
-    - Uncommitted Transactions: Any in-flight transactions on the failed primary instance are rolled back, requiring applications to handle retries.
-    - Connection Pool Issues: If the application does not properly handle database connection failures, it might not immediately reconnect to the new primary instance.
-    - Failover Time: AWS RDS typically takes 30-60 seconds to complete failover, during which new connections might fail.
-  - Steps to Minimize Downtime in Multi-AZ Failovers
-    - Application-Level Optimizations:
-      - Use Retry Logic: Implement exponential backoff in database connection logic to automatically retry failed queries.
-      - Reduce DNS Cache TTL: Set a lower TTL (e.g., 30 seconds) for database hostname resolution to ensure faster reconnection.
-      - Use Connection Poolers: Utilize tools like HikariCP (for Java applications) to detect failures and re-establish connections quickly.
-    - RDS & AWS Configurations:
-      - Enable RDS Proxy: AWS RDS Proxy maintains persistent connections and automatically reroutes them to the new primary instance.
+**RDS Multi-AZ**
+- Amazon RDS Multi-AZ is a high-availability feature that provides *automatic failover* to a standby instance in a different *Availability Zone (AZ)* in case of a primary database failure. It ensures *data durability and minimal downtime* for critical applications. Standby is not readable
+- How Does Multi-AZ Work?
+  - When you enable Multi-AZ, Amazon RDS automatically creates a *standby replica* of your database in a different Availability Zone.
+  - The primary and standby instances use *synchronous replication* to ensure *real-time data consistency*.
+  - If the primary instance fails (e.g., hardware failure, AZ outage, or maintenance), AWS automatically switches to the standby instance with minimal disruption
+  - The *endpoint remains the same*, so no application changes are required during failover.
+- Application Experience Downtime Even with Multi-AZ because:
+  - DNS Propagation Delay: AWS RDS updates the DNS to point to the new primary instance, but applications using cached DNS records may take longer to reconnect.
+  - Uncommitted Transactions: Any in-flight transactions on the failed primary instance are rolled back, requiring applications to handle retries.
+  - Connection Pool Issues: If the application does not properly handle database connection failures, it might not immediately reconnect to the new primary instance.
+  - Failover Time: AWS RDS typically takes 30-60 seconds to complete failover, during which new connections might fail.
+- Steps to Minimize Downtime in Multi-AZ Failovers
+  - Application-Level Optimizations:
+    - Use Retry Logic: Implement exponential backoff in database connection logic to automatically retry failed queries.
+    - Reduce DNS Cache TTL: Set a lower TTL (e.g., 30 seconds) for database hostname resolution to ensure faster reconnection.
+    - Use Connection Poolers: Utilize tools like HikariCP (for Java applications) to detect failures and re-establish connections quickly.
+  - RDS & AWS Configurations:
+    - Enable RDS Proxy: AWS RDS Proxy maintains persistent connections and automatically reroutes them to the new primary instance.
 
 
 - **Default RDS Ports By Data Engines**
