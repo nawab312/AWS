@@ -10,6 +10,7 @@
     - It allows private instances, which don't have public IPs, to communicate with external resources while keeping those instances protected from direct inbound internet traffic.
 - **NAT Gateway:** A NAT Gateway is used to allow *outbound traffic* from instances in a private subnet to the internet but does not allow inbound traffic from the internet to those instances. This means that instances in private subnets can initiate connections to the internet (e.g., for downloading software updates or accessing external APIs), but they cannot accept incoming traffic directly from the internet.
 - **Routing:** The routing table for the private subnet is configured to route internet-bound traffic to the NAT Gateway, which then forwards this traffic to the internet. The NAT Gateway will return the responses to the originating instance.
+  
   ![image](https://github.com/user-attachments/assets/19a1f7bd-c2f3-4947-bf96-86ed6fff139d)
 
 ---

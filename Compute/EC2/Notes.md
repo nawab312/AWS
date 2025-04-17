@@ -71,6 +71,17 @@ options edns0
 
 `169.254.169.253` is a special *AWS Internal DNS Resolver* that works inside a VPC.
 
+**EC2 Health Checks**
+
+*EC2 Console: 2/2 Checks*
+- System Status Check
+ - AWS checks its own infrastructure (host hardware, networking, etc.)
+ - Failures here mean AWS has a problem (rare, but happens)
+- Instance Status Check
+ - Checks inside your instance (e.g., CPU, disk, memory, boot issues)
+ - Failures here mean your OS or app may have crashed, or booted incorrectly
+
+
 
 
 
