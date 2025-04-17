@@ -38,6 +38,16 @@
     - It can store private on-prem IPs (`192.168.1.100`)
     - It can even store public IPs (`8.8.8.8`)
  
+*If you override /etc/resolv.conf to use 8.8.8.8 in an AWS EC2 instance, will private Route 53 DNS names still resolve?*
+- Route 53 private hosted zone names wont resolve with 8.8.8.8
+- Private hosted zones in Route 53 are only accessible from within the VPC via AmazonProvidedDNS, which is at:
+```bash
+169.254.169.253 (hidden behind VPC base + 2)
+```
+- If you override /etc/resolv.conf and set it to Google DNS (8.8.8.8):
+  - You're bypassing the VPC-resolved DNS
+  - 8.8.8.8 has no knowledge of your private zone
+
 ![image](https://github.com/user-attachments/assets/9b2aed3c-bc87-466f-83ca-eb6efc3dc98b) ![image](https://github.com/user-attachments/assets/2a57424b-7652-48e8-8c07-dce3eb48188b)
 
 - **Components of a Hosted Zone**
