@@ -66,3 +66,11 @@ internet access for instances.
      - Private instances will not have a hostname like `ip-10-0-0-12.ec2.internal`.
      - Public instances will not get an AWS public DNS like `ec2-52-14-22-11.compute-1.amazonaws.com`.
 
+
+When you SSH from your local machine to your EC2 instance's public IP, this is what happens under the hood:
+- Public IP is just a NAT mapping to the private IP (`10.x.x.x`) of your EC2.
+- The Elastic Network Interface (ENI) attached to the EC2 only has:
+ - A private IP (always)
+ - A public IP (optional, and only for external reachability)
+- Once the packet enters the VPC, AWS automatically translates the public IP → private IP (via NAT or routing).
+- VPC Flow Logs are collected at the ENI level, and ENIs only see private IP traffic inside the VPC.
