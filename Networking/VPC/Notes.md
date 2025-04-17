@@ -7,6 +7,40 @@ including IP address range, subnets, route tables, and network gateways.
 - If you run out of IP Address in a Subnet we can not resize by adjusting *CIDR of Subnet*
 ![image](https://github.com/user-attachments/assets/733f53a3-0adf-4d04-965e-076e0caa9aaa) ![image](https://github.com/user-attachments/assets/890edc95-76f3-440d-8165-8785e19d1ff1)
 
+- **Subnet Masking**
+  - Subnet masking is a method used in networking to divide an IP address into two parts: Network portion AND Host portion
+  - Every IP address (like 192.168.1.10) comes with a subnet mask (like 255.255.255.0). The subnet mask tells you which part of the IP address refers to the network and which part refers to the host.
+  - Example
+```bash
+IP Address: 192.168.1.10
+Subnet Mask: 255.255.255.0	
+Binary IP Address: 11000000.10101000.00000001.00001010
+Binary Subnet Mask: 11111111.11111111.11111111.00000000
+```
+  - The first 24 bits (set to 1 in the subnet mask) are the network portion. The last 8 bits are for the hosts in that network.
+  - Network Address = `192.168.1.0` Host Address = anything from `192.168.1.1` to `192.168.1.254`
+
+- Example: IP address `192.168.10.50` with a subnet mask of `255.255.255.192`
+  - What is the network address?
+  - What is the broadcast address?
+  - How many valid hosts can be in this subnet?
+- Step 1: Convert Subnet Mask to CIDR
+  - `255.255.255.192` = `/26` (because 192 in binary is `11000000`
+- Step 2: Calculate Subnet Block Size
+  - Since this is a `/26`, that leaves 6 bits for hosts (32 total bits - 26 = 6).
+  - 2⁶ = 64 addresses per subnet
+- Step 3: Identify Subnets in 192.168.10.0/24
+  - The subnet increment is 64 (based on the 4th octet).
+  - The subnet ranges would be:
+    - `192.168.10.0` to `192.168.10.63`
+    - `192.168.10.64` to `192.168.10.127` and so on
+  - Since the IP address is `192.168.10.50`, it falls into the first subnet.
+- Step 4: Final Answers
+  - Network Address: `192.168.10.0`
+  - Broadcast Address: `192.168.10.63`
+  - Valid Host Range: `192.168.10.1` to `192.168.10.62`
+    
+
 - **Subnets** are segments of your VPC's IP address range. You can create multiple subnets in different Availability Zones (AZs) for high availability and fault tolerance
   - Public Subnet: Accessible from the internet (using an Internet Gateway).
   - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers). Often uses a NAT gateway to enable

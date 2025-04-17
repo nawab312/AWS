@@ -45,5 +45,7 @@ When a private EC2 instance initiates a request to the internet:
 - If no response is received within the timeout period, the entry is deleted, and future responses are dropped.
 - This is why long-lived connections (like SSH) may require keep-alive packets.
 
-
+**Best Practice (AWS Recommended):**
+- Create one NAT Gateway per Availability Zone.
+- Create one private subnet per AZ, and associate it with a route table pointing to the NAT Gateway in the same AZ.
 
