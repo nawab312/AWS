@@ -39,8 +39,9 @@ Binary Subnet Mask: 11111111.11111111.11111111.00000000
   - Network Address: `192.168.10.0`
   - Broadcast Address: `192.168.10.63`
   - Valid Host Range: `192.168.10.1` to `192.168.10.62`
+ 
+![image](https://github.com/user-attachments/assets/16381f6f-1d8a-4023-97af-4fbff7b3997f)
     
-
 - **Subnets** are segments of your VPC's IP address range. You can create multiple subnets in different Availability Zones (AZs) for high availability and fault tolerance
   - Public Subnet: Accessible from the internet (using an Internet Gateway).
   - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers). Often uses a NAT gateway to enable
