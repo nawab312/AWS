@@ -30,6 +30,12 @@ Integrated with AWS Transit Gateway for multi-VPC connectivity.
 - **Static Routing:** If you use static routing, you manually define the routes for the on-premises network to reach the VPC and vice versa.
 - **Dynamic Routing (BGP):** Alternatively, you can use *Border Gateway Protocol (BGP)* to automatically exchange routes between your on-premises network and AWS VPC. This is more scalable and easier to manage, especially for larger or more complex networks.
 
+**What is BGP**
+- BGP (Border Gateway Protocol) is the protocol used to exchange routing information between different networks (Autonomous Systems) on the internet or private enterprise networks.
+  - It's a path vector protocol, meaning it chooses the best path based on various attributes (e.g., AS-PATH, MED, LOCAL_PREF).
+  - It's primarily used for interconnecting different networks—like between your company network and AWS.
+- *Think of BGP as a GPS that selects the best road from your home (on-prem network) to AWS, and it's smart enough to change roads if one is blocked.*
+
 **Redundancy and High Availability**
 - AWS Site-to-Site VPN provides high availability through the use of *two VPN tunnels*. AWS automatically provisions two VPN tunnels for each VPN connection, ensuring that if one tunnel goes down, the other can continue to carry traffic. You can configure your on-premises VPN device to monitor both tunnels and automatically failover to the backup tunnel if necessary.
 
@@ -69,3 +75,36 @@ AWS Client VPN is a fully managed, elastic VPN service that allows users to secu
 ![image](https://github.com/user-attachments/assets/8c9dba26-4613-4c46-b4c7-a84259cee8fd)
 
 - https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/VPC/AWS_VPN/Scenario1.md
+
+
+**Scenario: Hybrid Cloud with AWS VPC & On-Premises Data Center**
+
+Your company has a hybrid cloud setup where an on-premises data center is connected to an AWS VPC via AWS Site-to-Site VPN.
+
+✅ The on-premises data center can access EC2 instances in the private subnet of AWS.
+
+✅ AWS EC2 instances in the private subnet can communicate with on-prem servers.
+
+❌ However, EC2 instances in the public subnet cannot reach on-premises servers, even though you have updated Security Groups and NACLs correctly.
+
+
+**Solution**
+
+Missing Route in the Public Subnet's Route Table
+- Since VPN traffic does not pass through IGW, the public subnet route table must explicitly route traffic to the on-premises CIDR through the VPN connection.
+- Solution: Add the following entry in the public subnet route table:
+![image](https://github.com/user-attachments/assets/e7a0f909-4595-4965-8a01-13b4700329ed)
+
+---
+
+Your company uses AWS Direct Connect for low-latency private connectivity between its on-premises data center and a VPC. To ensure high availability, you configure a Site-to-Site VPN as a backup connection over the public internet.
+
+How should you configure your routing to ensure failover to VPN only when Direct Connect is down, and avoid asymmetric routing?
+
+**Answer** *Configure BGP on both Direct Connect and VPN, and use AS path prepending on the VPN to make it less preferred.*
+- What is AS Path Prepending?
+  - In BGP, shorter AS paths are more preferred. Example: If a route goes through 2 autonomous systems vs. 5, the 2-AS path is preferred.
+  - AS path prepending is a trick to artificially lengthen the AS path to make it look less attractive.
+- Why use AS Path Prepending on VPN?
+  - You want Direct Connect to be used as the primary route because it's faster.
+  - So you configure BGP to prepend multiple copies of your AS number in the VPN route advertisements. That way, AWS thinks: “Hmm… this VPN route looks long and inefficient. Let me use the Direct Connect route instead.”

@@ -6,7 +6,16 @@ AWS Elastic Load Balancer (ELB) is a fully managed service that automatically di
 - **Classic Load Balancer (CLB):** The original load balancer, suitable for simple load balancing of traffic across EC2 instances. It supports both HTTP/HTTPS and TCP protocols but lacks many advanced features.
 - **Application Load Balancer (ALB):** Designed for modern application architectures, ALB works at the application layer (Layer 7) and supports advanced routing, host/path-based routing, WebSocket, and HTTP/2. It is ideal for microservices and container-based applications.
 - **Network Load Balancer (NLB):** Operating at the transport layer (Layer 4), NLB is optimized for high-performance, low-latency, and high-throughput traffic. It is best for applications that require extreme performance and static IP addresses.
-- **Gateway Load Balancer (GWLB):** Intended for third-party virtual appliances, such as firewalls, it transparently scales and manages traffic between networks.
+- **Gateway Load Balancer (GWLB):** Intended for third-party virtual appliances, such as firewalls, it transparently scales and manages traffic 
+between networks.
+
+---
+
+You have an application deployed across three Availability Zones (AZs) behind an Application Load Balancer (ALB). You observe that even though all AZs have healthy targets, one AZ is receiving significantly more traffic than others. Why?
+- When **Cross-Zone Load Balancing** is disabled, the ALB only routes traffic to targets within the same Availability Zone as the client request.
+- Cross-Zone LB is always enabled for ALB 
+
+---
 
 **Target Types**
 
@@ -41,12 +50,14 @@ When a client (like a browser or mobile app) sends a request to a website, it in
   - Host-Based Routing → Routes based on `Host` header.
   - User-Agent-Based Routing → Routes traffic to a mobile backend if the `User-Agent` contains "Mobile".
   - Security Checks → Uses `Authorization` and `Cookie` headers for authentication
+
 ![image](https://github.com/user-attachments/assets/339a1f21-b2a1-4e0e-8bcc-4fcbff0cf377)
 
 - **Response Headers** These are headers that ALB sends back to the client after processing the request. How ALB Uses Response Headers:
   - **Redirects & Security** → Uses `Location` and `Strict-Transport-Security`.
   - **CORS Handling** → Uses `Access-Control-Allow-Origin` for cross-origin requests.
   - **Debugging** → `X-Amzn-Trace-Id` helps track requests in AWS logs.
+
 ![image](https://github.com/user-attachments/assets/6a0e1785-6c54-467a-831e-6a0ace792369)
  
 ### Listener & Listener Rules ###

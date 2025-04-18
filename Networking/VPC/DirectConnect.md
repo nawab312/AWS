@@ -51,3 +51,4 @@ Limitations of Direct Connect Gateway
 - Max 10 VPC Attachments per DXGW – Cannot exceed this limit.
 
 
+
