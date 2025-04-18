@@ -177,6 +177,9 @@ Why Not the Other Options?
 
 ---
 
+![image](https://github.com/user-attachments/assets/67e93498-c2ca-48d4-b4dd-3c18fb6689bd)
+
+
 **Troubleshoot Intermittent 504 Gateway Timeout Errors for an Application behind an AWS ALB** https://github.com/nawab312/AWS/blob/main/Networking%20and%20Security/ELB/Scenarios/Scenario1.md
 
 **Apache Webserver on 2 EC2 with LB** https://github.com/nawab312/AWS/blob/main/AWS_ELB/Projects/Apache2_WebServer_on_EC2_with_LB.md
