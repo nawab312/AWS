@@ -49,3 +49,22 @@ When a private EC2 instance initiates a request to the internet:
 - Create one NAT Gateway per Availability Zone.
 - Create one private subnet per AZ, and associate it with a route table pointing to the NAT Gateway in the same AZ.
 
+---
+
+Your private EC2 instances make thousands of outbound HTTPS calls per second to the same external third-party API.
+
+After a traffic spike, some requests start failing intermittently with timeouts. Instances are healthy, CPU is fine, security groups are correct, and the NAT Gateway is “Available”.
+- What NAT Gateway limitation could cause this behavior? Be specific.
+- What CloudWatch metrics would you check, and what values would confirm your suspicion?
+
+**NAT Gateway limitation:**
+- A NAT Gateway has a limit on concurrent connections per source IP, roughly 55,000–60,000 connections. With thousands of outbound requests per second to the same external IP, it can run out of available source ports, causing intermittent connection failures or timeouts. This is called port exhaustion.
+- When a private EC2 instance sends outbound traffic through a NAT Gateway, the NAT maps the private IP:source port to the NAT Gateway’s public IP:allocated source port. TCP/UDP uses 16-bit ports (65,536 total), but some ports are reserved. If many connections are made to the same external IP/port combination, the NAT runs out of unique mappings, leading to failed connections.
+
+**CloudWatch metrics to check:**
+- `ActiveConnectionCount` - high values near NAT limits indicate heavy usage.
+- `ErrorPortAllocation` - counts how often NAT couldn’t allocate a new source port.
+- `PacketsDropCount` - indicates dropped traffic
+
+---
+
