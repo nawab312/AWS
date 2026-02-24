@@ -75,11 +75,16 @@ options edns0
 
 *EC2 Console: 2/2 Checks*
 - System Status Check
- - AWS checks its own infrastructure (host hardware, networking, etc.)
- - Failures here mean AWS has a problem (rare, but happens)
-- Instance Status Check
- - Checks inside your instance (e.g., CPU, disk, memory, boot issues)
- - Failures here mean your OS or app may have crashed, or booted incorrectly
+  - AWS checks its own infrastructure (host hardware, Hypervisor, networking at AWS side, etc.)
+  - Failures here mean AWS has a problem (rare, but happens)
+- Instance Status Checks
+  - Can AWS reach your instance’s network stack
+  - Is the instance responding to ARP?
+  - Has the OS booted properly?
+  - Is the kernel responsive?
+  - If this fails, it usually means:
+    - OS kernel panic, Boot failure, Corrupted filesystem, Network misconfiguration, Instance stuck during startup
+  - Instance status check verifies the OS-level reachability of my EC2 instance. It does not validate application health or resource utilization — for that we rely on CloudWatch metrics and load balancer health checks.
 
 
 
