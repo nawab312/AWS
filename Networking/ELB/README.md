@@ -105,7 +105,7 @@ A **listener** in AWS Application Load Balancer (ALB) is a process that listens 
 - **Host-based Routing (Host Header Condition)** 
   - Routes traffic based on the *domain name* in the request.
   - `Rule: If Host = "bank.example.com" → Forward to Banking Service Target Group`
-  - Useful for multi-domain applications running behind the same ALB. Example: `app.example.com`, `api.example.com`, `admin.example.com`.
+  - Useful for multi-domain applications running behind the same ALB. Example: `app.example.com`, `api.example.com`, `admin.example.com`. So here *base* or *root* domain is example.com and *subdomain* is `app.example.com`, `api.example.com`, `admin.example.com`
 - **Path-based Routing (Path Condition)**
   - Routes traffic based on the *URL path*.
   - `Rule: If Path = "/api/*" → Forward to API Target Group`
