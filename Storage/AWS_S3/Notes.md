@@ -27,7 +27,13 @@ How does Amazon S3 ensure data **Durability** and **Availability**?
 - Amazon S3 provides high availability by ensuring objects are always accessible when needed. This is achieved through:
   - Data is stored across multiple AZs, so even if one AZ goes down, S3 can serve the data from other locations.
   - S3 uses **load balancers** to distribute requests evenly across storage infrastructure, preventing bottlenecks. Requests are **automatically rerouted** to healthy nodes if failures occur.
- 
+
+### Pre Signed URL ###
+- A pre-signed URL in Amazon S3 is a temporary, secure link that allows someone to access a private S3 object without needing AWS credentials. Essentially, it’s a way to grant time-limited access to a file in S3.
+- Normally, S3 objects are private. Only the owner (or users with permissions) can access them.
+- A pre-signed URL is generated using your credentials and includes a signature that S3 can verify.
+- Anyone with this URL can download or upload the object (depending on how the URL was created) until it expires.
+
 **S3 Bucket Policy** https://github.com/nawab312/AWS/tree/main/Storage/AWS_S3/Bucket_Policy
 
 **Track S3 Bucket Access with CloudTrail** https://github.com/nawab312/AWS/blob/main/Storage/AWS_S3/CloudTrail_S3.md
