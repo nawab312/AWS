@@ -25,6 +25,11 @@
 - Key Pairs: SSH authentication for secure access to instances.
 - IAM Roles: Grant permissions to instances without storing credentials.
 
+**Golden AMI**
+- A pre-configured, standardized machine image that contains the OS, required software, security patches, configurations, and sometimes even application code — used as the approved template to launch new EC2 instances.
+- Why “Golden”?
+  - Because: It is hardened, It is tested, It follows security standards, It is approved by the organization, It ensures consistency
+
 **EC2 Storage Options**
 - Instance Store: Temporary storage (lost when the instance stops).
 - EBS: Persistent block storage (snapshots available for backup).
