@@ -25,6 +25,11 @@
 - Key Pairs: SSH authentication for secure access to instances.
 - IAM Roles: Grant permissions to instances without storing credentials.
 
+**ENI**
+- An ENI (Elastic Network Interface) in Amazon Web Services is basically:
+  - The network card attached to your EC2 instance
+  - It holds: Private IP, Public IP, Security groups, MAC address
+
 **Golden AMI**
 - A pre-configured, standardized machine image that contains the OS, required software, security patches, configurations, and sometimes even application code — used as the approved template to launch new EC2 instances.
 - Why “Golden”?
