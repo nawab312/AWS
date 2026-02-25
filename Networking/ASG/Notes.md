@@ -32,3 +32,29 @@ Lifecycle Hooks allow you to execute custom actions at specific points during an
 - Instance Terminating (`autoscaling:EC2_INSTANCE_TERMINATING`) – Runs before the instance is terminated.
   - Before terminating an instance, ensure it stops serving traffic and cleanly deregisters from the Application Load Balancer (ALB).
   - Before shutting down an instance, take a backup of logs, database dumps, or persistent data.
+
+---
+
+### Scenario ###
+
+- Your ASG scales based on CloudWatch alarms (CPU, request count, network, etc.).
+- Normally, when the alarm is breached, the ASG scales out (launches new instances).
+- During certain time windows (e.g., 1–3 PM), you want to ignore temporary dips or prevent unnecessary scale-outs.
+
+**Solution**
+- Identify the CloudWatch alarms that trigger scale-out for your ASG.
+  - Example: `CPUUtilization > 70% → scale out 1 instance`.
+- Use EventBridge to schedule alarm actions:
+  - Create an EventBridge rule at 1 PM → triggers Lambda to disable the alarm.
+  - Create another rule at 3 PM → triggers Lambda to enable the alarm.
+- Lambda Example:
+```python
+import boto3
+
+cw = boto3.client('cloudwatch')
+
+def lambda_handler(event, context):
+    # Example: disable alarm
+    cw.disable_alarm_actions(AlarmNames=['MyASGScaleOutAlarm'])
+    # To enable again: cw.enable_alarm_actions(...)
+```
