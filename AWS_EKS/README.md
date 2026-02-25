@@ -92,6 +92,31 @@ service:
 **OIDC(Open ID Connect)**
 OpenID Connect is an authentication protocol that allows clients to verify the identity of users or service accounts through an identity provider (IdP) using OAuth 2.0. OIDC provider for the cluster is used to authenticate requests to the Kubernetes API
 and to facilitate the integration of IAM roles with Kubernetes Service Accounts.
+- What Is OIDC (In Simple Terms)?
+  - OpenID Connect (OIDC) is an authentication layer built on top of OAuth 2.0.
+  - OAuth = “Can this app access this resource?”
+  - OIDC = “Who is this user?”
+  - OIDC answers: Is this identity real, and who issued it
+  - It works using signed identity tokens (JWTs).
+- Basic Mental Model
+  - There are 3 parties:
+    - Client (App / Pod)
+    - Identity Provider (IdP)
+    - Resource Server (API)
+  - Flow:
+    - Client asks IdP to authenticate.
+    - IdP returns a signed token.
+    - Client presents token to API.
+    - API verifies signature and trusts identity.
+- Where Kubernetes Comes In
+  - Pods have Service Accounts. But AWS doesn’t understand Kubernetes Service Accounts directly. So how does AWS trust a Pod? Through OIDC.
+- What Actually Happens Step-by-Step. Let’s say a Pod wants to access S3.
+  - Pod runs with a Kubernetes Service Account.
+  - Kubernetes issues a signed OIDC token to that Pod.
+  - Pod sends token to AWS STS.
+  - AWS verifies token against cluster’s OIDC provider.
+  - If valid → AWS returns temporary IAM credentials.
+  - Pod can now access S3.
 
 ![image](https://github.com/user-attachments/assets/b548eb8c-cd18-40da-85d6-bb7fc3961d9e)
 
