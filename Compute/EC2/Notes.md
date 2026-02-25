@@ -1,5 +1,5 @@
 **Elastic Compute Cloud (EC2)** is a web service that provides resizable compute capacity in the cloud. Allows you to launch virtual machines (VMs) with different configurations.
-
+https://github.com/nawab312/AWS/tree/main
 - Commands: https://github.com/nawab312/AWS/blob/main/Compute/EC2/Commands.md
 
 **EC2 Instance Types**
@@ -8,6 +8,17 @@
 - Memory Optimized: Large RAM for in-memory databases (e.g., R5, X1).
 - Storage Optimized: High IOPS storage for big data (e.g., I3, D2).
 - Accelerated Computing: GPU-based workloads (e.g., P4, G5).
+
+**Graviton Instance**
+- Graviton instances are EC2 instances powered by AWS-designed *ARM-based processors* (AWS Graviton chips), instead of traditional Intel/AMD x86 CPUs.
+- They are used in instance families like: `t4g` `m6g` `c6g` `r6g`
+- The “g” at the end means Graviton.
+- Why Use Graviton?
+  - Better Price/Performance: ~20–40% better price-performance compared to similar x86 instances.
+  - Lower Cost: Graviton instances are generally cheaper than equivalent x86 types.
+- When It Can Be a Problem:
+  - Your application binary is compiled for x86
+  - You use old Docker images built for amd64
 
 **EC2 Pricing Models**
 - On-Demand: Pay as you go, no commitments (flexibility, but costly).
