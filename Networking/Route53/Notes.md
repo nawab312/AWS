@@ -14,6 +14,11 @@
   - `api.www.example.com` FQDN (Fully Qualified Dcomain Name)
   - `http` Protocol
  
+- **Difference Between DNS Resolver and Name Server**
+  - A DNS resolver is the middleman. It receives a query from a client (your browser / OS). Goes out to the internet to find the answer. Caches the result. Returns the final IP to the client
+  - A nameserver is the source of truth. It stores actual DNS records (A, CNAME, MX, etc. Answers only for domains it is authoritative for. Does NOT go searching elsewhere
+    
+ 
 - **Route53** A highly available, scalable, fully managed and Authoritative DNS
   - Authoritative = The Customer (you) can update the DNS records
   - Route 53 is also a Domain Registrar
