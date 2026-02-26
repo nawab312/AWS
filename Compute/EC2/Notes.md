@@ -1,5 +1,4 @@
 **Elastic Compute Cloud (EC2)** is a web service that provides resizable compute capacity in the cloud. Allows you to launch virtual machines (VMs) with different configurations.
-https://github.com/nawab312/AWS/tree/main
 - Commands: https://github.com/nawab312/AWS/blob/main/Compute/EC2/Commands.md
 
 **EC2 Instance Types**
@@ -106,6 +105,35 @@ options edns0
   - If this fails, it usually means:
     - OS kernel panic, Boot failure, Corrupted filesystem, Network misconfiguration, Instance stuck during startup
   - Instance status check verifies the OS-level reachability of my EC2 instance. It does not validate application health or resource utilization — for that we rely on CloudWatch metrics and load balancer health checks.
+
+---
+
+**If I lose the private key (.pem) for an EC2 instance. How can I access my EC2**
+
+Case 1 — If You Have SSM Enabled
+- If:
+  - Instance has IAM role attached
+  - SSM Agent installed
+  - Outbound internet/NAT access
+- You can connect via AWS Systems Manager Session Manager — no SSH key needed.
+
+Case 2 — No SSM, No Key (Linux Instance)
+- You must use the volume-detach method:
+  - Stop the EC2 instance.
+  - Detach the root EBS volume.
+  - Attach it to another EC2 instance as secondary volume.
+  - Mount the volume.
+  - Edit
+    ```bash
+    /home/ec2-user/.ssh/authorized_keys
+    ```
+  - Add your new public key.
+  - Detach volume.
+  - Reattach to original instance.
+  - Start instance.
+
+---
+
 
 
 
