@@ -1,6 +1,6 @@
 - **Domain Name System** translates the human friendly hostnames into the machine IP addresses
 - DNS Terminologies:
-  - Domain Registrar: Amazon Route 53, GoDaddy
+  - Domain Registrar: Amazon Route 53, GoDaddy. A domain registrar is a company authorized to sell and manage domain names on behalf of users.
   - DNS Resolver: A DNS resolver (typically provided by your ISP, or services like Google DNS or Cloudflare DNS) is responsible for querying DNS records on behalf of a client (like your browser). It resolves domain names to IP addresses by querying the DNS hierarchy (including authoritative DNS servers).
   - DNS Records: A, AAAA, CNAME, NS
   - Zone File: Contains DNS record
