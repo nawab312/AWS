@@ -63,7 +63,8 @@ internet access for instances.
  
 - **Security Mechanisms**
   - **Security Groups (SGs)**
-    - These are like firewalls at the instance level.
+    - These are like firewalls at the instance level. These are STATEFUL
+    - *Stateful means: If you allow traffic in one direction, the return traffic is automatically allowed — you don’t need to explicitly allow it.*
     - They control inbound and outbound traffic to your EC2 instances.
     - We can only define ALLOW rules. Anything not explicitly allowed is implicitly denied
   - **Network ACLs (NACLs)**
