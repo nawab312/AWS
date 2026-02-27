@@ -6,6 +6,9 @@ AWS Route 53 provides several routing policies that allow you to manage how DNS 
 - Example: You would use this for pointing www.abc.com to a single IP address or load balancer
 - How it works: When a DNS query is made, Route 53 responds with the IP address for the corresponding record
 
+- Why *Simple Routing Policy doesnt provide halth check and rest all do*
+  - Simple routing policy maps a DNS name to a single resource, so there is no alternative endpoint for Route 53 to route traffic to if the target becomes unhealthy. Health checks are useful only when multiple records exist and a routing decision must be made, such as in failover or weighted policies. Since Simple routing has no decision logic, health checks do not provide meaningful availability benefits in this case.
+
 ![image](https://github.com/user-attachments/assets/3f64ceba-bbab-450c-8595-c8b9826f0b68)
 
 **Weighted Routing Policy**
