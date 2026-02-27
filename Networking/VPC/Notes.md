@@ -46,6 +46,9 @@ Binary Subnet Mask: 11111111.11111111.11111111.00000000
   - Public Subnet: Accessible from the internet (using an Internet Gateway).
   - Private Subnet: Not directly accessible from the internet. Typically used for internal resources (e.g., databases, application servers). Often uses a NAT gateway to enable
 internet access for instances.
+  - The real difference is routing, not the subnet itself. A subnet is:
+    - Public → if its route table sends traffic to an Internet Gateway.
+    - Private → if it does NOT have a route to an Internet Gateway.
 
   ![image](https://github.com/user-attachments/assets/8af79818-2828-4380-a1d6-9a945da91939)
 
