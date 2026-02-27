@@ -27,5 +27,23 @@ AWS Route 53 provides several routing policies that allow you to manage how DNS 
 
 ![image](https://github.com/user-attachments/assets/800e934f-be1a-490e-b492-d72809ce7447)
 
+**Geolocation Routing**
+- Routes traffic based on user’s geographic location (country/continent)
+- Example:
+  - India → ap-south-1
+  - US → us-east-1
+- Difference from latency-based:
+  - Geolocation = Rule-based
+  - Latency = Performance-based
+ 
+**Geoproximity Routing**
+- Routes based on geographic location with bias control
+- Can shift traffic from one region toward another
+
+**Multi-Value Answer Routing**
+- Returns multiple IP addresses
+- DNS Resolver / Client chooses one
+- Supports health checks
+
 
 
