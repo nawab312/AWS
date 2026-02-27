@@ -65,7 +65,7 @@ internet access for instances.
   - **Security Groups (SGs)**
     - These are like firewalls at the instance level.
     - They control inbound and outbound traffic to your EC2 instances.
-    - You can define rules to allow or deny specific traffic based on source/destination IP addresses, ports, and protocols.
+    - We can only define ALLOW rules. Anything not explicitly allowed is implicitly denied
   - **Network ACLs (NACLs)**
     - These are like firewalls at the subnet level.
     - They control traffic entering and leaving a subnet. 
