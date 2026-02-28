@@ -11,6 +11,10 @@ Components of Route Table:
 - **Route Propagation:** 
   - Route propagation is when a gateway (like a VPN or Direct Connect) automatically adds routes to your VPC route table. Instead of manually creating routes, AWS updates the route table based on routes learned dynamically.
   - Why is it needed?: It is needed in hybrid setups where on-prem networks can have multiple or changing CIDR blocks. Route propagation keeps the route table updated automatically, reducing manual work and preventing routing mistakes when networks change.
+  - Private subnet route table → Enable propagation
+    - Private subnets usually need to talk to on-prem networks (databases, legacy systems, internal APIs). So enabling route propagation allows dynamically learned on-prem routes to be added automatically
+  -  Public subnet route table → Do not enable propagation
+    - Public subnets are meant to send internet traffic to an Internet Gateway. If you enable propagation there, a dynamically advertised route (like `0.0.0.0/0`) from on-prem could override the internet route and redirect all traffic to the VPN.
 
 **Default Route Table**
 When you create a new VPC in AWS, a default route table is automatically created. This default route table includes a route that allows instances in the VPC to communicate with each other using their private IP addresses (via `Local route`). Additionally, it may include a route for internet access if an Internet Gateway (IGW) is attached to the VPC.
