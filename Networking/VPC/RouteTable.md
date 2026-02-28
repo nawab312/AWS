@@ -13,7 +13,7 @@ Components of Route Table:
   - Why is it needed?: It is needed in hybrid setups where on-prem networks can have multiple or changing CIDR blocks. Route propagation keeps the route table updated automatically, reducing manual work and preventing routing mistakes when networks change.
   - Private subnet route table → Enable propagation
     - Private subnets usually need to talk to on-prem networks (databases, legacy systems, internal APIs). So enabling route propagation allows dynamically learned on-prem routes to be added automatically
-  -  Public subnet route table → Do not enable propagation
+  - Public subnet route table → Do not enable propagation
     - Public subnets are meant to send internet traffic to an Internet Gateway. If you enable propagation there, a dynamically advertised route (like `0.0.0.0/0`) from on-prem could override the internet route and redirect all traffic to the VPN.
 
 **Default Route Table**
