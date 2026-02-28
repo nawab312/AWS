@@ -8,7 +8,9 @@ Components of Route Table:
   - VPC Peering Connection: Routes traffic between VPCs.
   - NAT Gateway: Allows instances in a private subnet to access the internet.
   - Local: Indicates the route within the VPC for communication between subnets.
-- **Route Propagation:** Route tables can also have route propagation enabled for certain VPN and Direct Connect connections. This means the route table can automatically be updated with routes that are learned from other networks.
+- **Route Propagation:** 
+  - Route propagation is when a gateway (like a VPN or Direct Connect) automatically adds routes to your VPC route table. Instead of manually creating routes, AWS updates the route table based on routes learned dynamically.
+  - Why is it needed?: It is needed in hybrid setups where on-prem networks can have multiple or changing CIDR blocks. Route propagation keeps the route table updated automatically, reducing manual work and preventing routing mistakes when networks change.
 
 **Default Route Table**
 When you create a new VPC in AWS, a default route table is automatically created. This default route table includes a route that allows instances in the VPC to communicate with each other using their private IP addresses (via `Local route`). Additionally, it may include a route for internet access if an Internet Gateway (IGW) is attached to the VPC.
