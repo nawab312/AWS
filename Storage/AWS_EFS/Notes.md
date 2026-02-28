@@ -16,6 +16,12 @@
     - Slightly higher latency compared to General Purpose
     - Used for big data, analytics, large-scale parallel processing
 - **Data Encryption:** EFS supports encryption of data at rest and in transit. You can configure encryption using AWS Key Management Service (KMS) for data at rest and use TLS for encrypting data in transit.
+  - Encryption in transit (TLS) is not something manually configure at the *file system level*. It is enabled at the *client mount level*.
+  - To enable encryption in transit, you mount the file system using: *EFS mount helper*. Install amazon-efs-utils on your EC2 instance, then mount like this:
+    ```bash
+    sudo mount -t efs -o tls fs-12345678:/ /mnt/efs
+    ```
+  - `-o tls` option tells the mount helper to establish a TLS-encrypted connection to the EFS mount target.
 
 ![image](https://github.com/user-attachments/assets/f51db425-22c5-4c83-9d3f-6d4685e00e2e)
 
