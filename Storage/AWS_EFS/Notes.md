@@ -5,8 +5,16 @@
 
 - **Concurrent Access:** Multiple Amazon EC2 instances or other resources can access the EFS file system at the same time. It is designed for high-throughput workloads and is ideal for applications that require shared file storage.
 - **Performance Modes:** EFS offers different performance modes to optimize for your specific use case:
-  - **General Purpose Mode:** This is the default mode, providing low latency and high throughput for workloads that need consistent performance.
-  - **Max I/O Mode:** This mode is designed for scale-out workloads that require high throughput and can tolerate slightly higher latencies.
+  - **General Purpose Mode:**
+    - This is the default mode, providing low latency
+    - Has a limit on how much it can scale in parallel operations
+    - Suitable when response time matters more than extreme scale
+    - Best for most workloads (web servers, CMS, home directories)
+  - **Max I/O Mode:**
+    - Optimized for very high aggregate throughput
+    - Supports massively parallel workloads
+    - Slightly higher latency compared to General Purpose
+    - Used for big data, analytics, large-scale parallel processing
 - **Data Encryption:** EFS supports encryption of data at rest and in transit. You can configure encryption using AWS Key Management Service (KMS) for data at rest and use TLS for encrypting data in transit.
 
 ![image](https://github.com/user-attachments/assets/f51db425-22c5-4c83-9d3f-6d4685e00e2e)
