@@ -56,6 +56,18 @@ An Amazon EBS Snapshot is a point-in-time (Captures the exact state of data at a
 - Cross-Region & Cross-Account Sharing – Snapshots can be copied across regions and shared with other AWS accounts.
 - Automated Snapshots – AWS Backup and Data Lifecycle Manager (DLM) can automate snapshot creation and deletion.
 
+**Data Blocks**
+- Data block is a fixed-size chunk of storage that holds part of your volume’s data.
+- Think of your 100 GB EBS volume not as one big file, but as:
+  ```code
+  Block 1
+  Block 2
+  Block 3
+  ...
+  Block N
+  ```
+- EBS snapshots track changes at the *block level*, not file level.
+
 ---
 
 *How does the incremental nature of EBS snapshots reduce storage costs, and what impact does this have on restoring snapshots?*
