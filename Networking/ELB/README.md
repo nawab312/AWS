@@ -207,6 +207,7 @@ Why Not the Other Options?
 
 ![image](https://github.com/user-attachments/assets/67e93498-c2ca-48d4-b4dd-3c18fb6689bd)
 
+- Invalid Response in 502 means backend did not return a properly formatted HTTP response.Either the connection closed prematurely, the protocol was mismatched, headers were malformed, or the application crashed before completing the response.
 
 **Troubleshoot Intermittent 504 Gateway Timeout Errors for an Application behind an AWS ALB** https://github.com/nawab312/AWS/blob/main/Networking/ELB/Scenarios/Scenario1.md
 
