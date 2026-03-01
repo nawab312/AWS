@@ -8,7 +8,7 @@ AWS Virtual Private Network (AWS VPN) enables secure connectivity between on-pre
 
 AWS Site-to-Site VPN is used to securely connect an on-premises network to AWS over an *IPSec-encrypted tunnel*. It comprises:
 - **Virtual Private Gateway (VGW):** This is the AWS side of the VPN connection, acting as a gateway for the VPC. It allows communication between your VPC and your on-premises network over the VPN tunnel.
-- **Customer Gateway (CGW):** his is the on-premises device or software appliance, such as a hardware VPN router or a VPN appliance (e.g., Cisco ASA, pfSense, etc.), that initiates and manages the VPN connection from your side.
+- **Customer Gateway (CGW):** This is the on-premises device or software appliance, such as a hardware VPN router or a VPN appliance (e.g., Cisco ASA, pfSense, etc.), that initiates and manages the VPN connection from your side.
 - **IPSec Tunnel:** The secure tunnel is established between the Customer Gateway and the Virtual Private Gateway over the internet using IPsec (Internet Protocol Security) to encrypt and secure data.
 - **BGP Routing (Optional):** BGP can be used for dynamic routing instead of static routes.
 
