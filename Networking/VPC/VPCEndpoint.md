@@ -37,8 +37,6 @@ Why Not Other Options?
   - Better for full VPC-to-VPC connectivity (e.g., databases, EC2 instances), not ALBs.
 - Internet-facing ALB in VPC-B
   - Unnecessary exposure to the internet.
- 
-![Uploading image.png…]()
 
 ---
 
