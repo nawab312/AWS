@@ -45,7 +45,9 @@ Why Not Other Options?
 - Only supports Amazon S3 and DynamoDB.
 
 **How Does It Work?**
-- You create a Gateway Endpoint for S3 or DynamoDB.
+- You create a Gateway Endpoint for S3 or DynamoDB. When creating a Gateway VPC Endpoint for S3, AWS asks:
+  - Select route tables
+  - For each selected route table, AWS adds the Entry
 - AWS adds an entry to your VPC's route table, pointing to the AWS service.
 - When your EC2/Lambda wants to access S3 or DynamoDB, it follows this private route instead of using the internet.
 - Route Table Entry
