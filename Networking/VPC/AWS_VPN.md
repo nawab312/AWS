@@ -16,8 +16,7 @@ AWS Site-to-Site VPN is used to securely connect an on-premises network to AWS o
 
 Integrated with AWS Transit Gateway for multi-VPC connectivity.
 
-![image](https://github.com/user-attachments/assets/c801fdeb-a26a-444d-a5b1-050e1910966a)
-
+<img width="642" height="360" alt="image" src="https://github.com/user-attachments/assets/af7443c8-c95e-4c35-9eba-68d5df825d1f" />
 
 **Establishing the VPN Connection**
 - *Step 1*: In AWS, you create a *Virtual Private Gateway (VGW)* and associate it with your VPC.
