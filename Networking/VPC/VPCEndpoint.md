@@ -48,5 +48,11 @@ Why Not Other Options?
 - You create a Gateway Endpoint for S3 or DynamoDB.
 - AWS adds an entry to your VPC's route table, pointing to the AWS service.
 - When your EC2/Lambda wants to access S3 or DynamoDB, it follows this private route instead of using the internet.
+- Route Table Entry
+  ```bash
+  Destination: pl-xxxx (S3 prefix list)
+  Target: vpce-xxxx
+  ```
+- An S3 prefix list is an AWS-managed collection of IP CIDR ranges that represent the IP addresses used by Amazon S3 in a specific region.
 
 ![image](https://github.com/user-attachments/assets/92443a88-e801-4d5a-87af-ab00c1601f73)
