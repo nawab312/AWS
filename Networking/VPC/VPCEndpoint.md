@@ -40,6 +40,47 @@ Why Not Other Options?
 
 ---
 
+**Example Scenario**
+- VPC: `10.0.0.0/16`
+- Private Subnet (AZ-1): `10.0.1.0/24`
+- EC2 instance: `10.0.1.10`
+- No NAT, No IGW route in subnet
+- GOAL: EC2 must pull Docker image from Amazon Elastic Container Registry
+
+Step 1 — Create Interface Endpoint
+- You create VPC Endpoint:
+  - Service name: `com.amazonaws.ap-south-1.ecr.dkr`. Type: Interface
+  - You select: Subnet: `10.0.1.0/24`, Security group: Allow inbound 443 from EC2 subnet, Enable Private DNS
+  - What AWS Does Internally. AWS creates:
+    - An ENI in your subnet. Example IP: `10.0.1.50`
+    - Attached to your selected security group
+    - That ENI now represents a private entry point to ECR.
+
+Step 2 — EC2 Pulls Image
+```bash
+docker pull <account>.dkr.ecr.ap-south-1.amazonaws.com/app:latest
+```
+
+Step 3 — DNS Resolution
+- Because Private DNS is enabled: Instead of resolving to public ECR IPs,
+- It resolves to: `10.0.1.50`
+
+Step 4 — Routing Decision
+- EC2 wants to send packet to: `10.0.1.50`
+- Route table lookup: `10.0.0.0/16 → local`
+- So traffic stays inside VPC. No NAT, No IGW, No public internet.
+
+Step 5 — Security Group Check
+- EC2 SG must allow outbound 443
+- Endpoint ENI SG must allow inbound 443 from EC2
+
+Step 6 — PrivateLink Forwarding
+- AWS PrivateLink system forwards traffic internally over AWS backbone to:
+  - ECR control plane, Image registry service
+- The EC2 never talks to public internet.
+
+---
+
 ### Gateway Endpoint ###
 - Uses a route table entry to route traffic directly to AWS services
 - Only supports Amazon S3 and DynamoDB.
