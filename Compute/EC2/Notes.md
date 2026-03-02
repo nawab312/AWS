@@ -100,6 +100,8 @@ options edns0
 - Instance Status Checks
   - Can AWS reach your instance’s network stack
   - Is the instance responding to ARP?
+    - ARP (Address Resolution Protocol) is a Layer 2 networking protocol used to map an IP address → MAC address inside the same subnet. Without ARP, machines in the same network cannot talk to each other.
+    - When one server wants to send traffic to `10.0.1.25`, it knows the IP address. But Ethernet communication requires a MAC address, not an IP.
   - Has the OS booted properly?
   - Is the kernel responsive?
   - If this fails, it usually means:
