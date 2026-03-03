@@ -42,12 +42,9 @@ Amazon RDS Security involves multiple layers, including **Network Security, Auth
 - Use **AWS IAM** for database authentication instead of traditional credentials.
 - IAM users and roles can generate **temporary authentication tokens**.
 - Helps in **removing hardcoded passwords** from applications.
+- Only works with MySQl and Postgres
 
-### **Database Authentication Methods**
-- **Native Database Authentication:**
-  - Use MySQL, PostgreSQL, or SQL Server authentication.
-- **AWS IAM Authentication:**
-  - Uses IAM policies to grant access, avoiding password-based authentication.
+**Better Approach** -> Use AWS Secrets Mannager
 
 ---
 
