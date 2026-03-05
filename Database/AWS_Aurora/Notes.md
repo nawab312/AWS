@@ -6,6 +6,8 @@
   - Aurora Replicas (within the same region, synchronous)
   - Cross-Region Replicas (for disaster recovery)
   - Aurora Global Database (low-latency global replication)
+ 
+<img width="739" height="378" alt="image" src="https://github.com/user-attachments/assets/0feefe90-8150-4c04-a81e-21f3de526d8e" />
 
 ### Aurora Global Database (Cross-Region Replication) ###
 The **Amazon Aurora Global Database** is a feature of **Amazon Aurora** (both MySQL- and PostgreSQL-compatible) that enables cross-region replication with low-latency read replicas across multiple AWS regions. It is designed for applications that require **global-scale availability, disaster recovery, and low-latency reads** across geographically distributed locations.
