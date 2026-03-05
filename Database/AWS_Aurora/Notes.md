@@ -36,7 +36,14 @@ Amazon Aurora is designed for high performance and automatic scaling by dynamica
 
 **Compute Auto Scaling (Aurora Serverless & Replica Scaling)**
 - *Aurora Serverless*
-  - TO BE READ
+  - On-demand, auto-scaling configuration of Amazon Aurora where you don’t manage database servers or fixed instance sizes.
+  - Instead of provisioning DB instances (like `db.r6g.large`), You choose capacity range, and AWS adjusts compute automatically.
+  - Aurora Serverless uses ACUs (Aurora Capacity Units). 1 ACU roughly represents a combination of: CPU, Memory, Networking
+  - Example configuration:
+    ```bash
+    Min Capacity: 0.5 ACU
+    Max Capacity: 16 ACU
+    ```
 - *Read Replica Auto-Scaling (Horizontal Scaling)*
   - Supports up to *15 read replicas* for scaling read-heavy workloads
   - Aurora *automatically adds/removes read replicas* based on CPU/connection load.
