@@ -19,7 +19,13 @@ An IAM group is a collection of IAM users. You can assign permissions to a group
 
 **IAM Roles**
 An IAM role is an AWS identity with specific permissions that can be assumed by users or services. Unlike users, roles are not tied to a specific person or entity but are meant to be assumed temporarily. This is useful for granting permissions to services or users that need temporary access.
-- *Temporary Security Credentials:* When a role is assumed, temporary credentials are issued to the requester, allowing them to perform actions according to the role's permissions.
+- *Temporary Security Credentials:* Temporary credentials mean AWS generates short-lived access keys using STS when a role is assumed, which automatically expire and rotate for security. Those credentials contain:
+  ```code
+  Access Key ID
+  Secret Access Key
+  Session Token
+  Expiration Time
+  ```
 - *Use Cases:* IAM roles are commonly used in scenarios like granting EC2 instances permission to access S3 buckets or allowing cross-account access between AWS accounts.
 
 A **Trust Policy** is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
