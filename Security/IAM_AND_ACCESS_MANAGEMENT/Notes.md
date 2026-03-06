@@ -244,7 +244,16 @@ To track and audit user activity across AWS accounts, the following services can
 - *AWS Security Hub* aggregates security findings from various AWS services (such as GuardDuty, Inspector, and Macie), helping you centrally manage and monitor the security posture of your AWS accounts.
 
 **IAM Access Advisor**
-IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. This allows you to review access patterns and potentially reduce unnecessary permissions, following the principle of least privilege.
+- IAM Access Advisor helps to identify which permissions are being used by IAM users, groups, and roles. Shows service usage history for a user or role. Example: You attach this policy to a role:
+```code
+S3
+EC2
+RDS
+DynamoDB
+Lambda
+```
+- But the role only used: `S3 EC2`
+- This helps with least-privilege cleanup (Remove unused permissions)
 
 ---
 
