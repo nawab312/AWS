@@ -26,6 +26,9 @@ An IAM role is an AWS identity with specific permissions that can be assumed by 
   Session Token
   Expiration Time
   ```
+  - How EC2 Gets These Credentials
+    - Inside the instance, the application contacts the Instance Metadata Service. `http://169.254.169.254/latest/meta-data/iam/security-credentials/`
+    - This service returns temporary credentials for the role attached to that instance.
 - *Use Cases:* IAM roles are commonly used in scenarios like granting EC2 instances permission to access S3 buckets or allowing cross-account access between AWS accounts.
 
 A **Trust Policy** is a JSON document that defines which entities (users, roles, or AWS services) are allowed to assume an IAM role. Trust policies are attached to IAM roles and specify the **trusted principals** that can assume the role. This is useful in scenarios like granting cross-account access or allowing AWS services to assume roles. Trust Policy Structure
