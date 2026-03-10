@@ -152,6 +152,31 @@ Database subnet route table (no internet):
 
 Route priority: Most specific route wins
 10.0.1.5/32 > 10.0.1.0/24 > 10.0.0.0/16 > 0.0.0.0/0
+
+Example: VPC Endpoint affecting routing
+
+Private subnet route table after adding S3 Gateway Endpoint:
+
+┌─────────────────────────────┬──────────────────────┐
+│ Destination                 │ Target               │
+├─────────────────────────────┼──────────────────────┤
+│ 10.0.0.0/16                 │ local                │
+│ pl-63a5400a (S3 prefix list)│ VPC Endpoint         │ ← S3 traffic
+│ 0.0.0.0/0                   │ nat-0xyz789          │ ← Other internet traffic
+└─────────────────────────────┴──────────────────────┘
+
+Result:
+EC2 → S3 traffic uses VPC Endpoint
+NOT → NAT Gateway
+
+Reason:
+The S3 prefix list is more specific than 0.0.0.0/0.
+
+Implications:
+• S3 traffic stays inside AWS network
+• NAT Gateway is bypassed
+• Reduces NAT data processing cost
+• Improves security (no public internet path)
 ```
 
 ---
