@@ -39,7 +39,7 @@ Every API call in AWS — whether it's a human clicking in the console, a Jenkin
                         └─────────────────────────────────────────┘
 ```
 
-**AuthN** = Authentication — proving who you are (your identity)  
+**AuthN** = Authentication — proving who you are (your identity)
 **AuthZ** = Authorization — proving you are allowed to do something (your permissions)
 
 IAM handles both. And it does this for every single interaction with AWS — humans, machines, services, and pods.
@@ -114,6 +114,8 @@ This is the most important JSON you'll read in AWS. Understanding every field is
 }
 ```
 
+Let me walk through every field because interviewers will ask about each one:
+
 **Version** — Always `"2012-10-17"`. This is not a date you choose — it's the policy language version. Using the older `"2008-10-17"` disables certain features like policy variables. Always use `2012-10-17`.
 
 **Statement** — An array of permission statements. One policy can have multiple statements.
@@ -159,7 +161,9 @@ The ARN is how AWS uniquely identifies every single resource across the entire A
 
 ---
 
-## Types of IAM Policies
+## Types of IAM Policies — This Is Where Most People Get Confused
+
+There are several types of policies and they interact in ways that trip up even experienced engineers.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -203,7 +207,9 @@ The ARN is how AWS uniquely identifies every single resource across the entire A
 
 ### Identity-Based vs Resource-Based — The Cross-Account Key
 
-**Identity-based policy** answers: "What is this identity allowed to do?"  
+This distinction is critical and comes up in senior interviews constantly.
+
+**Identity-based policy** answers: "What is this identity allowed to do?"
 **Resource-based policy** answers: "Who is allowed to touch this resource?"
 
 For **same-account access**, you only need one of the two. Either give the role permission via an identity-based policy, or give the resource a resource-based policy — either works.
@@ -213,6 +219,8 @@ For **cross-account access**, you need BOTH. The role in Account A needs an iden
 ---
 
 ## How IAM Evaluation Works — The Decision Logic
+
+This is one of the most tested concepts in senior AWS interviews. When an API call comes in, AWS evaluates all applicable policies in this exact order:
 
 ```
 API Call Arrives
@@ -546,6 +554,8 @@ aws iam put-role-policy \
 
 ## Console Walkthrough — Key IAM Actions in the AWS Console
 
+For interviews and day-to-day work, here's how to navigate IAM in the console:
+
 **To create a Role:**
 `IAM → Roles → Create Role → Select trusted entity type` (AWS Service / AWS Account / Web Identity / SAML) `→ Select service (e.g. EC2) → Attach permission policies → Name the role → Create`
 
@@ -571,6 +581,10 @@ my-pod-role/session is not authorized to perform:
 s3:GetObject on resource: arn:aws:s3:::my-bucket/path/to/file
 ```
 
+**How to debug:**
+
+First, read the error message carefully. AWS usually tells you exactly which identity is failing (`assumed-role/my-pod-role`) and exactly what action is failing (`s3:GetObject`) and on what resource.
+
 ```bash
 # Step 1: Check if the role even exists and has the policy you think it has
 aws iam list-attached-role-policies --role-name my-pod-role
@@ -589,6 +603,7 @@ aws iam simulate-principal-policy \
 aws s3api get-bucket-policy --bucket my-bucket
 
 # Step 5: Check if there's an SCP at the org level blocking this
+# (you need org admin access for this)
 aws organizations list-policies-for-target \
   --target-id YOUR-ACCOUNT-ID \
   --filter SERVICE_CONTROL_POLICY
@@ -597,6 +612,8 @@ aws organizations list-policies-for-target \
 The most common causes in order: wrong resource ARN in the policy (forgot the `/*` for bucket objects), resource-based policy is denying, SCP is blocking at org level, or the role simply doesn't have the policy attached.
 
 ### Scenario 2: IRSA Not Working — Pod Gets `NoCredentialProviders`
+
+Your pod is trying to call AWS but says it can't find credentials.
 
 ```bash
 # Step 1: Check if the pod has the right environment variables
@@ -613,6 +630,8 @@ kubectl describe sa s3-reader-sa -n production
 aws iam list-open-id-connect-providers
 
 # Step 4: Verify the trust policy condition matches exactly
+# The namespace and service account name in the condition must match
+# what exists in your cluster
 aws iam get-role --role-name my-role \
   --query 'Role.AssumeRolePolicyDocument'
 
@@ -624,13 +643,18 @@ kubectl exec -it my-pod -n production -- \
   --web-identity-token $(cat $AWS_WEB_IDENTITY_TOKEN_FILE)
 ```
 
-The most common cause is a mismatch between the namespace/service account name in the IAM trust policy condition and what actually exists in the cluster.
+The most common cause is a mismatch between the namespace/service account name in the IAM trust policy condition and what actually exists in the cluster. Typos in the `sub` condition are incredibly common.
 
 ### Scenario 3: New EKS Nodes Not Joining the Cluster
+
+Symptoms: Node group is healthy in the EKS console, but `kubectl get nodes` shows nothing new, and the autoscaler or manual scaling doesn't bring nodes to Ready.
 
 ```bash
 # Check the aws-auth configmap
 kubectl describe configmap aws-auth -n kube-system
+
+# Check if the new node group's IAM role ARN is in mapRoles
+# If it's NOT there, nodes can't authenticate to the API server
 
 # Fix: Add the new role to aws-auth
 kubectl edit configmap aws-auth -n kube-system
@@ -643,11 +667,16 @@ kubectl edit configmap aws-auth -n kube-system
 
 # For managed node groups, eksctl can do this automatically:
 eksctl create nodegroup --cluster my-cluster --managed
+# eksctl automatically updates aws-auth for managed node groups
 ```
 
 ---
 
-## Least Privilege in Practice — Real Production Policy
+## Least Privilege in Practice — How Senior Engineers Actually Write Policies
+
+In an interview, when they ask "how do you implement least privilege," this is the answer they want:
+
+You start permissive and use the **IAM Access Analyzer** and the **Access Advisor** tab to tighten over time. Here's a real production approach:
 
 ```json
 {
@@ -697,6 +726,8 @@ Notice the specifics: exact bucket name (not `*`), exact path prefix (not `/*` o
 
 ## Terraform — Managing IAM as Code
 
+Since you'll be managing IAM in production via IaC:
+
 ```hcl
 # Create an IAM role for an EKS pod (IRSA pattern)
 data "aws_iam_policy_document" "irsa_trust" {
@@ -743,6 +774,8 @@ resource "aws_iam_role_policy_attachment" "s3_reader" {
 ---
 
 ## How This Connects to the Rest of Your Learning Path
+
+IAM touches every single topic that comes after this. Here's specifically what you're building toward:
 
 **VPC (Topic 2):** VPC endpoints use resource-based policies to control which IAM identities can use them. Your private S3 access from EKS pods flows through both VPC endpoints and IAM.
 
