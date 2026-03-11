@@ -671,6 +671,8 @@ aws rds restore-db-instance-from-db-snapshot \
 
 Aurora is AWS's cloud-native relational database — MySQL and PostgreSQL compatible but rebuilt from the ground up for the cloud. It's not MySQL running on AWS — it's a new storage engine with a shared distributed storage layer that gives it fundamentally better durability, performance, and scaling characteristics than standard RDS.
 
+<img width="739" height="378" alt="image" src="https://github.com/user-attachments/assets/0feefe90-8150-4c04-a81e-21f3de526d8e" />
+
 ---
 
 ## 🔍 Why It Exists / What Problem It Solves
