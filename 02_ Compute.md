@@ -1183,6 +1183,9 @@ aws elbv2 register-targets \
 
 ## 🧩 Cross-Zone Load Balancing
 
+<img width="546" height="230" alt="image" src="https://github.com/user-attachments/assets/c9d56088-cb95-4744-84f4-74a43e107504" />
+
+
 ```
 Cross-zone load balancing = distribute requests evenly across ALL
                             targets in ALL AZs, not just the LB's AZ
