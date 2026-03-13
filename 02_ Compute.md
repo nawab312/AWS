@@ -233,6 +233,111 @@ Result:
 
 ---
 
+### CPU Steal Time — the hidden performance thief
+```
+CPU steal time = time your vCPU WANTS to run but the hypervisor
+                 has given the physical CPU to another tenant's VM
+
+Your instance: "I need CPU right now"
+Hypervisor:    "Wait — another VM is using that core"
+Result:        Your process stalls, even though your vCPU shows as busy
+
+Linux sees this as: %steal in top / vmstat output
+
+  top output:
+  %Cpu(s): 12.3 us, 2.1 sy, 0.0 ni, 71.4 id, 3.2 wa, 0.0 hi, 0.0 si, 11.0 st
+                                                                           ^^^^
+                                                                    steal = 11%!
+
+  Healthy steal:  < 5%
+  Concerning:     5-10% (investigate, consider upgrade)
+  Critical:       > 10% (your workload is being starved)
+```
+```
+Why steal time happens:
+├── You share a physical host with other tenants (noisy neighbor problem)
+├── Over-provisioned physical host → more vCPUs promised than physical cores
+├── t-family burstable instances are especially prone under sustained load
+└── Nitro instances (5th gen+) have lower steal than older Xen-based instances
+
+Why Nitro reduced steal time:
+├── Network and storage I/O offloaded to dedicated Nitro cards
+│   → Nitro card handles EBS, VPC networking independently
+│   → Physical host CPUs are free for your workload exclusively
+├── Less hypervisor overhead competing for the same physical cores
+└── This is one of the main reasons to use m6i/c6i over m4/c4
+```
+```bash
+# How to measure steal time on a running instance
+
+# Method 1: top (column 'st')
+top
+# Press '1' to see per-CPU steal
+
+# Method 2: vmstat (st column, reported per second)
+vmstat 1 10
+# procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+# r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+# 2  0      0 1234567  12345 234567    0    0     0     5  123  456  8  2 79  0  11
+
+# Method 3: sar (historical steal data)
+sar -u 1 10   # -u = CPU, 1 second interval, 10 samples
+# %steal column shows historical pattern
+
+# Method 4: CloudWatch custom metric (push steal time — not collected natively)
+STEAL=$(vmstat 1 2 | tail -1 | awk '{print $16}')
+aws cloudwatch put-metric-data \
+  --namespace "EC2/Custom" \
+  --metric-name "CPUStealTime" \
+  --value "$STEAL" \
+  --unit Percent \
+  --dimensions InstanceId=$(curl -sf \
+    -H "X-aws-ec2-metadata-token: $TOKEN" \
+    http://169.254.169.254/latest/meta-data/instance-id)
+```
+```
+What to do when steal time is high:
+
+Option 1: Move to a larger instance type
+          Larger instances → fewer tenants per physical host
+          → less contention for physical cores
+
+Option 2: Move to a newer generation (Nitro)
+          m4 → m6i, c4 → c6i, r4 → r6i
+          Nitro offloads I/O → less host CPU competition
+
+Option 3: Use Dedicated Instance or Dedicated Host
+          Dedicated Instance: your VMs on physically isolated hardware
+                              no other AWS customer shares your host
+          Dedicated Host:     you choose which physical host your VMs land on
+                              useful for BYOL (Bring Your Own License)
+          ⚠️ Dedicated options cost significantly more (~10-20% premium)
+
+Option 4: Placement Groups do NOT fix steal time
+          Cluster PG = network proximity, not CPU isolation
+          Dedicated Instance/Host is the correct fix for steal
+
+Option 5: Accept it for t-family instances
+          t3/t4g are burstable — designed for bursty workloads
+          Sustained high steal on t3 → wrong instance family
+          Move to m or c family for consistent compute needs
+```
+```
+Steal time vs other CPU metrics — how to tell them apart:
+
+High us (user):   your application code is CPU-bound → optimize or scale out
+High sy (system): kernel overhead → check I/O, syscalls, context switches
+High wa (wait):   waiting on I/O → EBS throughput or IOPS bottleneck
+High st (steal):  hypervisor gave your CPU to someone else → host problem
+High id (idle):   spare capacity → no issue
+
+steal is the ONLY metric not caused by your own workload.
+It is an infrastructure-layer problem — optimizing your code does nothing.
+The fix is always at the instance/host level.
+```
+
+---    
+
 ## ⚠️ Tricky Edge Cases / Gotchas
 
 | Gotcha | Detail |
@@ -243,6 +348,7 @@ Result:
 | Key pairs ≠ IAM | SSH key pair controls OS access, IAM role controls AWS API access. They're separate |
 | Stopped instance billing | You don't pay for compute when stopped, but you still pay for EBS and Elastic IPs |
 | Instance store | Some instance types have ephemeral local NVMe. Data is LOST on stop/terminate |
+| CPU steal time | Not in CloudWatch by default — must push as custom metric. >10% steal = noisy neighbor. Fix: larger instance, newer Nitro gen, or Dedicated Instance |
 
 ---
 
