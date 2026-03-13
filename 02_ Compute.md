@@ -173,6 +173,218 @@ Instance Launch Timeline:
 
 ---
 
+### EC2 Status Checks — System vs Instance
+```
+AWS runs two automated health checks on every EC2 instance
+every minute. They are SEPARATE checks testing DIFFERENT layers.
+
+┌─────────────────────────────────────────────────────────────────┐
+│              EC2 Status Check Architecture                      │
+│                                                                 │
+│  Physical Host                                                  │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  System Status Check  ← tests THIS layer                 │  │
+│  │  (AWS infrastructure: power, network, hardware, host OS) │  │
+│  │                                                          │  │
+│  │   ┌────────────────────────────────────────────────┐    │  │
+│  │   │  Your EC2 Instance                             │    │  │
+│  │   │  Instance Status Check  ← tests THIS layer     │    │  │
+│  │   │  (your VM: kernel, OS, network config, memory) │    │  │
+│  │   └────────────────────────────────────────────────┘    │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+```
+```
+SYSTEM STATUS CHECK
+───────────────────
+What it tests:   AWS infrastructure BELOW your instance
+                 ├── Physical host hardware (CPU, memory, disk)
+                 ├── Host power supply
+                 ├── Physical network connectivity to the host
+                 └── AWS hypervisor (Nitro) health
+
+Failure means:   AWS's hardware/infrastructure has a problem
+                 NOT your fault — AWS must fix it
+
+Fix options:
+├── Wait: AWS detects and migrates/repairs automatically (can take time)
+├── Stop + Start: instance moves to a DIFFERENT physical host
+│   ⚠️ Stop + Start, NOT reboot — reboot stays on the same host
+│   ⚠️ Public IP changes on Stop + Start unless using Elastic IP
+└── Auto-recovery: CloudWatch alarm → recover action (see below)
+
+CloudWatch metric: StatusCheckFailed_System
+```
+```
+INSTANCE STATUS CHECK
+─────────────────────
+What it tests:   YOUR instance's software and OS
+                 ├── OS kernel — is it running and responding?
+                 ├── Network interface config (incorrect IP, routing)
+                 ├── System memory exhaustion (OOM killer)
+                 ├── File system corruption or full disk
+                 └── Incompatible kernel modules / bad startup scripts
+
+Failure means:   Something inside YOUR instance is broken
+                 AWS infrastructure is fine — you must fix it
+
+Fix options:
+├── Reboot: restarts the OS (stays on same host — fine here)
+├── SSH in and fix: check /var/log/messages, dmesg, disk space
+├── Stop + Start with modified user data: fix startup script
+└── Restore from snapshot: if OS corruption is unrecoverable
+
+CloudWatch metric: StatusCheckFailed_Instance
+```
+```
+Combined metric:
+StatusCheckFailed = 1 if EITHER check fails (System OR Instance)
+                    0 if both checks pass
+
+Check status in console:
+EC2 → Instances → select instance → Status Checks tab
+Shows: System reachability + Instance reachability + pass/fail
+```
+```bash
+# Query status check results via CLI
+aws ec2 describe-instance-status \
+  --instance-ids i-0abc123def456789 \
+  --query 'InstanceStatuses[*].{
+    InstanceId:InstanceId,
+    System:SystemStatus.Status,
+    Instance:InstanceStatus.Status
+  }'
+
+# Output:
+# [
+#   {
+#     "InstanceId": "i-0abc123def456789",
+#     "System":   "ok",       ← or "impaired"
+#     "Instance": "impaired"  ← OS-level problem
+#   }
+# ]
+```
+
+---
+
+### Auto-Recovery — CloudWatch Alarm Action
+```
+Auto-recovery = CloudWatch alarm watches StatusCheckFailed_System
+                When it fires → AWS automatically recovers the instance
+
+What "recover" does:
+├── Moves instance to a new healthy physical host
+├── Preserves: instance ID, private IP, Elastic IP, EBS volumes
+├── Loses:     instance store data (ephemeral storage only)
+│              RAM contents
+└── Takes:     ~5-10 minutes typically
+
+⚠️ Auto-recovery works ONLY for:
+   ├── System status check failures (not instance status check)
+   ├── EBS-backed instances (not instance store root)
+   └── Supported instance types (most modern types — check AWS docs)
+```
+```bash
+# Create CloudWatch alarm with auto-recovery action
+aws cloudwatch put-metric-alarm \
+  --alarm-name "auto-recover-i-0abc123def456789" \
+  --alarm-description "Auto recover EC2 on system status check failure" \
+  --namespace AWS/EC2 \
+  --metric-name StatusCheckFailed_System \
+  --dimensions Name=InstanceId,Value=i-0abc123def456789 \
+  --statistic Minimum \
+  --period 60 \
+  --evaluation-periods 2 \
+  --threshold 1 \
+  --comparison-operator GreaterThanOrEqualToThreshold \
+  --alarm-actions \
+    arn:aws:automate:us-east-1:ec2:recover \
+    arn:aws:sns:us-east-1:123456789:ops-alerts
+  # Two actions: recover the instance AND notify the team
+
+# Other available alarm actions for EC2:
+# arn:aws:automate:region:ec2:recover   → recover (new host, same config)
+# arn:aws:automate:region:ec2:reboot    → reboot the instance
+# arn:aws:automate:region:ec2:stop      → stop the instance
+# arn:aws:automate:region:ec2:terminate → terminate the instance
+```
+
+---
+
+### How Status Checks Connect to ASG
+```
+ASG health check type — this is where status checks matter most:
+
+ASG health check type = EC2 (default):
+├── ASG marks instance unhealthy if:
+│   EC2 instance state is NOT "running"
+│   (stopped, terminated, shutting-down)
+├── Does NOT consider: StatusCheckFailed_Instance
+│   → Your OS can be completely broken, ASG thinks it's healthy!
+└── Use for: simple stateless apps where OS health = VM running
+
+ASG health check type = ELB:
+├── ASG marks instance unhealthy if:
+│   Load balancer health check fails (your /health endpoint returns non-2xx)
+├── ALSO considers EC2 state (both must pass)
+└── Use for: production web apps — tests actual application health
+
+ASG health check type = EC2 + custom:
+├── You can combine: if StatusCheckFailed → ASG replaces instance
+└── Pattern: CloudWatch alarm on StatusCheckFailed → SNS → Lambda
+             Lambda calls SetInstanceHealth to mark it unhealthy
+             ASG replaces it automatically
+
+aws autoscaling set-instance-health \
+  --instance-id i-0abc123def456789 \
+  --health-status Unhealthy
+# ASG will terminate and replace this instance
+```
+
+---
+
+### Status Check Failure Diagnosis Cheatsheet
+```
+Symptom                          │ Which check  │ Likely cause
+─────────────────────────────────┼──────────────┼──────────────────────────
+Instance unreachable, AWS issue  │ System       │ Host hardware failure
+Instance running, SSH fails      │ Instance     │ OS crash / kernel panic
+High CPU but instance check OK   │ Neither      │ App-level issue (not checks)
+Instance check fails after deploy│ Instance     │ Bad startup script / OOM
+Intermittent check failures      │ System       │ Degraded host — stop+start
+Disk full                        │ Instance     │ OS can't function → fails
+Network misconfigured            │ Instance     │ Wrong IP / routing in OS
+Both checks fail                 │ Both         │ Stop+start first, then debug
+```
+
+---
+
+### Status Checks vs ELB Health Checks vs ASG Health Checks
+```
+Three different health check systems — often confused in interviews:
+
+┌──────────────────────┬─────────────────────────────┬───────────────────┐
+│ Check Type           │ What It Tests               │ Who Acts On It    │
+├──────────────────────┼─────────────────────────────┼───────────────────┤
+│ EC2 Status Check     │ Hardware + OS layer          │ CloudWatch alarm  │
+│ (System + Instance)  │ "Is the VM alive?"           │ → auto-recover    │
+├──────────────────────┼─────────────────────────────┼───────────────────┤
+│ ELB Health Check     │ Application layer            │ Load balancer     │
+│ (Target Group)       │ "Is /health returning 200?"  │ → stops routing   │
+├──────────────────────┼─────────────────────────────┼───────────────────┤
+│ ASG Health Check     │ EC2 state OR ELB check       │ ASG               │
+│                      │ "Should I replace this?"     │ → terminates +    │
+│                      │                              │   launches new    │
+└──────────────────────┴─────────────────────────────┴───────────────────┘
+
+The full production stack uses ALL THREE:
+EC2 Status Check  → CloudWatch alarm → auto-recover (hardware failures)
+ELB Health Check  → stops sending traffic (app failures)
+ASG Health Check  → replaces the instance (persistent failures)
+```
+
+---
+
 ## 💬 Short Crisp Interview Answer
 
 *"EC2 is AWS's virtual machine service built on the Nitro hypervisor. You choose an instance family based on your workload — compute, memory, storage, or GPU optimized — and a size. AMIs are the blueprint — they contain the OS and pre-installed software. User data lets you bootstrap instances on first boot. In production, we typically build golden AMIs with our agents pre-installed and use SSM Session Manager instead of key pairs for access."*
