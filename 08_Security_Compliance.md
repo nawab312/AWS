@@ -341,9 +341,152 @@ Even FullAdmin IAM policy + SCP Deny = DENIED.
 
 ---
 
+## 🧩 IAM Access Analyzer
+```
+IAM Access Analyzer = automated tool that identifies resources in your account
+                      (or organization) that are shared with EXTERNAL principals
+
+"External" means: outside your AWS account or outside your AWS Organization
+
+Resources Access Analyzer monitors:
+├── S3 buckets
+├── IAM roles (trust policies allowing external assume)
+├── KMS keys (key policies granting cross-account access)
+├── Lambda functions and layers (resource-based policies)
+├── SQS queues
+├── Secrets Manager secrets
+└── SNS topics
+
+How it works:
+├── You define a ZONE OF TRUST: your account OR your entire organization
+├── Access Analyzer continuously monitors resource-based policies
+├── Any resource accessible from OUTSIDE the zone of trust → FINDING
+└── Findings appear in Security Hub + EventBridge for automated response
+
+Finding types:
+├── External access findings:
+│   "S3 bucket prod-data is publicly accessible via bucket policy"
+│   "IAM role cross-account-role trusts account 999888777 (not in org)"
+│   "KMS key allows Decrypt from arn:aws:iam::EXTERNAL-ACCT:root"
+└── Unused access findings (IAM Access Analyzer for unused access):
+    "IAM role has not used EC2 permissions in 90 days"
+    "IAM user has S3:DeleteObject permission never used in 180 days"
+    → Use to right-size permissions (reduce blast radius)
+
+Zone of trust options:
+├── Account zone:      external = anything outside this AWS account
+└── Organization zone: external = anything outside this AWS Organization
+                       (cross-account within org = NOT flagged as finding)
+
+Archive rules — suppress expected findings:
+{
+  "filter": [
+    {"criterion": "principal.AWS", "eq": ["arn:aws:iam::PARTNER-ACCT:root"]},
+    {"criterion": "resource", "contains": ["arn:aws:s3:::partner-shared-bucket"]}
+  ]
+}
+→ Expected external access: archive the finding (won't re-alert)
+→ Unexpected external access: active finding requiring investigation
+```
+```bash
+# Create an analyzer scoped to the entire organization
+aws accessanalyzer create-analyzer \
+  --analyzer-name org-external-access \
+  --type ORGANIZATION
+
+# List all active findings
+aws accessanalyzer list-findings \
+  --analyzer-arn arn:aws:accessanalyzer:us-east-1:123:analyzer/org-external-access \
+  --filter '{"status": {"eq": ["ACTIVE"]}}'
+
+# Archive an expected finding (known/intentional external access)
+aws accessanalyzer update-findings \
+  --analyzer-arn arn:aws:accessanalyzer:... \
+  --ids ["finding-id-123"] \
+  --status ARCHIVED
+```
+```
+Access Analyzer policy validation:
+Before deploying a policy, validate it against IAM best practices:
+
+aws accessanalyzer validate-policy \
+  --policy-type IDENTITY_POLICY \
+  --policy-document file://my-policy.json
+
+Returns findings like:
+├── SECURITY_WARNING: "S3 bucket wildcard — consider scoping to specific bucket"
+├── WARNING:          "Unused condition key in this context"
+├── SUGGESTION:       "Consider adding condition to restrict to specific region"
+└── ERROR:            "Invalid syntax in policy statement"
+
+Access Analyzer policy generation:
+├── Monitors CloudTrail for 90 days
+├── Generates a LEAST-PRIVILEGE policy based on ACTUAL observed API calls
+└── Use to right-size overly broad existing policies
+
+aws accessanalyzer start-policy-generation \
+  --policy-generation-details '{"principalArn": "arn:aws:iam::123:role/my-role"}' \
+  --cloud-trail-details '{
+    "accessRole": "arn:aws:iam::123:role/analyzer-role",
+    "trailArn": "arn:aws:cloudtrail:us-east-1:123:trail/my-trail",
+    "startTime": "2024-01-01T00:00:00Z"
+  }'
+```
+
+---
+
+### IAM Access Advisor
+```
+Access Advisor = per-principal view of LAST ACCESSED timestamps
+                 for every service and action a principal has permission to use
+
+Shows: "This role has permission to call 47 AWS services.
+        It has only actually called 3 of them in the last 90 days."
+
+Access at two levels of granularity:
+├── Service level:  last time the principal accessed ANY action in the service
+└── Action level:   last time a SPECIFIC action was called
+    (available for S3, IAM, Lambda, SQS — not all services yet)
+
+Use cases:
+├── Right-sizing permissions:
+│   Role has EC2, S3, DynamoDB, Lambda permissions.
+│   Access Advisor: EC2 last used 400 days ago.
+│   → Safe to remove EC2 permissions (likely never needed them)
+│
+├── Identifying unused IAM users/roles:
+│   No service access in 180+ days → candidate for deletion
+│
+└── Enforcing least privilege:
+    Before doing a quarterly access review, pull Access Advisor data
+    to show which permissions are actively used vs dormant
+
+Access the data:
+# In IAM console: click any user/role → "Access Advisor" tab
+# API:
+aws iam generate-service-last-accessed-details \
+  --arn arn:aws:iam::123:role/my-role
+
+aws iam get-service-last-accessed-details \
+  --job-id <job-id-from-above>
+```
+```
+Access Analyzer vs Access Advisor:
+├── Access Analyzer: WHO from OUTSIDE can reach your resources?
+│   → Finds unintended external access → close the gap
+└── Access Advisor:  WHAT permissions is this principal actually using?
+    → Finds unused permissions → remove the excess
+
+Both are least-privilege tools — different direction of analysis.
+Access Analyzer = inbound exposure analysis.
+Access Advisor  = outbound usage analysis.
+```
+
+---
+
 ## 💬 Short Crisp Interview Answer
 
-*"IAM policy evaluation follows a strict hierarchy: explicit DENY wins over everything first, then SCPs restrict what accounts in an org can ever do (even root), then resource-based policies, then permission boundaries (which cap what an identity policy can grant — the effective permission is the intersection of the two), then session policies, then identity-based policies. Trust policies define who can assume a role — they're resource-based policies on the role itself with sts:AssumeRole as the action. Permission boundaries are the key tool for delegating IAM management safely: developers can create roles for their Lambda functions but can't escalate beyond what the boundary allows. SCPs are organizational guardrails — they can deny region usage, protect security services from being disabled, and restrict expensive services in dev accounts."*
+*"IAM policy evaluation follows a strict hierarchy: explicit DENY wins over everything first, then SCPs restrict what accounts in an org can ever do (even root), then resource-based policies, then permission boundaries (which cap what an identity policy can grant — the effective permission is the intersection of the two), then session policies, then identity-based policies. Trust policies define who can assume a role — they're resource-based policies on the role itself with sts:AssumeRole as the action. Permission boundaries are the key tool for delegating IAM management safely: developers can create roles for their Lambda functions but can't escalate beyond what the boundary allows. SCPs are organizational guardrails — they can deny region usage, protect security services from being disabled, and restrict expensive services in dev accounts. IAM Access Analyzer continuously monitors resource-based policies to find any resource accessible from outside your zone of trust — flagging unexpected cross-account S3 buckets, role trust policies, and KMS key access. Access Advisor complements it by showing which permissions a principal has actually used in the last 90 days, making it the primary tool for right-sizing overly broad policies toward least privilege."*
 
 ---
 
@@ -2059,6 +2202,7 @@ IAM
 ├── KMS                  → key policies reference IAM principals
 ├── Config               → iam-root-access-key-check, iam-user-mfa-enabled rules
 └── CloudTrail           → all IAM changes logged as CloudTrail events
+├── Access Analyzer      → monitors resource policies + CloudTrail to flag external access and generate least-privilege policies
 
 KMS
 ├── S3, EBS, RDS, DynamoDB, Lambda → all use KMS for encryption at rest
@@ -2157,6 +2301,11 @@ Macie / Detective / Audit Manager
 | Detective purpose | Graph-based post-incident investigation. Maps all related entities and timeline |
 | Detective warmup | Needs ~48 hours of data before graph analysis is meaningfully useful |
 | Audit Manager | Continuous compliance evidence collection for SOC2/PCI/HIPAA/GDPR audits |
+| IAM Access Analyzer | Finds resources accessible from OUTSIDE zone of trust (account or org). Monitors S3, IAM roles, KMS, Lambda, SQS, Secrets Manager, SNS |
+| Access Analyzer zone of trust | Account = external is outside this account. Organization = external is outside the org |
+| Access Analyzer policy generation | Analyzes 90 days of CloudTrail to generate least-privilege policy from actual usage |
+| IAM Access Advisor | Shows last-accessed timestamps per service/action for a principal. Use for right-sizing and removing unused permissions |
+| Access Analyzer vs Access Advisor | Analyzer = inbound external exposure. Advisor = outbound usage analysis. Both serve least-privilege goals |
 
 ---
 
