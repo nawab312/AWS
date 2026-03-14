@@ -964,6 +964,68 @@ breach until proven otherwise. The response follows five phases.
 UnauthorizedAccess:IAMUser/MaliciousIPCaller — complete playbook:
 ```
 
+```
+                    GuardDuty Incident Response
+          UnauthorizedAccess : IAMUser/MaliciousIPCaller
+ ___________________________________________________________
+
+
+  ┌─────────────────────────────────┐
+  │  Phase 0  ·  Triage  ·  5 min  │
+  └─────────────────┬───────────────┘
+                    │
+                    ├──▶  Extract from finding
+                    │     IAM principal · source IP · API calls · timestamp
+                    │
+                    ▼
+  ┌─────────────────────────────────────┐
+  │  Phase 1  ·  Containment  ·  15 min │
+  └─────────────────┬───────────────────┘
+                    │
+                    ├──▶  Deny policy on identity
+                    │     aws iam put-user-policy  /  attach deny all
+                    │
+                    ├──▶  Revoke active sessions
+                    │     sts:RevokeSession  ·  rotate  /  delete keys
+                    │
+                    ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 2  ·  Investigation  ·  1–2hr │
+  └─────────────────┬────────────────────┘
+                    │
+                    ├──▶  CloudTrail scope query
+                    │     All API calls by this principal  ·  all regions
+                    │
+                    ├──▶  S3 access logs  +  VPC Flow Logs
+                    │     Data exfil check  ·  lateral movement
+                    │
+                    ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 3  ·  Blast Radius Scoping    │
+  └─────────────────┬────────────────────┘
+                    │
+                    ├──▶  Resources touched
+                    │     EC2  ·  S3  ·  RDS  ·  Secrets Manager  ·  IAM
+                    │
+                    ├──▶  Lateral movement
+                    │     New IAM users  ·  role assumptions  ·  backdoors
+                    │
+                    ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 4  ·  Remediation & Harden    │
+  └─────────────────┬────────────────────┘
+                    │
+                    ├──▶  Replace credentials  +  SCP guard
+                    │     New keys  ·  MFA enforce  ·  deny bad IPs
+                    │
+                    └──▶  Post-incident review
+                          Root cause  ·  detection gaps  ·  runbook update
+
+
+ ___________________________________________________________
+        ~0 – 4 hours  ·  finding to initial remediation
+```
+
 ### Phase 0 — Triage (First 5 Minutes)
 
 Pull the full finding JSON — the console summary hides fields you need:
