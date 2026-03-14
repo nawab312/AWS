@@ -956,6 +956,218 @@ GuardDuty Organizations integration:
 
 ---
 
+## 🧩 GuardDuty — Incident Response Playbook
+```
+When GuardDuty fires a High/Critical finding, treat it as a confirmed
+breach until proven otherwise. The response follows five phases.
+
+UnauthorizedAccess:IAMUser/MaliciousIPCaller — complete playbook:
+```
+
+### Phase 0 — Triage (First 5 Minutes)
+
+Pull the full finding JSON — the console summary hides fields you need:
+```bash
+aws guardduty get-findings \
+  --detector-id <detector-id> \
+  --finding-ids <finding-id> \
+  --query 'Findings[0]' \
+  --output json
+```
+```
+Critical fields to extract:
+├── resource.accessKeyDetails.userName     → human, role, or service account?
+├── resource.accessKeyDetails.accessKeyId  → the exact key to revoke
+├── service.action.awsApiCallAction.remoteIpDetails.ipAddressV4 → attacker IP
+├── service.action.awsApiCallAction.api    → which API call triggered the finding
+├── service.eventFirstSeen / eventLastSeen → sets CloudTrail query window
+└── severity                               → 7–8 High, 9–10 Critical
+
+First question: is this a human IAM user or a role/service account?
+Containment path differs for each.
+Also check: is this a scheduled red team or security scanner exercise?
+If no scheduled exercise on the calendar → treat as real immediately.
+```
+
+### Phase 1 — Containment (Within 15 Minutes)
+```
+Goal: stop the bleeding without destroying forensic evidence.
+Do NOT delete anything during containment — only deny and revoke.
+Deletion destroys CloudTrail correlation you will need in Phase 2.
+```
+```bash
+# Step 1: Attach explicit Deny to the identity — instant, reversible
+aws iam put-user-policy \
+  --user-name <compromised-user> \
+  --policy-name INCIDENT-RESPONSE-LOCKOUT \
+  --policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [{"Effect": "Deny", "Action": "*", "Resource": "*"}]
+  }'
+
+# For a role: use permissions boundary instead
+aws iam put-role-permissions-boundary \
+  --role-name <compromised-role> \
+  --permissions-boundary arn:aws:iam::aws:policy/AWSDenyAll
+
+# Step 2: Revoke all active STS sessions (tokens may survive key deactivation)
+aws iam put-role-policy \
+  --role-name <compromised-role> \
+  --policy-name RevokeOldSessions \
+  --policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "DateLessThan": {
+          "aws:TokenIssueTime": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+        }
+      }
+    }]
+  }'
+
+# Step 3: Deactivate (not delete) the access key
+aws iam update-access-key \
+  --user-name <compromised-user> \
+  --access-key-id <key-id> \
+  --status Inactive
+
+# Step 4: If EC2 instance role is involved — isolate to forensic SG
+aws ec2 modify-instance-attribute \
+  --instance-id <instance-id> \
+  --groups <forensic-isolation-sg-id>
+# forensic-isolation-sg: deny all inbound/outbound except your IR team's IP
+```
+
+### Phase 2 — Investigation (First 1–2 Hours)
+```
+Primary source: CloudTrail. 15-minute delivery lag — not real-time.
+Query via Athena for speed at scale.
+```
+```sql
+-- Everything this identity touched, all regions, full time window
+SELECT eventtime, eventsource, eventname, awsregion,
+       sourceipaddress, useragent, requestparameters, errorcode
+FROM cloudtrail_logs
+WHERE useridentity.arn LIKE '%<compromised-identity>%'
+  AND eventtime >= '<first_seen_timestamp>'
+ORDER BY eventtime ASC;
+
+-- Privilege escalation: IAM write actions only
+SELECT eventtime, eventname, requestparameters
+FROM cloudtrail_logs
+WHERE useridentity.arn LIKE '%<compromised-identity>%'
+  AND eventsource = 'iam.amazonaws.com'
+  AND eventname IN (
+    'CreateUser','CreateAccessKey','AttachUserPolicy','PutUserPolicy',
+    'CreateLoginProfile','UpdateLoginProfile','AddUserToGroup',
+    'CreateRole','PassRole','AttachRolePolicy','PutRolePolicy'
+  )
+ORDER BY eventtime;
+
+-- Data exfiltration signals: bulk S3 reads
+SELECT eventtime, requestparameters, resources
+FROM cloudtrail_logs
+WHERE useridentity.arn LIKE '%<compromised-identity>%'
+  AND eventsource = 's3.amazonaws.com'
+  AND eventname IN ('GetObject','ListBucket','GetBucketPolicy')
+ORDER BY eventtime;
+
+-- Cross-account pivot: did they assume roles in other accounts?
+SELECT eventtime, requestparameters, responseelements
+FROM cloudtrail_logs
+WHERE useridentity.arn LIKE '%<compromised-identity>%'
+  AND eventname = 'AssumeRole'
+ORDER BY eventtime;
+```
+
+### Phase 3 — Blast Radius Scoping
+```
+IAM impact checklist:
+  □ New IAM users created?              → list and delete
+  □ New access keys created?            → deactivate all
+  □ Policy changes made?                → diff and revert
+  □ New roles with modified trust?      → audit trust relationships
+  □ Console login profiles created?     → delete
+
+Data impact checklist:
+  □ S3 buckets listed or objects read?  → catalog accessed objects
+  □ Secrets Manager secrets read?       → rotate ALL accessed secrets
+  □ Parameter Store reads?              → rotate affected parameters
+  □ KMS key usage?                      → determine what was decrypted
+  □ RDS/DynamoDB queries?               → check DB audit logs
+
+Compute impact checklist:
+  □ EC2 instances launched?             → terminate, preserve AMI snapshot
+  □ Lambda functions created/updated?   → diff code, check env vars for exfil
+  □ SSM Run Command executed?           → check command history
+
+Network impact checklist:
+  □ Security group rules modified?      → revert changes
+  □ VPC peering or endpoints created?   → remove
+  □ Route53 records changed?            → check for DNS hijacking
+
+⚠️ Priority: find PERSISTENCE MECHANISMS before remediating.
+   Attackers often create backdoors 30+ minutes before the triggering event.
+   Missing a backdoor means the attacker re-enters after you lock them out.
+```
+
+### Phase 4 — Remediation and Hardening
+```bash
+# Generate fresh credentials after investigation is complete
+aws iam create-access-key --user-name <user>
+
+# Now safe to delete the compromised key (investigation is done)
+aws iam delete-access-key \
+  --user-name <user> \
+  --access-key-id <old-key-id>
+
+# Remove the emergency lockout policy
+aws iam delete-user-policy \
+  --user-name <user> \
+  --policy-name INCIDENT-RESPONSE-LOCKOUT
+```
+```json
+// SCP: deny all API calls from the attacker's IP range
+// Apply at OU level immediately — before closing the incident
+{
+  "Effect": "Deny",
+  "Action": "*",
+  "Resource": "*",
+  "Condition": {
+    "IpAddress": {
+      "aws:SourceIp": ["<malicious-ip-cidr>"]
+    }
+  }
+}
+```
+```
+Hardening actions to complete before incident closure:
+├── Enforce MFA on all IAM users if not already done
+├── Migrate long-lived access keys to IAM Identity Center (SSO)
+│   Long-lived keys are the root cause of most IAMUser findings
+├── Add EventBridge rule to auto-trigger IR Lambda on future
+│   GuardDuty High/Critical findings (automate Phase 1 containment)
+└── Document: how did the key get exposed?
+    git commit? CI secret? phishing? misconfigured application?
+    Root cause determines the permanent fix.
+
+Regulatory note:
+If S3 buckets accessed contained PII or PHI:
+→ GDPR 72-hour notification clock starts from confirmed breach date
+→ HIPAA breach notification requirements may apply
+→ Coordinate with legal/compliance before closing the ticket
+```
+```
+⚠️ Timing rule: complete Phase 3 (blast radius) BEFORE starting Phase 4.
+   Remediating before you understand full scope means you will miss
+   persistence mechanisms and declare incident closed prematurely.
+```
+
+---
+
 ## 🧩 AWS Security Hub
 
 ```
