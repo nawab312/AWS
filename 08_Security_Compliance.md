@@ -1350,6 +1350,8 @@ Use both: Inspector tells you what COULD be exploited.
 
 WAF (Web Application Firewall) filters malicious HTTP/HTTPS traffic at the application layer before it reaches your services. Shield protects against DDoS (Distributed Denial of Service) attacks at the network and transport layers. Together they form the complete protection layer for web-facing infrastructure.
 
+![alt text](Images/image.png)
+
 ---
 
 ## 🧩 AWS WAF
