@@ -240,6 +240,10 @@ Private EC2 (10.0.3.5)
   → Response returns to NAT GW EIP
   → NAT GW translates back to 10.0.3.5
   → EC2 gets response
+
+Single NAT Gateway is both a reliability risk AND a cost trap — cross-AZ traffic to reach a single NAT Gateway adds $0.01/GB inter-AZ charge on top of the $0.045/GB NAT processing charge. At meaningful traffic volumes, three NAT Gateways (one per AZ) costs less than one NAT Gateway with cross-AZ traffic.
+
+Always route each private subnet to its AZ-local NAT Gateway — this is both the HA best practice and the cost-optimal pattern.
 ```
 
 ---
@@ -748,6 +752,10 @@ Rule of thumb:
 | Route tables not auto-updated | Peering connection doesn't add routes. You must add them manually to both sides |
 | TGW costs add up | $0.05/hr per attachment × 50 VPCs = $1,800/month just in attachment fees |
 | TGW cross-region | Requires TGW peering (TGW to TGW), not direct VPC attachment |
+
+- **TGW supports overlapping CIDRs across attachments** — VPC Peering does not — this is a fundamental architectural difference. When spoke VPCs have overlapping CIDRs, TGW is the only viable hub-and-spoke option.
+- **Shared Services cannot initiate connections to overlapping-CIDR spokes** — only the spoke→SharedSvc direction is unambiguous with overlapping CIDRs on TGW. For management traffic requiring the reverse direction, use SSM agent outbound calls instead.
+- **TGW route table association vs propagation** — each attachment is associated with ONE route table (controls routing FROM that attachment) but can propagate routes INTO multiple route tables. Candidates frequently confuse these two concepts.
 
 ---
 
@@ -1528,6 +1536,10 @@ Key properties:
 
 4. Marketplace products
    AWS Marketplace vendors expose products via PrivateLink.
+
+CIDR overlap is not a concern with PrivateLink — this is one of its key advantages over VPC Peering. The endpoint receives an IP from the consumer's own CIDR space; no routing to the producer's CIDR is involved.
+
+Always set acceptance-required=true for cross-account production services — without it, any account knowing the service name can connect without approval.
 ```
 
 ```bash
@@ -1728,6 +1740,10 @@ Interview answer: "Which do you use?"
 | BGP required for DX | Must configure BGP on your router for DX routing |
 | DX failover to VPN | Not automatic — need to configure BGP routing priorities |
 | Hosted vs Dedicated DX | Hosted: faster setup, fractional bandwidth. Dedicated: full port, longer provisioning |
+
+- **BFD is mandatory for fast DX failover** — without it, BGP hold-down timer (default 90s) means 90-second failover. BFD reduces detection to ~900ms. Always enable BFD on DX Virtual Interfaces in production.
+- **TCP sessions survive a 3-second outage** — TCP retransmission timeout is 1-3 minutes. A brief BGP reconvergence window does not drop established sessions. Candidates often over-engineer this concern.
+- **Graceful fail-back means never forcing sessions off VPN** — allow existing VPN sessions to terminate naturally. Forcing a cut-over drops active sessions and defeats the purpose of graceful failover.
 
 ---
 

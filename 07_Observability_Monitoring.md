@@ -686,6 +686,9 @@ Composite alarm benefits:
 | Auto Scaling on composite alarms | Not directly supported — route through SNS → Lambda |
 | Alarm actions fire on transition only | Action fires once on OK→ALARM transition, not on every evaluation period |
 
+- **3/3 consecutive periods misses short sharp incidents** — the most common CloudWatch alarm misconfiguration. Use 2/3 (M of N) to catch incidents that don't sustain for the full evaluation window. Always ask: "what is the shortest incident we must catch?" and work backwards to set period × datapoints-to-alarm.
+- **Period × evaluation-periods = detection delay** — a 5-minute period with 3/3 means minimum 15 minutes before alarm fires. For SLA-critical services, reduce period to 60 seconds and use high-resolution metrics for sub-minute detection.
+
 ---
 
 ---
@@ -1252,6 +1255,9 @@ Use the logs for per-request, per-user debugging.
 | Dimension cardinality | Each unique dimension combination = new metric = $0.30/month. Keep dimensions low-cardinality |
 | Malformed `_aws` block | Any invalid JSON in the `_aws` block → CloudWatch silently drops the entire metric |
 | Lambda log buffering | Use the library decorator to guarantee flush is called before function exits |
+
+- **Silent metric loss with no error is the most dangerous EMF pitfall** — always use the `@metric_scope` decorator or ensure `await metrics.flush()` is called in every code path including exception handlers. A Lambda that exits without flushing drops all metrics with no warning whatsoever.
+- **Malformed `_aws` block silently drops the entire metric** — any invalid JSON in the `_aws` structure causes CloudWatch to ignore the metric extraction entirely while still storing the log line. Always validate EMF output in staging before production deployment.
 
 ---
 

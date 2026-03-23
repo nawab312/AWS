@@ -201,6 +201,10 @@ Traffic distribution options:
 │   → EU GDPR: EU users MUST go to EU region (compliance)
 └── Weighted: explicit percentage split (50/50, 90/10, etc.)
    → Useful for gradual traffic shift during multi-region migration
+
+Global Accelerator vs CloudFront — frequently confused. CloudFront caches content at edges (static assets, cacheable responses). Global Accelerator uses edge nodes only as entry points — all processing still happens in the AWS region. Global Accelerator is correct for dynamic, stateful, non-cacheable traffic.
+
+Route 53 failover is limited by DNS TTL and client-side caching — even with TTL=60s, real-world failover often takes 2-5 minutes due to recursive resolver and client caching. Global Accelerator eliminates this variable entirely.
 ```
 
 ---
@@ -1276,6 +1280,26 @@ Cons:
 │   Application must be backward-compatible with mixed versions
 ├── Rollback: must re-deploy v1 to all instances (slow)
 └── Partial availability: capacity reduced during deployment
+
+⚠️ Post-Rollback Errors — Why They Happen:
+
+Even after kubectl rollout undo completes successfully,
+users may see errors for 30-60 seconds because:
+
+1. ALB deregistration delay (default 300s):
+   → Reduce to 30s for fast APIs
+   
+2. New (old-version) pods not yet healthy:
+   → Tune health check: interval=10s, threshold=2
+   → Healthy in 20 seconds
+   
+3. Terminating pods not handling SIGTERM gracefully:
+   → App must catch SIGTERM, finish in-flight requests
+   → Add preStop hook: sleep 5s before SIGTERM
+   
+Real-world rule:
+"kubectl rollout undo success ≠ zero errors immediately"
+Always monitor error rates for 2-3 minutes after rollback.
 ```
 
 ---
@@ -1617,6 +1641,8 @@ AWS AppConfig:
 | Lambda alias routing | Lambda alias canary traffic split is not deterministic per user — same user can see both versions |
 | EKS PodDisruptionBudget | Set PDB to prevent rolling update from removing too many pods during ASG scaling events |
 
+- **Default deregistration delay of 300 seconds causes post-cutover errors** — reduce to 30 seconds for APIs with short request durations. The default is designed for long-running requests and actively hurts fast blue/green switches.
+- **Green instance warmup is separate from ALB health checks** — a green instance can pass /health checks while still being cold internally (empty caches, unwarmed connection pools). Always pre-warm before switching traffic.
 ---
 
 ---

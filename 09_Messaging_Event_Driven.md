@@ -167,6 +167,7 @@ Visibility Timeout use cases:
 ├── Medium tasks (data processing):    5-15 minutes
 ├── Long tasks (video encoding):       1-12 hours (or use ChangeVisibilityTimeout)
 └── Lambda consumers: MUST set timeout to 6× Lambda function timeout
+The 6× multiplier exists because SQS checks visibility on a polling interval and needs enough headroom to avoid redelivery before Lambda finishes, retries, and calls DeleteMessage. Example: Lambda timeout = 10s → set visibility timeout = 60s minimum.
 
 Extending visibility timeout during processing:
 # Consumer calls ChangeMessageVisibility to extend the timeout
@@ -1948,6 +1949,7 @@ Idempotency strategies:
    ├── INSERT INTO orders (amount, ...) → creates duplicate row each time
    ├── charge_credit_card(amount=99.99) → charges twice!
    └── send_email(to="user@email.com") → sends duplicate email
+    Most payment providers (Stripe, PayPal, Razorpay) support an Idempotency-Key header. Passing orderId as this key means even if the API is called twice, the customer is charged only once. This is the cleanest solution when the downstream API supports it — no deduplication table needed.
 
 2. Database deduplication (idempotency key in DB):
 CREATE TABLE processed_messages (

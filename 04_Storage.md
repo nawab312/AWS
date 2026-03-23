@@ -573,6 +573,8 @@ CloudWatch metrics to monitor:
 | Fast Snapshot Restore (FSR) | Snapshots have lazy initialization — first I/O to restored block is slow. Enable FSR to pre-warm (costs extra) |
 | Instance EBS bandwidth | Instance has max EBS bandwidth. Many volumes sharing same instance share that bandwidth |
 
+- **gp2 burst depletion is a silent failure** — no CloudWatch alarm fires by default when burst credits hit zero. Monitor `BurstBalance` metric and alert below 20%. Small gp2 volumes (under 1TB) are especially vulnerable under sustained load.
+- **gp3 throughput advantage is often overlooked** — 1,000 MB/s vs 250 MB/s on gp2 matters significantly for sequential I/O workloads even when IOPS requirements are identical. Always consider throughput alongside IOPS when choosing volume type.
 ---
 
 ---
@@ -819,6 +821,11 @@ More control than presigned PUT:
 | Versioning required for replication | Must enable on BOTH source and destination buckets |
 | SRR ownership | By default, object owner = source account. Enable owner override for cross-account SRR |
 
+- **Presigned URL + IAM role = URL expires with the role session** — the URL expiry parameter is an upper bound, not a guarantee. The actual expiry is whichever comes first: the URL expiry or the underlying credential session expiry. Always verify the credential type used to generate the URL when debugging unexpected expiry.
+- **CloudFront signed URLs are an alternative for long-lived access** — CloudFront signed URLs use key pairs, not IAM credentials, so they're not affected by IAM session expiry. Use them when URL validity beyond 12 hours is required.
+- **S3 Batch Operations is the only way to replicate pre-existing objects** — there is no retroactive replication built into CRR. This is frequently missed when teams enable CRR expecting historical data to appear in the destination.
+- **Permanent version deletes are never replicated regardless of settings** — even with   `DeleteMarkerReplication` enabled. This protects the destination bucket from destructive operations but means your destination may accumulate versions that no longer exist in the source.
+
 ---
 
 ---
@@ -946,18 +953,26 @@ Standard-IA: $0.025/GB/month (92% cheaper)
 
 ## 🧩 Mount Targets & Security
 
+![alt text](Images/image2.png)
+
 ```
-Mount Targets:
-├── One mount target per AZ (uses ENI in your subnet)
-├── Has a DNS name: fs-id.efs.region.amazonaws.com
-├── Has a security group (controls who can mount)
-└── IP address: assigned from subnet CIDR
+A Mount Target is a network endpoint that allows your EC2 instances in a specific AZ to access an EFS filesystem over NFS.
+├── One per AZ: To allow EC2 instances in an AZ to access EFS, you must create a mount target in that AZ.
+├── Network Interface (ENI): AWS creates an Elastic Network Interface in your subnet for the mount target
+├── The ENI gets an IP from the subnet CIDR. EC2 uses this IP (via DNS) to communicate with EFS.
+└── Security Group: Mount targets have an SG that controls which EC2 instances can connect, usually allowing NFS traffic (TCP 2049) from your EC2 SG.
 
-Security Group for Mount Target:
-Must allow NFS port (2049) from EC2 security group.
+DNS Name: You mount using the filesystem DNS:
+`fs-<fs-id>.efs.<region>.amazonaws.com`
+AWS resolves this DNS to the mount target in your EC2’s AZ.
 
-EC2 SG (sg-ec2)              EFS Mount Target SG (sg-efs)
-Outbound: port 2049  ──────► Inbound: port 2049 from sg-ec2
+Network Flow from EC2 to EFS
+--> EC2 initiates connection to the EFS DNS (e.g., fs-1234.efs.us-east-1a.amazonaws.com).
+--> DNS resolution: AWS resolves this DNS to the mount target’s ENI IP in the same AZ.
+--> Traffic goes through VPC: EC2 sends NFS traffic over TCP port 2049.
+--> Security group check: Mount target SG must allow inbound TCP 2049 from the EC2 SG.
+--> NFS protocol: Mount target forwards requests to the EFS filesystem.
+--> Filesystem responds: NFS read/write operations return to EC2 over the same path.
 
 IAM Authorization (EFS Access Points):
 ├── Access Points define: POSIX user, root directory, permissions
@@ -1127,6 +1142,8 @@ Structure:
     }
   }
 }
+
+To enforce a specific approved CMK (not just any KMS key), use s3:x-amz-server-side-encryption-aws-kms-key-id condition key with the exact CMK ARN. This prevents uploads using the AWS-managed S3 key (aws/s3) or any other customer key — only your approved CMK is accepted.
 ```
 
 ```json
@@ -1355,6 +1372,9 @@ Result:
 | Compliance mode is absolute | Even root account cannot delete. No exceptions. Be sure before enabling |
 | Deny in bucket policy + Allow in IAM | DENY wins — explicit deny always overrides allow |
 | BPA at account vs bucket level | Account level is the floor. Bucket level can only be more restrictive |
+
+- **Object Lock at creation only — cannot be added retroactively** — this is the most operationally painful gotcha. If a compliance requirement emerges after bucket creation, you must create a new bucket and migrate all existing objects. Always enable Object Lock in IaC for any bucket storing regulated data.
+- **Compliance mode vs Governance mode is a one-way decision** — you can convert an object from Governance to Compliance mode but not vice versa. You can extend a Compliance retention period but never shorten it. Make this decision carefully before applying to production data.
 
 ---
 
@@ -1604,6 +1624,8 @@ Fix: Add lifecycle rule to abort incomplete uploads:
 | EventBridge vs direct notifications | EventBridge has richer routing but slightly higher latency (~seconds) |
 | Event notification filter limits | Can filter by prefix OR suffix, but not complex AND conditions per rule |
 
+- **EventBridge replay is the killer feature for data pipelines** — the ability to reprocess historical S3 upload events after fixing a bug in the processing Lambda is invaluable. Direct S3 notifications have no equivalent capability. If your pipeline processes financial or compliance-critical data, EventBridge archive + replay is not optional.
+- **EventBridge adds ~seconds of latency vs milliseconds for direct notifications** — for real-time processing requirements where sub-second triggering matters, direct S3 → Lambda notifications are still appropriate. EventBridge is not a drop-in replacement when latency is the primary concern.
 ---
 
 ---

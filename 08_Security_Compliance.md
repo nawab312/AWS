@@ -130,11 +130,13 @@ Global condition keys (available across all services):
 ## 🧩 Trust Policies — Who Can Assume a Role
 
 ```
-Trust policy = resource-based policy attached to the ROLE ITSELF
-               Defines WHO is allowed to call sts:AssumeRole on it
+Trust policy = JSON document attached to an IAM Role that defines who (which principal) is allowed to assume that role. Who is permitted to use this role?
+Under the hood, assuming a role works via AWS STS (Security Token Service) — the trust policy controls who is allowed to call sts:AssumeRole on that role, and in return gets back temporary credentials.
 
-Without trust policy: no one can assume the role (locked out)
-With trust policy:    specified principals can assume the role
+The Two Parts of Any IAM Role
+Every IAM Role has two separate policies:
+Trust Policy --> Who can assume this role?
+Permission Policy --> What can they do after assuming it?
 
 Trust policy structure:
 {
@@ -189,6 +191,110 @@ aws sts assume-role \
 
 # Returns: AccessKeyId, SecretAccessKey, SessionToken (temp credentials)
 # Temp credentials expire: 1-12 hours (configurable per role)
+```
+
+```
+Cross-Account Role Assumption — Simple Example
+
+The Scenario
+
+You have two AWS accounts:
+
+  Account A — Production    (ID: 111111111111)
+  Account B — DevOps        (ID: 222222222222)
+
+Your DevOps team sits in Account B and needs to
+read CloudWatch logs from Account A (Production).
+
+─────────────────────────────────────────────────
+
+Step 1 — Create a Role in Account A (Production)
+
+Trust Policy (who can assume this role):
+
+  {
+    "Effect": "Allow",
+    "Principal": {
+      "AWS": "arn:aws:iam::222222222222:root"
+    },
+    "Action": "sts:AssumeRole"
+  }
+
+  --> "Anyone from Account B is allowed to assume this role."
+
+Permission Policy (what they can do after assuming):
+
+  {
+    "Effect": "Allow",
+    "Action": [
+      "logs:DescribeLogGroups",
+      "logs:GetLogEvents"
+    ],
+    "Resource": "*"
+  }
+
+─────────────────────────────────────────────────
+
+Step 2 — Grant Permission in Account B
+
+Attach this to your DevOps IAM user/role in Account B:
+
+  {
+    "Effect": "Allow",
+    "Action": "sts:AssumeRole",
+    "Resource": "arn:aws:iam::111111111111:role/ProdReadOnlyRole"
+  }
+
+─────────────────────────────────────────────────
+
+The Handshake — Both Sides Must Agree
+
+  Account B (DevOps)                 Account A (Prod)
+  +-----------------+                +------------------+
+  |  DevOps User    |                |  ProdReadOnlyRole|
+  |                 |   AssumeRole   |                  |
+  |                 |--------------->|  Trust Policy    |
+  |                 |                |  check ✅        |
+  |                 |<---------------|                  |
+  |                 |  Temp Creds    |                  |
+  +-----------------+  (15min-12hr)  +------------------+
+
+  Both sides must agree:
+  [✅] Account A's role must TRUST Account B
+  [✅] Account B's user must have PERMISSION to assume that role
+
+  If either side is missing --> Access Denied 
+
+─────────────────────────────────────────────────
+
+Step 3 — Assume the Role via CLI
+
+  $ aws sts assume-role \
+      --role-arn "arn:aws:iam::111111111111:role/ProdReadOnlyRole" \
+      --role-session-name "DevOpsSession"
+
+  Response:
+  {
+    "AccessKeyId":     "ASIA...",
+    "SecretAccessKey": "...",
+    "SessionToken":    "...",
+    "Expiration":      "2026-03-18T10:00:00Z"
+  }
+
+  No permanent keys. No IAM users in prod. Creds auto-expire.
+
+─────────────────────────────────────────────────
+
+Best Practice — Narrow the Trust
+
+  Instead of trusting ALL of Account B:
+    "AWS": "arn:aws:iam::222222222222:root"      ⚠️  broad
+
+  Trust only a SPECIFIC role in Account B:
+    "AWS": "arn:aws:iam::222222222222:role/DevOpsRole"  ✅ tight
+
+  This limits access to just that one role,
+  not every user/service in the account.
 ```
 
 ```
@@ -250,6 +356,10 @@ Policy allowing developers to create roles (with boundary enforcement):
 Developers MUST attach DeveloperBoundary when creating any role.
 Even if they create a role named "admin", the boundary limits it.
 The dev team can self-service Lambda roles safely without privilege escalation.
+
+The condition key iam:PermissionsBoundary is the enforcement mechanism — without this condition on the developer's iam:CreateRole permission, developers can create roles without any boundary attached, defeating the entire purpose.
+
+The condition key iam:PermissionsBoundary is the enforcement mechanism — without this condition on the developer's iam:CreateRole permission, developers can create roles without any boundary attached, defeating the entire purpose.
 ```
 
 ```bash
@@ -501,6 +611,9 @@ Access Advisor  = outbound usage analysis.
 | ExternalId confusion | Customer sets ExternalId and shares it with the vendor — not set by the vendor |
 | Trust policy is mandatory | No trust policy = role exists but is completely unusable |
 
+- **Region restriction SCPs must use NotAction not Action: "*"** — global services (IAM, Route53, CloudFront, STS) don't populate aws:RequestedRegion. Using Action: * with a region condition blocks these services entirely even in approved regions.
+- **Break-glass role exception is not optional for production** — a bad SCP with no break-glass can permanently lock out an entire OU. Always include a specific admin role ARN exclusion condition before attaching any deny SCP to production OUs.
+
 ---
 
 ---
@@ -692,6 +805,9 @@ Key deletion:
 └── After deletion completes: ALL ciphertext encrypted with that key
     is PERMANENTLY UNRECOVERABLE — there is no undo
     ⚠️ This is a one-way, irreversible action.
+schedule-key-deletion disables the key immediately upon execution — not after the waiting period. The waiting period is time to cancel, not a grace period before impact. Applications using the key start failing within minutes of the command being run, not after 7 days.
+
+Minimum 7-day window exists specifically for cancellation — use cancel-key-deletion + enable-key to recover. After permanent deletion, no recovery is possible under any circumstance.
 ```
 
 ---
@@ -886,6 +1002,9 @@ Parameter policies (advanced tier only):
 | Parameter size limits | Standard: 4KB, Advanced: 8KB — large certificates need Secrets Manager |
 | Cross-account Parameter Store | Limited support — Secrets Manager has proper resource-based policy for cross-account |
 
+- **The rotation Lambda has four mandatory steps** — createSecret → setSecret → testSecret → finishSecret. If any step fails, the secret is left in AWSPENDING state and rotation stalls. Monitor rotation failures via CloudWatch Events on the rotation Lambda.
+- **Parameter Store is not inferior — it's differently scoped** — use it for configuration values, feature flags, and secrets that don't require rotation or cross-account sharing. Using Secrets Manager for everything is over-engineering and unnecessary cost.
+
 ---
 
 ---
@@ -929,6 +1048,8 @@ Finding severity levels:
 ├── MEDIUM:   4.0 – 6.9  (investigate when time allows)
 ├── HIGH:     7.0 – 8.9  (investigate promptly)
 └── CRITICAL: 9.0 – 10.0 (investigate immediately)
+
+GuardDuty finding latency (minutes to hours) is intentional — ML models need sufficient signal to avoid false positives. For real-time detection of credential misuse, complement GuardDuty with: CloudTrail metric filters on sensitive API calls, AWS Config rules on unusual access patterns, and preventive controls (OIDC, SCPs) that reduce blast radius even when detection is delayed.
 ```
 
 ```bash
@@ -962,6 +1083,7 @@ When GuardDuty fires a High/Critical finding, treat it as a confirmed
 breach until proven otherwise. The response follows five phases.
 
 UnauthorizedAccess:IAMUser/MaliciousIPCaller — complete playbook:
+An IAM user attempted an action from a suspicious IP address, and the request was denied.
 ```
 
 ```
@@ -1216,6 +1338,8 @@ Hardening actions to complete before incident closure:
     git commit? CI secret? phishing? misconfigured application?
     Root cause determines the permanent fix.
 
+When a public GitHub repo contains an AWS access key pattern, GitHub automatically notifies AWS. AWS may proactively quarantine the key by attaching an AWSCompromisedKeyQuarantine policy — which denies most actions. If your key stops working and you find this policy attached, check your public repos immediately.
+
 Regulatory note:
 If S3 buckets accessed contained PII or PHI:
 → GDPR 72-hour notification clock starts from confirmed breach date
@@ -1337,6 +1461,10 @@ Use both: Inspector tells you what COULD be exploited.
 | Security Hub = aggregator, not detector | Security Hub doesn't detect anything itself — it aggregates from other services |
 | Finding suppression needs documentation | Can suppress findings in Security Hub, but document every suppression for audit purposes |
 | Multi-account GuardDuty enforcement | Member accounts cannot disable GuardDuty when admin has enforcement enabled |
+
+- **Security Hub is an aggregator — it detects nothing itself** — it collects findings from GuardDuty, Inspector, Macie etc. Enabling Security Hub alone without enabling the source services produces no findings. Always enable source services organization-wide alongside Security Hub.
+- **Cross-region aggregation must be explicitly configured** — Security Hub findings are regional by default. Without finding aggregation enabled, you need to check each region's Security Hub separately. Enable `ALL_REGIONS `aggregation for a true single pane of glass.
+- **ASFF normalization is the key value proposition** — all findings from all sources use identical JSON schema. This enables unified EventBridge rules and Lambda remediation handlers that work regardless of which service generated the finding.
 
 ---
 
@@ -1676,6 +1804,9 @@ aws configservice put-remediation-configurations \
 | Config costs per configuration item | $0.003/item recorded. Large environments with frequent changes accumulate cost |
 | Multi-account view needs aggregator | Config aggregator collects compliance data across accounts for org-wide reporting |
 
+- **Config records state, CloudTrail records events** — both are required for complete security posture — Config tells you WHAT the current and historical configuration is; CloudTrail tells you WHO changed it and WHEN. Neither alone is sufficient for a complete security investigation.
+- **Config is not real-time** — configuration recording has a few minutes delay. It is not an alerting system for immediate threats — that is GuardDuty's role. Config is for compliance tracking and configuration history, not real-time threat detection.
+
 ---
 
 ---
@@ -1835,6 +1966,9 @@ All three layers must allow the action for it to succeed.
 | S3 ABAC is bucket-level only | S3 ABAC conditions apply at bucket level, not individual object level |
 | Session tags vs principal tags | Session tags set at AssumeRole time; principal tags set directly on IAM user/role |
 | Transitive session tags | Set sts:TagSession permission to pass session tags through chained role assumptions |
+
+- **`dynamodb:LeadingKeys` is the DynamoDB-specific ABAC condition key** — it restricts access to items where the partition key matches the condition value. Combined with aws:PrincipalTag, this enables per-tenant data isolation with a single IAM role.
+- **ABAC requires tag governance enforcement** — if your auth service fails to pass the correct session tag, the tenant either gets no access (if condition fails) or wrong access (if tag is missing and condition is not strict enough). Always validate tag presence before assuming the role.
 
 ---
 

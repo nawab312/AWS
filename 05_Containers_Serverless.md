@@ -185,6 +185,8 @@ Task = a running instance of a Task Definition
 Task lifecycle:
 PROVISIONING → PENDING → RUNNING → STOPPING → STOPPED
 
+Common container exit codes: Exit 0 = clean shutdown. Exit 1 = application error (check logs). Exit 137 = OOM kill (increase memory limit). Exit 139 = segfault. Exit code is visible in ECS console under stopped task details.
+
 Key task concepts:
 ├── Tasks are ephemeral — they start, run, stop
 ├── ECS does NOT restart stopped tasks (the Service does)
@@ -267,7 +269,10 @@ Deployment types:
 
 3. External (your own deployment controller):
    For custom deployment logic.
+
+The deployment circuit breaker must be explicitly enabled — it is off by default. Without it, ECS will loop indefinitely launching and terminating failing tasks, burning cost and time. Always enable with rollback: true for production services.
 ```
+
 
 ```bash
 # Service Auto Scaling — register target
@@ -347,6 +352,9 @@ Networking:
 | Task definition is immutable | Each update creates a new revision. Old revisions remain |
 | Service desired count | If you manually stop a task, Service restarts it automatically |
 | deregistration delay | Set ALB target group deregistration delay to 30s for fast blue/green rollbacks |
+
+- **`CannotPullContainerError` has multiple root causes** — always check in this order: execution role permissions → VPC Endpoints (if private subnet) → security group outbound 443 → cross-account ECR policy → correct region in image URI.
+- **ECR requires THREE endpoints in private subnets** — ecr.api, ecr.dkr, AND the S3 Gateway Endpoint. Missing the S3 endpoint causes layer pull failures even when the other two are present, because ECR stores image layers in S3.
 
 ---
 
@@ -511,6 +519,18 @@ Two types of ECR replication:
    Automatically replicate images to other regions.
    Use: deploy same image from local ECR in each region
         (faster pull, lower cross-region data transfer cost)
+   
+   Multi-Region EKS — ECR Replication is MANDATORY:
+   Without replication:
+    ├── ap-southeast-1 nodes pull images from us-east-1 ECR on every pod start
+    ├── Adds pull latency (cross-region ~100-200ms per layer)
+    ├── Creates hard dependency on us-east-1 availability
+    │   → if us-east-1 ECR is degraded, ap-southeast-1 pods cannot start
+    └── Defeats the entire purpose of multi-region deployment
+   With replication:
+    ├── Images available locally in each region's ECR
+    ├── Pod starts are fast and region-independent
+    └── DR scenario works correctly — ap-southeast-1 is truly self-sufficient
 
 2. Cross-Account Replication:
    Replicate to other AWS accounts.
@@ -986,6 +1006,22 @@ Lambda is AWS's serverless compute. You upload code, define triggers, and AWS ru
 
 For event-driven workloads (process an S3 upload, respond to an API call, react to a DynamoDB change), you don't want a server sitting idle waiting for events. Lambda gives you compute that scales from zero to thousands of parallel invocations and back to zero automatically.
 
+```
+⚠️ Lambda VPC Decision Rule:
+
+Put Lambda in VPC ONLY IF it needs to reach private resources
+(RDS, ElastiCache, EC2 in private subnet).
+
+If Lambda only calls public AWS services (S3, DynamoDB,
+Secrets Manager, SNS, SQS):
+→ Keep Lambda OUTSIDE VPC — simpler, cheaper, no NAT needed
+
+If Lambda MUST be in VPC:
+→ Add S3/DynamoDB Gateway Endpoints (free)
+→ Add Interface Endpoints for Secrets Manager, SSM etc.
+→ Never rely on NAT Gateway for AWS service calls
+```
+
 ---
 
 ## ⚙️ Execution Model Internals
@@ -1205,6 +1241,12 @@ invoice-generator:  Unreserved (bursty, tolerates cold starts)
 | Async retry = up to 3 runs | 2 automatic retries on failure = function may run 3 times total. Must be idempotent |
 | Layers not auto-updated | Must update function to reference new layer version after updating layer |
 | Kinesis shard blocking | If Lambda fails on a batch, it retries indefinitely (blocking that shard). Use BisectOnFunctionError |
+
+- **SQS visibility timeout misconfiguration is the #1 cause of duplicate Lambda processing** — always set visibility timeout to minimum 6× Lambda timeout. This is a mandatory configuration check for any SQS-triggered Lambda in production.
+- **Idempotency is not optional for SQS consumers** — SQS Standard at-least-once delivery means duplicates can occur even with correct visibility timeout. Always design Lambda handlers to be idempotent using a unique message identifier as the idempotency key.
+- **ReportBatchItemFailures prevents the 9-succeed-1-fail reprocessing problem** — without it, a single failed message in a batch causes all successfully processed messages to return to the queue. Always enable for production SQS-triggered Lambdas.
+- **Lambda alias canary routing is per-invocation random — not per-user sticky** — the same user can hit different versions on consecutive requests. Both versions must be capable of handling any request independently. Never use Lambda alias routing for features that require session consistency between versions.
+- **CloudWatch Lambda metrics require the `Resource` dimension for per-version monitoring** — without it, Errors and Duration metrics are aggregated across all versions behind the alias, making canary health monitoring impossible.
 
 ---
 
@@ -1454,6 +1496,9 @@ Use CA only if you need multi-cloud portability.
 | CA with Spot | CA doesn't handle Spot interruptions gracefully without extra tooling |
 | IRSA token rotation | AWS SDK handles rotation automatically. Custom code must handle token refresh |
 
+- **IRSA OIDC provider is per-cluster** — each EKS cluster needs its own OIDC provider registered in IAM. If you have 5 clusters, you need 5 OIDC providers.
+- **Node IAM role should have zero application permissions** — it should only contain permissions needed for the node itself to function (ECR pulls, CloudWatch logs, VPC CNI). All application AWS access goes through IRSA.
+
 ---
 
 ---
@@ -1548,6 +1593,9 @@ Cost:
 ├── Plus normal compute cost when invoked
 └── Example: 512MB function, 10 provisioned, 24/7:
     10 × 0.5GB × 24hr × 30days × $0.015 = $54/month overhead
+
+When NOT to use Provisioned Concurrency
+Only enable Provisioned Concurrency for: (1) customer-facing APIs with measurable p99 cold start impact, (2) functions invoked frequently enough that warm environments are actually used. Do NOT enable for: batch jobs, event-driven async functions, functions invoked less than once per minute — cold start cost is negligible compared to PC overhead.
 ```
 
 ```bash
@@ -1601,6 +1649,9 @@ SnapStart solution:
 
 Supported runtimes:
 └── Java 11 and Java 17 (Amazon Corretto)
+
+SnapStart vs Provisioned Concurrency cost comparison
+SnapStart has no additional cost beyond normal Lambda invocation pricing. Provisioned Concurrency charges per GB-hour regardless of invocations. For Java functions, SnapStart is almost always the right first choice — try it before spending on Provisioned Concurrency.
 ```
 
 ```bash
@@ -1674,6 +1725,9 @@ public class Handler implements Resource {
 | SnapStart network connections | Don't survive snapshot. Must re-connect in afterRestore hook |
 | Auto-scaling PC lag | Scaling up PC takes 2-3 minutes. Use aggressive scale-out, conservative scale-in |
 | Provisioned vs Reserved | PC instances count toward reserved concurrency. Set reserved high enough to include all PC |
+
+- SnapStart vs Provisioned Concurrency cost comparison — SnapStart has zero additional cost. Provisioned Concurrency charges per GB-hour regardless of invocations. For Java functions, always try SnapStart first before committing to Provisioned Concurrency spend.
+- Provisioned Concurrency auto-scaling lag — scaling up PC takes 2-3 minutes. Configure aggressive scale-out, conservative scale-in to avoid cold starts during rapid traffic ramps.
 
 ---
 

@@ -184,6 +184,7 @@ Read Replica promotion:
 ├── Promote replica to standalone instance (breaks replication)
 ├── Use for: DR, creating new production instances
 └── Promoted replica has its own endpoints
+Never promote a read replica as an incident response action on a running primary. Promotion is a one-way DR operation — use it only when the primary is completely unavailable. Promoting during an active incident creates split-brain risk and permanently destroys the replication relationship.
 
 ⚠️ Replication lag is ASYNCHRONOUS:
    Write to primary → data appears on replica after lag
@@ -203,6 +204,10 @@ Comparison summary:
 │ Failover role     │ ✅ Auto-promotes   │ ❌ Manual promote  │
 │ Write latency     │ +1-5ms             │ No impact          │
 └───────────────────┴────────────────────┴────────────────────┘
+
+Seconds_Behind_Master stops updating if replication is completely stopped — a static metric value doesn't mean zero lag. Always cross-check with SHOW SLAVE STATUS\G directly
+
+Reporting queries on the replica can block replication — the replica SQL thread competes with read queries for locks. Heavy analytics on a replica can paradoxically increase its lag.
 ```
 
 ```bash
@@ -642,6 +647,159 @@ aws rds restore-db-instance-from-db-snapshot \
 
 ---
 
+## 🧩 RDS Monitoring
+
+```
+RDS Monitoring = tracking performance, health, and resource usage of your database
+
+📊 Core Monitoring Services:
+├── Amazon CloudWatch (default monitoring)
+├── Enhanced Monitoring (OS-level metrics)
+├── Performance Insights (query-level analysis)
+└── RDS Events (notifications for state changes)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 Amazon CloudWatch Metrics
+(Default, basic monitoring)
+
+Key metrics:
+├── CPUUtilization → CPU usage of DB instance
+├── FreeStorageSpace → available disk space
+├── DatabaseConnections → active connections
+├── ReadIOPS / WriteIOPS → disk I/O operations
+├── ReadLatency / WriteLatency → I/O delays
+├── DiskQueueDepth → number of pending I/O requests waiting to be processed
+├── NetworkReceiveThroughput / Transmit → network usage
+└── FreeableMemory → available RAM
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧠 DiskQueueDepth (Important)
+
+Definition:
+├── Number of read/write operations waiting in queue for disk access
+
+Interpretation:
+├── Low (0–1) → Healthy
+├── Moderate (2–10) → Normal under load
+└── High (>10 consistently) → Disk I/O bottleneck
+
+Causes of High Queue Depth:
+├── Insufficient IOPS (gp2/gp3 limits)
+├── High read/write workload
+├── Slow storage type
+└── Inefficient queries (full table scans)
+
+Solutions:
+├── Increase IOPS (gp3 / Provisioned IOPS)
+├── Optimize queries (indexes, tuning)
+├── Scale instance (better throughput)
+└── Use caching (e.g., ElastiCache)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ Enhanced Monitoring
+(OS-level visibility inside DB instance)
+
+Features:
+├── Granular metrics (1s to 60s)
+├── CPU breakdown (user/system/idle)
+├── Memory usage (actual OS-level)
+├── Disk I/O stats per process
+└── Uses CloudWatch Logs agent
+
+Use case:
+└── Debugging CPU, memory, and process-level issues
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔥 Performance Insights
+(Query-level monitoring)
+
+Features:
+├── Identifies top SQL queries by load
+├── DB load visualization (DBLoad)
+├── Wait events (CPU, IO, locks)
+├── Historical performance analysis
+└── Detects slow queries & bottlenecks
+
+Use case:
+└── Query optimization and tuning
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔔 RDS Events
+(Notification system for DB changes)
+
+Examples:
+├── DB instance restart
+├── Multi-AZ failover
+├── Backup completion
+├── Maintenance activities
+└── Storage full warning
+
+Integration:
+└── SNS → Email / SMS / Lambda
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🆚 Monitoring Types Comparison
+
+┌──────────────────────┬──────────────────────┬────────────────────────┐
+│ Feature              │ CloudWatch           │ Enhanced Monitoring     │
+├──────────────────────┼──────────────────────┼────────────────────────┤
+│ Level                │ DB instance          │ OS-level               │
+│ Granularity          │ 1 min (default)      │ 1 sec                  │
+│ Metrics source       │ Hypervisor           │ Inside OS              │
+│ Use case             │ General monitoring   │ Deep troubleshooting   │
+└──────────────────────┴──────────────────────┴────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧠 Key Interview Points:
+├── CloudWatch = default monitoring
+├── Enhanced Monitoring = OS-level visibility
+├── Performance Insights = query-level analysis
+├── DiskQueueDepth helps identify I/O bottlenecks
+├── Multi-AZ failover tracked via RDS Events
+└── Combine all tools for full observability
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ Best Practices:
+├── Enable Enhanced Monitoring in production
+├── Use Performance Insights for slow queries
+├── Set CloudWatch Alarms:
+│   ├── CPUUtilization > 80%
+│   ├── FreeStorageSpace low
+│   ├── DatabaseConnections high
+│   └── DiskQueueDepth high
+├── Monitor during peak load
+└── Enable DB logs (slow query, error logs)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 Troubleshooting Scenarios:
+
+1. CPU high
+   └── Check: queries (Performance Insights), connections
+
+2. DB slow but CPU low
+   └── Check: DiskQueueDepth, Read/Write Latency, IOPS
+
+3. Connections high
+   └── Check: connection pooling, max_connections
+
+4. Storage full
+   └── Enable autoscaling or increase storage
+
+5. High latency
+   └── Check: IOPS limits, queue depth, slow queries
+```
+
+---
+
 ## 💬 Short Crisp Interview Answer
 
 *"Parameter groups configure database engine settings — things like max_connections, buffer sizes, and slow query logging. Static parameters require a restart; dynamic apply immediately. Option groups add licensed features, primarily for Oracle and SQL Server. Automated backups run daily in a backup window with continuous transaction log backups, enabling Point-in-Time Recovery to any second within the retention period (1-35 days). PITR always restores to a new instance. Manual snapshots are user-initiated, retained indefinitely until deleted, can be copied cross-region and shared cross-account. Key difference: automated backups enable PITR and expire automatically; manual snapshots are full copies kept forever — take one before any major schema change."*
@@ -860,6 +1018,12 @@ Failover procedure (manual):
 | Global DB failover is manual | No automatic promotion — must manually detach and promote secondary |
 | Reader endpoint load-balanced | Not session-pinned. Connections may hit different replicas across reconnects |
 | Custom endpoints | Use for routing analytics workloads to specific replicas without affecting OLTP |
+
+- **Buffer pool cold start is mandatory planning for any Aurora blue/green deployment** — always pre-warm the green cluster with representative queries before cutting over traffic. Skipping this step causes latency doubling that looks like under-provisioning.
+- **`BufferCacheHitRatio` is your leading indicator during cutover** — set a CloudWatch alarm below 90% and treat it as a rollback trigger. Don't wait for user complaints to detect a cold buffer pool.
+- **Aurora Global Database failover is always manual** — there is no automatic promotion — the secondary cluster remains read-only indefinitely during a primary region outage. This is by design to prevent split-brain. Always have a pre-built runbook and SSM Automation document ready before you need it.
+- **Writer endpoint changes after promotion** — applications must be updated to point to the new endpoint. Always use Route 53 CNAME abstraction or Parameter Store for DB endpoints — never hardcode Aurora endpoints in application configs.
+- **Pre-set DNS TTL to 30 seconds before any planned failover** — if TTL is 300 seconds (default), DNS propagation alone adds 5 minutes to your RTO. Change TTL at least 24 hours before any expected failover event.
 
 ---
 
@@ -1274,6 +1438,10 @@ aws elasticache create-replication-group \
 | Eviction policy | Set allkeys-lru for full caches to prevent errors |
 | Redis AUTH | Enable --auth-token or --transit-encryption-enabled for security |
 
+- **CROSSSLOT error only appears in Cluster Mode** — single-node Redis and non-clustered replication groups don't have this constraint. Always test multi-key commands against a cluster-mode Redis instance in development, not a single-node instance.
+- **Hash tags can create hot shards if overused** — if all keys share the same hash tag, they all land on one shard, defeating the horizontal scaling purpose of Cluster Mode. Use hash tags only for keys that require co-location for specific multi-key operations.
+- **Pipelining individual GETs is a valid temporary workaround** — but hash tags are the correct architectural fix. Document the temporary workaround with a ticket to implement hash tags properly.
+
 ---
 
 ---
@@ -1486,6 +1654,10 @@ Instantaneous Adaptive Capacity (newer feature):
 ⚠️ Adaptive Capacity is NOT a substitute for good data modeling.
    It handles unexpected bursts but cannot fix fundamental
    schema design problems with low-cardinality partition keys.
+
+Adaptive Capacity is DynamoDB's automatic mitigation — it redistributes capacity to hot partitions within minutes, but it's not instant. Errors still occur during rebalancing. It's not a substitute for good key design.
+
+On-Demand mode does not eliminate hot partitions — it raises the ceiling but a single continuously hot key can still throttle even in On-Demand mode.
 ```
 
 ---
@@ -1635,6 +1807,9 @@ Without RDS Proxy:
 → RDS max_connections (db.t3.medium): ~330
 → Connections refused → Lambda failures
 → "too many connections" errors
+
+Connection exhaustion symptoms
+Connection exhaustion symptoms in CloudWatch: DatabaseConnections near max_connections + CPUUtilization high + ReadLatency spiking — even with normal IOPS. The CPU spike is caused by MySQL thread context switching overhead, not query complexity. This pattern is distinct from a slow query problem (where ReadIOPS or WriteIOPS would also be elevated).
 
 PostgreSQL max_connections by instance size:
 db.t3.micro:   ~77

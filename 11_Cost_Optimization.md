@@ -321,6 +321,8 @@ Anomaly alert content:
 | Anomaly Detection training period | Needs ~10 days of historical data before useful anomaly detection |
 | Budget filters = AND logic | Multiple CostFilters use AND logic — filter Team=payments AND Environment=prod |
 | Anomaly frequency | DAILY = one alert per anomaly per day. IMMEDIATE = alert as soon as detected (noisier) |
+| BlendedCost | Combines the costs of resources across linked accounts and applies average pricing, useful for consolidated billing. |
+| UnblendedCost | Shows the actual cost incurred by each account or resource, reflecting the true price paid. |
 
 ---
 
