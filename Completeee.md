@@ -1,14 +1,6 @@
----
-
-# 📚 Master Index
-
-> **Sections in this document:** AWS · Kubernetes (EKS) · CI/CD & Jenkins · ArgoCD · Prometheus · Terraform · EFK Stack · Linux SRE · Bash Scripting · Python Scripting
-
----
-
 ## Part 1 — AWS Advanced Interview Preparation
 
-- [AWS Advanced Interview Preparation — Scenario-Driven Q&A](#aws-advanced-interview-preparation--scenario-driven-qa)
+- [AWS Advanced Interview Preparation — Scenario-Driven Q&A](#aws-advanced-interview-preparation--scenario-driven-qa)F
   - [Table of Contents](#table-of-contents)
   - [Concept Index (First Explanation Reference)](#concept-index-first-explanation-reference)
 
@@ -10201,6 +10193,135 @@ Pod with finalizer stuck → manually remove finalizer
 ---
 
 ## ⚠️ 9.4 Cluster Upgrades
+
+### Managed Node Groups
+
+What AWS Actually Does for You
+- Provisions EC2 instances using an AWS-managed ASG
+- Bootstraps nodes automatically (kubelet config, cluster endpoint, CA cert)
+- Drains nodes gracefully before termination during updates
+- Patches AMI — you trigger it, AWS handles the rollout
+- Registers nodes into the cluster automatically via node IAM role
+- You don't touch the ASG directly — AWS owns it. You interact only through the node group API/Terraform.
+
+```
+┌─────────────────────────────────────────────┐
+│           Managed Node Group                │
+│                                             │
+│  AWS Auto Scaling Group (AWS-managed)       │
+│  ├── Launch Template (AWS-generated)        │
+│  │   ├── AMI (EKS-optimized)               │
+│  │   ├── Bootstrap userdata                │
+│  │   └── Instance profile (node IAM role)  │
+│  ├── EC2 Instances (worker nodes)           │
+│  └── Multi-AZ placement via subnet_ids     │
+└─────────────────────────────────────────────┘
+```
+
+**Lifecycle — What Happens When - Node Group Creation:**
+- EKS creates ASG + Launch Template
+- EC2 instances launch → bootstrap script runs
+- kubelet registers node with API server
+- Node appears as `Ready` in `kubectl get nodes`
+
+**Terraform Code**
+```hcl
+resource "aws_eks_node_group" "app" {
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "app-prod"
+  node_role_arn   = aws_iam_role.node.arn
+
+  # Always private subnets, spread across AZs
+  subnet_ids = [
+    aws_subnet.private_a.id,
+    aws_subnet.private_b.id,
+    aws_subnet.private_c.id
+  ]
+
+  # Instance config
+  ami_type       = "AL2_x86_64"          # or BOTTLEROCKET_x86_64
+  instance_types = ["m5.large"]
+  capacity_type  = "ON_DEMAND"           # or SPOT
+  disk_size      = 50
+
+  scaling_config {
+    desired_size = 3
+    min_size     = 1
+    max_size     = 10
+  }
+
+  # Rolling update behavior
+  update_config {
+    max_unavailable = 1                  # Safe for prod
+    # max_unavailable_percentage = 25   # Alternative — % based
+  }
+
+  # Pod scheduling control
+  labels = {
+    role        = "app"
+    environment = "prod"
+  }
+
+  # Force new node group on AMI update
+  release_version = var.eks_node_ami_release_version
+
+  depends_on = [
+    aws_iam_role_policy_attachment.node_worker_policy,
+    aws_iam_role_policy_attachment.node_cni_policy,
+    aws_iam_role_policy_attachment.node_ecr_policy
+  ]
+
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]  # Let CA/Karpenter manage desired
+  }
+}
+```
+
+**IAM Role — Exactly What's Needed**
+```hcl
+resource "aws_iam_role" "node" {
+  name = "eks-node-role"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "ec2.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "node_policies" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",       # Node↔cluster auth
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",            # VPC CNI IP management
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" # Pull from ECR
+  ])
+  role       = aws_iam_role.node.name
+  policy_arn = each.value
+}
+```
+
+This IAM role ARN must be in `aws-auth` ConfigMap — EKS adds it automatically for managed node groups.
+
+**aws-auth ConfigMap — What EKS Auto-Adds**
+```yaml
+mapRoles:
+  - rolearn: arn:aws:iam::123456789:role/eks-node-role
+    username: system:node:{{EC2PrivateDNSName}}
+    groups:
+      - system:bootstrappers
+      - system:nodes
+```
+
+**Multiple Node Groups — When & Why**
+```
+cluster
+├── system-ng        → CoreDNS, kube-proxy (on-demand, t3.medium)
+├── app-ng           → Application pods (on-demand or spot, m5.large)
+├── infra-ng         → Prometheus, Loki, Ingress (tainted, m5.xlarge)
+└── gpu-ng           → ML workloads (on-demand, g4dn.xlarge, tainted)
+```
 
 ### Concept
 
